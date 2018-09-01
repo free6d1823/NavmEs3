@@ -1,0 +1,3 @@
+/home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir

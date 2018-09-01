@@ -1,0 +1,53 @@
+
+{
+	"buildFiles" : 
+	[
+		"/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/opt/android/sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"navmes3-Debug-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "navmes3",
+			"buildCommand" : "/opt/android/sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a --target navmes3",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android --gcc-toolchain=/opt/android/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64 --sysroot=/opt/android/sdk/ndk-bundle/sysroot  -Dnavmes3_EXPORTS -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android/sdk/ndk-bundle/sources/android/support/include -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /opt/android/sdk/ndk-bundle/sysroot/usr/include/aarch64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/navmjni.cpp",
+					"workingDirectory" : "/home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a"
+				},
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android --gcc-toolchain=/opt/android/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64 --sysroot=/opt/android/sdk/ndk-bundle/sysroot  -Dnavmes3_EXPORTS -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android/sdk/ndk-bundle/sources/android/support/include -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /opt/android/sdk/ndk-bundle/sysroot/usr/include/aarch64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/RendererES2.cpp",
+					"workingDirectory" : "/home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a"
+				},
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android --gcc-toolchain=/opt/android/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64 --sysroot=/opt/android/sdk/ndk-bundle/sysroot  -Dnavmes3_EXPORTS -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android/sdk/ndk-bundle/sources/android/support/include -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /opt/android/sdk/ndk-bundle/sysroot/usr/include/aarch64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/RendererES3.cpp",
+					"workingDirectory" : "/home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/arm64-v8a"
+				}
+			],
+			"output" : "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnavmes3.so",
+			"toolchain" : "2909227059208399522"
+		}
+	},
+	"toolchains" : 
+	{
+		"2909227059208399522" : 
+		{
+			"cCompilerExecutable" : "/opt/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/opt/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+		}
+	}
+}
