@@ -1,4 +1,4 @@
-#Sat Sep 01 16:15:19 CST 2018
-base.0=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/25
+#Mon Sep 03 16:47:22 CST 2018
+base.0=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/93
 path.0=classes.dex
 renamed.0=classes.dex

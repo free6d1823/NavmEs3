@@ -16,6 +16,7 @@
 
 #include "navmjni.h"
 #include <EGL/egl.h>
+#include "GlHelper.h"
 
 #define STR(s) #s
 #define STRV(s) STR(s)
@@ -87,10 +88,10 @@ RendererES3::RendererES3()
 }
 
 bool RendererES3::init() {
-    mProgram = createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+    mProgram = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     if (!mProgram)
         return false;
-
+ALOGV("RendererES3::init()  ------------");
     glGenBuffers(VB_COUNT, mVB);
     glBindBuffer(GL_ARRAY_BUFFER, mVB[VB_INSTANCE]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD), &QUAD[0], GL_STATIC_DRAW);

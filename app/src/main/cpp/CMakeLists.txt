@@ -35,7 +35,8 @@ endif (${ANDROID_PLATFORM_LEVEL} LESS 12)
 
 add_library(navmes3 SHARED
             ${GL3STUB_SRC}
-            navmjni.cpp 
+            navmjni.cpp
+            GlHelper.cpp
             RendererES2.cpp
             RendererES3.cpp)
 

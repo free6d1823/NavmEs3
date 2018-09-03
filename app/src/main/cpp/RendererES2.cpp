@@ -16,6 +16,7 @@
 
 #include "navmjni.h"
 #include <EGL/egl.h>
+#include "GlHelper.h"
 
 static const char VERTEX_SHADER[] =
     "#version 100\n"
@@ -82,9 +83,10 @@ RendererES2::RendererES2()
 {}
 
 bool RendererES2::init() {
-    mProgram = createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+    mProgram = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     if (!mProgram)
         return false;
+    ALOGV("RendererES2::init()  ------------");
     mPosAttrib = glGetAttribLocation(mProgram, "pos");
     mColorAttrib = glGetAttribLocation(mProgram, "color");
     mScaleRotUniform = glGetUniformLocation(mProgram, "scaleRot");

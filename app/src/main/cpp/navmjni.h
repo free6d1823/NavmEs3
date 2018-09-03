@@ -38,7 +38,7 @@
 // Types, functions, and data used by both ES2 and ES3 renderers.
 // Defined in gles3jni.cpp.
 
-#define MAX_INSTANCES_PER_SIDE 16
+#define MAX_INSTANCES_PER_SIDE 2
 #define MAX_INSTANCES   (MAX_INSTANCES_PER_SIDE * MAX_INSTANCES_PER_SIDE)
 #define TWO_PI          (2.0 * M_PI)
 #define MAX_ROT_SPEED   (0.3 * TWO_PI)

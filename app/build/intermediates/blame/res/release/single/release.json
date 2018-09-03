@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/res/merged/release/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/res/merged/release/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/res/merged/release/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/res/merged/release/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/res/merged/release/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
+    }
+]
