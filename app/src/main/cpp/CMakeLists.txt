@@ -37,8 +37,10 @@ add_library(navmes3 SHARED
             ${GL3STUB_SRC}
             navmjni.cpp
             GlHelper.cpp
-            RendererES2.cpp
-            RendererES3.cpp)
+            ./imglab/vecmath.cpp
+            ./imglab/ImgProcess.cpp
+            Floor.cpp
+            Cube.cpp)
 
 # Include libraries needed for gles3jni lib
 target_link_libraries(navmes3

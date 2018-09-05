@@ -216,19 +216,17 @@ void RendererES2::draw(unsigned int numInstances) {
     checkGlError("glUniform1i(mTexturePos, 0)");
 
     glBindBuffer(GL_ARRAY_BUFFER, mTextureBufId);
-    checkGlError("glBindBuffer(GL_ARRAY_BUFFER, mTextureBufId)");
+
     glVertexAttribPointer(mTextureAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(nfFloatPoint), (const GLvoid*)0);
-    checkGlError("glVertexAttribPointer(mTextureAttrib");
+
     glEnableVertexAttribArray(mTextureAttrib);
-    checkGlError("glEnableVertexAttribArray(mTextureAttrib)");
+
 //cj
 
 
     glBindBuffer(GL_ARRAY_BUFFER, mVB);
     glVertexAttribPointer(mPosAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, pos));
-//    glVertexAttribPointer(mColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, rgba));
-    glEnableVertexAttribArray(mPosAttrib);
-//    glEnableVertexAttribArray(mColorAttrib);
+     glEnableVertexAttribArray(mPosAttrib);
 
     for (unsigned int i = 0; i < numInstances; i++) {
         glUniformMatrix2fv(mScaleRotUniform, 1, GL_FALSE, mScaleRot + 4*i);

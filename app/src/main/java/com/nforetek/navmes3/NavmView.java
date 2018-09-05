@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import android.content.res.AssetManager;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -29,6 +31,7 @@ class NavmView extends GLSurfaceView {
         setEGLConfigChooser(8, 8, 8, 0, 16, 0);
         setEGLContextClientVersion(3);
         setRenderer(new Renderer());
+        NavmEs3Lib.init2(context.getAssets());
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {
@@ -42,6 +45,8 @@ class NavmView extends GLSurfaceView {
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             NavmEs3Lib.init();
+
+
         }
     }
 }

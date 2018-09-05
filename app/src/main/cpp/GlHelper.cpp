@@ -3,10 +3,12 @@
 //
 
 #include <GLES2/gl2.h>
-#include <android/log.h>
 #include <malloc.h>
 
+
 #include "navmjni.h"
+#define LOG_TAG "GlHelper"
+#include "common.h"
 #include "GlHelper.h"
 
 
@@ -16,7 +18,7 @@
 bool checkGlError(const char* funcName) {
     GLint err = glGetError();
     if (err != GL_NO_ERROR) {
-        ALOGE("GL error after %s(): 0x%08x\n", funcName, err);
+        LOGE("GL error after %s(): 0x%08x\n", funcName, err);
         return true;
     }
     return false;
@@ -40,7 +42,7 @@ GLuint createShader(GLenum shaderType, const char* src) {
             GLchar* infoLog = (GLchar*)malloc(infoLogLen);
             if (infoLog) {
                 glGetShaderInfoLog(shader, infoLogLen, NULL, infoLog);
-                ALOGE("Could not compile %s shader:\n%s\n",
+                LOGE("Could not compile %s shader:\n%s\n",
                         shaderType == GL_VERTEX_SHADER ? "vertex" : "fragment",
                         infoLog);
                 free(infoLog);
@@ -77,14 +79,14 @@ GLuint CreateProgram(const char* vtxSrc, const char* fragSrc) {
     glLinkProgram(program);
     glGetProgramiv(program, GL_LINK_STATUS, &linked);
     if (!linked) {
-        ALOGE("Could not link program");
+        LOGE("Could not link program");
         GLint infoLogLen = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLen);
         if (infoLogLen) {
             GLchar* infoLog = (GLchar*)malloc(infoLogLen);
             if (infoLog) {
                 glGetProgramInfoLog(program, infoLogLen, NULL, infoLog);
-                ALOGE("Could not link program:\n%s\n", infoLog);
+                LOGE("Could not link program:\n%s\n", infoLog);
                 free(infoLog);
             }
         }

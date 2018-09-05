@@ -18,8 +18,8 @@
 // vecmath.cpp
 //--------------------------------------------------------------------------------
 #include <jni.h>
-#include <android/log.h>
 #define  LOG_TAG    "vecmath"
+#include "../common.h"
 #include "vecmath.h"
 
 
@@ -414,4 +414,11 @@ Mat4 Mat4::LookAt(const Vec3& vec_eye, const Vec3& vec_at, const Vec3& vec_up) {
 
   result.PostTranslate(-vec_eye.x_, -vec_eye.y_, -vec_eye.z_);
   return result;
+}
+void Mat4::dump()
+{
+  LOGI("{ %8f, %8f, %8f, %8f", f_[0], f_[1], f_[2], f_[3]);
+  LOGI("  %8f, %8f, %8f, %8f", f_[4], f_[5], f_[6], f_[7]);
+  LOGI("  %8f, %8f, %8f, %8f", f_[8], f_[9], f_[10], f_[11]);
+  LOGI("  %8f, %8f, %8f, %8f}", f_[12], f_[13], f_[14], f_[15]);
 }

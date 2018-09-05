@@ -7,6 +7,8 @@ package com.nforetek.navmes3;
 
 // Wrapper for native library
 
+import android.content.res.AssetManager;
+
 public class NavmEs3Lib {
 
      static {
@@ -14,6 +16,7 @@ public class NavmEs3Lib {
      }
 
      public static native void init();
+     public static native void init2(AssetManager assetManager);
      public static native void resize(int width, int height);
      public static native void step();
 }
