@@ -26,15 +26,21 @@ class NavmView extends GLSurfaceView {
 
     public NavmView(Context context) {
         super(context);
+
         // Pick an EGLConfig with RGB8 color, 16-bit depth, no stencil,
         // supporting OpenGL ES 2.0 or later backwards-compatible versions.
         setEGLConfigChooser(8, 8, 8, 0, 16, 0);
         setEGLContextClientVersion(3);
-        setRenderer(new Renderer());
-        NavmEs3Lib.init2(context.getAssets());
+        setRenderer(new Renderer(context));
+        NavmEs3Lib.init( context.getAssets());
+
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {
+        private Context mContext;
+        public Renderer (Context context) {
+            mContext = context;
+        }
         public void onDrawFrame(GL10 gl) {
             NavmEs3Lib.step();
         }
@@ -44,7 +50,7 @@ class NavmView extends GLSurfaceView {
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            NavmEs3Lib.init();
+            NavmEs3Lib.start();
 
 
         }

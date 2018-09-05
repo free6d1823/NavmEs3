@@ -40,7 +40,7 @@ add_library(navmes3 SHARED
             ./imglab/vecmath.cpp
             ./imglab/ImgProcess.cpp
             Floor.cpp
-            Cube.cpp)
+            Car.cpp)
 
 # Include libraries needed for gles3jni lib
 target_link_libraries(navmes3

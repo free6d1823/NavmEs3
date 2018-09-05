@@ -18,9 +18,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5ce65de-1955-45e0-b665-949ebd18854d" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/cpp/Floor.cpp" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/cpp/Floor.h" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/classAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/classAnalysis.bin" />
@@ -33,29 +30,29 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/.ninja_deps" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/.ninja_deps" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/.ninja_log" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/.ninja_log" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/GlHelper.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/GlHelper.cpp.o" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/RendererES2.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/RendererES2.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/Floor.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/Floor.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/navmjni.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/navmes3.dir/navmjni.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/android_gradle_build.json" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/android_gradle_build.json" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/build.ninja" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/arm64-v8a/build.ninja" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/.ninja_deps" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/.ninja_deps" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/.ninja_log" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/.ninja_log" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/GlHelper.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/GlHelper.cpp.o" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/RendererES2.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/RendererES2.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/Floor.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/Floor.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/navmjni.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/navmes3.dir/navmjni.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/android_gradle_build.json" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/android_gradle_build.json" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/build.ninja" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/armeabi-v7a/build.ninja" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/.ninja_deps" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/.ninja_deps" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/.ninja_log" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/.ninja_log" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/GlHelper.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/GlHelper.cpp.o" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/RendererES2.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/RendererES2.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/Floor.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/Floor.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/navmjni.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/navmes3.dir/navmjni.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/android_gradle_build.json" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/android_gradle_build.json" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/build.ninja" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86/build.ninja" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/.ninja_deps" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/.ninja_deps" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/.ninja_log" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/.ninja_log" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/GlHelper.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/GlHelper.cpp.o" />
-      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/RendererES2.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/RendererES2.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/Floor.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/Floor.cpp.o" />
+      <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/navmjni.cpp.o" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/navmes3.dir/navmjni.cpp.o" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/android_gradle_build.json" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/android_gradle_build.json" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/build.ninja" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/debug/x86_64/build.ninja" />
@@ -67,9 +64,9 @@
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/release/x86/build.ninja" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/release/x86/build.ninja" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/release/x86_64/android_gradle_build.json" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/release/x86_64/android_gradle_build.json" />
       <change beforePath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/release/x86_64/build.ninja" afterPath="$PROJECT_DIR$/app/.externalNativeBuild/cmake/release/x86_64/build.ninja" />
-      <change beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/build-info/debug/build-info.xml" afterPath="$PROJECT_DIR$/app/build/intermediates/build-info/debug/build-info.xml" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmEs3Lib.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmEs3Lib.class" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmView$1.class" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmView$Renderer.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmView$Renderer.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmView.class" afterPath="$PROJECT_DIR$/app/build/intermediates/classes/debug/com/nforetek/navmes3/NavmView.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnavmes3.so" />
@@ -77,6 +74,7 @@
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/cmake/debug/obj/x86/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/cmake/debug/obj/x86/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/cmake/debug/obj/x86_64/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/cmake/debug/obj/x86_64/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmEs3Lib.class" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmEs3Lib.class" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmView$1.class" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmView$Renderer.class" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmView$Renderer.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmView.class" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental-verifier/debug/com/nforetek/navmes3/NavmView.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/ir_slices/debug/package_slice_0/dex-renamer-state.txt" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/ir_slices/debug/package_slice_0/dex-renamer-state.txt" />
@@ -95,73 +93,35 @@
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/packageInstantRunResourcesDebug/tmp/debug/dex-renamer-state.txt" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/packageInstantRunResourcesDebug/tmp/debug/dex-renamer-state.txt" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/instant-run-apk/debug/app-debug.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/instant-run-apk/debug/app-debug.apk" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/instant-run-resources/resources-debug.ir.ap_" afterPath="$PROJECT_DIR$/app/build/intermediates/instant-run-resources/resources-debug.ir.ap_" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_0.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_0.apk" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_2.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_2.apk" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_4.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_4.apk" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_7.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_7.apk" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_8.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_8.apk" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_9.apk" afterPath="$PROJECT_DIR$/app/build/intermediates/split-apk/debug/slices/slice_9.apk" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/103.jar" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/104.jar" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/105.jar" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/106.jar" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/109/com/android/tools/ir/dummy/slice_0.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/110/com/android/tools/ir/dummy/slice_1.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/111/com/android/tools/ir/dummy/slice_2.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/112/com/android/tools/ir/dummy/slice_3.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/113/com/android/tools/ir/dummy/slice_4.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/114/com/android/tools/ir/dummy/slice_5.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/115/com/android/tools/ir/dummy/slice_6.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/android/tools/ir/dummy/slice_7.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/BuildConfig.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/MainActivity.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/NavmEs3Lib.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/NavmView$1.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/NavmView$Renderer.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/NavmView.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/R$mipmap.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/R$string.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/116/com/nforetek/navmes3/R.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/117/com/android/tools/ir/dummy/slice_8.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/118/com/android/tools/ir/dummy/slice_9.dex" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/__content__.json" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/dexBuilder/debug/__content__.json" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/103/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/104/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/105/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/106/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/107/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/108/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/109/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/110/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/111/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/112/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/114/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/115/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/116/classes.dex" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/117/classes.dex" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/__content__.json" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/dexMerger/debug/__content__.json" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmEs3Lib.class" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmEs3Lib.class" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmView$1.class" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmView$Renderer.class" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmView$Renderer.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmView.class" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRun/debug/0/com/nforetek/navmes3/NavmView.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmEs3Lib.class" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmEs3Lib.class" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmView$1.class" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmView$Renderer.class" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmView$Renderer.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmView.class" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/instantRunSlicer/debug/7/com/nforetek/navmes3/NavmView.class" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/arm64-v8a/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/arm64-v8a/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/x86/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/x86/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/x86_64/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/0/lib/x86_64/libnavmes3.so" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/__content__.json" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/mergeJniLibs/debug/__content__.json" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/arm64-v8a/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/arm64-v8a/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/x86/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/x86/libnavmes3.so" />
       <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/x86_64/libnavmes3.so" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/0/lib/x86_64/libnavmes3.so" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/__content__.json" afterPath="$PROJECT_DIR$/app/build/intermediates/transforms/stripDebugSymbol/debug/__content__.json" />
       <change beforePath="$PROJECT_DIR$/app/build/outputs/apk/debug/app-debug.apk" afterPath="$PROJECT_DIR$/app/build/outputs/apk/debug/app-debug.apk" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/skin.png" afterPath="" />
       <change beforePath="$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt" afterPath="$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/GlHelper.cpp" afterPath="$PROJECT_DIR$/app/src/main/cpp/GlHelper.cpp" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/RendererES2.cpp" afterPath="$PROJECT_DIR$/app/src/main/cpp/RendererES2.cpp" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/imglab/vecmath.cpp" afterPath="$PROJECT_DIR$/app/src/main/cpp/imglab/vecmath.cpp" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/imglab/vecmath.h" afterPath="$PROJECT_DIR$/app/src/main/cpp/imglab/vecmath.h" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/Floor.cpp" afterPath="$PROJECT_DIR$/app/src/main/cpp/Floor.cpp" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.cpp" afterPath="$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.cpp" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h" afterPath="$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h" />
       <change beforePath="$PROJECT_DIR$/app/src/main/cpp/navmjni.cpp" afterPath="$PROJECT_DIR$/app/src/main/cpp/navmjni.cpp" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/cpp/navmjni.h" afterPath="$PROJECT_DIR$/app/src/main/cpp/navmjni.h" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmView.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmView.java" />
     </list>
@@ -186,46 +146,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="navmjni.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="navmjni.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/cpp/navmjni.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="113" column="0" lean-forward="true" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
+            <state relative-caret-position="153">
+              <caret line="168" column="0" lean-forward="false" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
               <folding>
                 <element signature="e#51#67#0" expanded="true" />
-                <element signature="e#233#252#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="37" column="23" lean-forward="false" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="23" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ImgProcess.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-757">
-              <caret line="20" column="18" lean-forward="false" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ImgProcess.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1098">
-              <caret line="77" column="1" lean-forward="false" selection-start-line="77" selection-start-column="1" selection-end-line="77" selection-end-column="1" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
+                <element signature="e#232#251#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -244,35 +172,46 @@
       <file leaf-file-name="NavmView.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="33" column="44" lean-forward="false" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
+            <state relative-caret-position="466">
+              <caret line="52" column="28" lean-forward="false" selection-start-line="52" selection-start-column="28" selection-end-line="52" selection-end-column="28" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#1277#1278#0" expanded="true" />
+                <element signature="e#1319#1320#0" expanded="true" />
+                <element signature="e#1362#1363#0" expanded="true" />
+                <element signature="e#1403#1404#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Cube.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Cube.h">
+      <file leaf-file-name="NavmEs3Lib.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="288">
-              <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-              <folding>
-                <element signature="e#83#110#0" expanded="true" />
-              </folding>
+              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Cube.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Cube.cpp">
+      <file leaf-file-name="Car.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Car.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="73" />
+            <state relative-caret-position="3400">
+              <caret line="198" column="1" lean-forward="true" selection-start-line="198" selection-start-column="1" selection-end-line="198" selection-end-column="1" />
               <folding>
                 <element signature="e#36#59#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gl31.h" pinned="false" current-in-tab="false">
+        <entry file="file:///opt/android/sdk/ndk-bundle/sysroot/usr/include/GLES3/gl31.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="603" column="29" lean-forward="false" selection-start-line="603" selection-start-column="29" selection-end-line="603" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -280,8 +219,8 @@
       <file leaf-file-name="Floor.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Floor.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="151" column="65" lean-forward="false" selection-start-line="151" selection-start-column="65" selection-end-line="151" selection-end-column="65" />
+            <state relative-caret-position="828">
+              <caret line="123" column="24" lean-forward="false" selection-start-line="123" selection-start-column="24" selection-end-line="123" selection-end-column="24" />
               <folding>
                 <element signature="e#36#59#0" expanded="true" />
               </folding>
@@ -289,14 +228,34 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Floor.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Floor.h">
+      <file leaf-file-name="Car.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Car.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="48" column="18" lean-forward="false" selection-start-line="48" selection-start-column="18" selection-end-line="48" selection-end-column="18" />
+            <state relative-caret-position="441">
+              <caret line="56" column="48" lean-forward="false" selection-start-line="56" selection-start-column="48" selection-end-line="56" selection-end-column="48" />
               <folding>
-                <element signature="e#85#112#0" expanded="true" />
+                <element signature="e#81#108#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImgProcess.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="382">
+              <caret line="59" column="12" lean-forward="false" selection-start-line="59" selection-start-column="12" selection-end-line="59" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="navmjni.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/navmjni.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="382">
+              <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -315,6 +274,14 @@
       <find>CreateProgram</find>
       <find>mvp_matrix</find>
       <find>mMvpMatrixUniform</find>
+      <find>mNumToDraw</find>
+      <find>mpIndexBuf</find>
+      <find>mVertexBufId</find>
+      <find>updateTextureData</find>
+      <find>gpVertexBuf</find>
+      <find>initVertexData</find>
+      <find>mTextureUniform</find>
+      <find>glGetUniformLocation</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -2385,21 +2352,25 @@
         <option value="$PROJECT_DIR$/app/src/main/cpp/imglab/vecmath.cpp" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/navmjni.h" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/Cube.cpp" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmView.java" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/Floor.h" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.cpp" />
+        <option value="$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/Floor.cpp" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/navmjni.cpp" />
+        <option value="$PROJECT_DIR$/app/src/main/cpp/Car.h" />
+        <option value="$PROJECT_DIR$/app/src/main/cpp/Car.cpp" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="201" />
-    <option name="y" value="108" />
+    <option name="x" value="76" />
+    <option name="y" value="42" />
     <option name="width" value="1772" />
-    <option name="height" value="824" />
+    <option name="height" value="1030" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -2431,13 +2402,23 @@
             <path>
               <item name="NavmEs3" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="cpp" type="9a30073f:AndroidJniFolderNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+            </path>
+            <path>
+              <item name="NavmEs3" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="navmes3" type="cbb59c9e:AndroidPsiDirectoryNode" />
             </path>
             <path>
               <item name="NavmEs3" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="cpp" type="9a30073f:AndroidJniFolderNode" />
-              <item name="imglab" type="6cf0337f:NdkSourceFolderNode" />
+            </path>
+            <path>
+              <item name="NavmEs3" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="assets" type="edd41e36:AndroidSourceTypeNode" />
             </path>
             <path>
               <item name="NavmEs3" type="1abcf292:AndroidViewProjectNode" />
@@ -2620,7 +2601,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="201" y="108" width="1772" height="824" extended-state="0" />
+    <frame x="76" y="42" width="1772" height="1030" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -2633,12 +2614,12 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39684814" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32411504" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24980111" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17109826" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3495702" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34955752" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2664,8 +2645,13 @@
           <url>file://$PROJECT_DIR$/app/src/main/cpp/Floor.cpp</url>
           <line>48</line>
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/app/src/main/cpp/Car.cpp</url>
+          <line>3</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -2676,7 +2662,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#51#67#0" expanded="true" />
-            <element signature="e#233#252#0" expanded="true" />
+            <element signature="e#232#251#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2686,7 +2672,7 @@
         <state relative-caret-position="882">
           <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
           <folding>
-            <element signature="e#83#110#0" expanded="true" />
+            <element signature="e#83#110#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2707,7 +2693,7 @@
         <state relative-caret-position="3168">
           <caret line="176" column="19" lean-forward="false" selection-start-line="176" selection-start-column="19" selection-end-line="176" selection-end-column="19" />
           <folding>
-            <element signature="e#36#59#0" expanded="true" />
+            <element signature="e#36#59#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2745,7 +2731,7 @@
         <state relative-caret-position="180">
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
-            <element signature="e#85#112#0" expanded="true" />
+            <element signature="e#85#112#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2767,7 +2753,7 @@
           <caret line="169" column="34" lean-forward="false" selection-start-line="169" selection-start-column="34" selection-end-line="169" selection-end-column="34" />
           <folding>
             <element signature="e#51#67#0" expanded="true" />
-            <element signature="e#233#252#0" expanded="true" />
+            <element signature="e#232#251#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2828,7 +2814,7 @@
           <caret line="9" column="16" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="20" />
           <folding>
             <element signature="e#51#67#0" expanded="true" />
-            <element signature="e#233#252#0" expanded="true" />
+            <element signature="e#232#251#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2922,30 +2908,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/vecmath.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7002">
           <caret line="770" column="14" lean-forward="false" selection-start-line="770" selection-start-column="14" selection-end-line="770" selection-end-column="14" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/navmjni.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
-          <caret line="36" column="16" lean-forward="false" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
-          <folding>
-            <element signature="e#91#115#0" expanded="false" />
-            <element signature="e#350#372#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2959,10 +2926,66 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Cube.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="18" column="62" lean-forward="false" selection-start-line="18" selection-start-column="62" selection-end-line="18" selection-end-column="62" />
+        <state relative-caret-position="288">
+          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding>
+            <element signature="e#83#110#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Cube.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="73" />
+          <folding>
+            <element signature="e#36#59#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="30" column="24" lean-forward="false" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Floor.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="48" column="18" lean-forward="false" selection-start-line="48" selection-start-column="18" selection-end-line="48" selection-end-column="18" />
+          <folding>
+            <element signature="e#85#112#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="166" column="0" lean-forward="false" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#23#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/common.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="9" lean-forward="false" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="59" column="12" lean-forward="false" selection-start-line="59" selection-start-column="12" selection-end-line="59" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -2975,76 +2998,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/navmjni.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="33" column="44" lean-forward="false" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
+        <state relative-caret-position="466">
+          <caret line="52" column="28" lean-forward="false" selection-start-line="52" selection-start-column="28" selection-end-line="52" selection-end-column="28" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#1277#1278#0" expanded="true" />
+            <element signature="e#1319#1320#0" expanded="true" />
+            <element signature="e#1362#1363#0" expanded="true" />
+            <element signature="e#1403#1404#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Cube.h">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/nforetek/navmes3/NavmEs3Lib.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
-          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
-          <folding>
-            <element signature="e#83#110#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Cube.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="73" />
-          <folding>
-            <element signature="e#36#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Floor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="48" column="18" lean-forward="false" selection-start-line="48" selection-start-column="18" selection-end-line="48" selection-end-column="18" />
-          <folding>
-            <element signature="e#85#112#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="37" column="23" lean-forward="false" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="23" />
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-757">
-          <caret line="20" column="18" lean-forward="false" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/imglab/ImgProcess.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1098">
-          <caret line="77" column="1" lean-forward="false" selection-start-line="77" selection-start-column="1" selection-end-line="77" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Floor.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="151" column="65" lean-forward="false" selection-start-line="151" selection-start-column="65" selection-end-line="151" selection-end-column="65" />
+        <state relative-caret-position="828">
+          <caret line="123" column="24" lean-forward="false" selection-start-line="123" selection-start-column="24" selection-end-line="123" selection-end-column="24" />
           <folding>
             <element signature="e#36#59#0" expanded="true" />
           </folding>
@@ -3053,11 +3039,39 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/cpp/navmjni.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="113" column="0" lean-forward="true" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
+        <state relative-caret-position="153">
+          <caret line="168" column="0" lean-forward="false" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
           <folding>
             <element signature="e#51#67#0" expanded="true" />
-            <element signature="e#233#252#0" expanded="true" />
+            <element signature="e#232#251#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///opt/android/sdk/ndk-bundle/sysroot/usr/include/GLES3/gl31.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="603" column="29" lean-forward="false" selection-start-line="603" selection-start-column="29" selection-end-line="603" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Car.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="56" column="48" lean-forward="false" selection-start-line="56" selection-start-column="48" selection-end-line="56" selection-end-column="48" />
+          <folding>
+            <element signature="e#81#108#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/Car.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3400">
+          <caret line="198" column="1" lean-forward="true" selection-start-line="198" selection-start-column="1" selection-end-line="198" selection-end-column="1" />
+          <folding>
+            <element signature="e#36#59#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -72,7 +72,7 @@ void Floor ::cleanup()
         glDeleteTextures(1, &mTextureDataId);
 }
 
-const nfFloat3D gpVertexBuf[4] = {
+static const nfFloat3D gpVertexBuf[4] = {
         {-10,  0, 10}, { 10, 0, 10}, {-10, 0,  -10},{ 10, 0, -10},
 };
 static const nfFloat2D gpUvTexture[4] = {
@@ -118,10 +118,6 @@ bool Floor ::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     return true;
 }
-bool Floor ::loadTexture()
-{
-return true;
-}
 
 nfPByte Floor ::allocTextureImage(int width, int height, int depth)
 {
@@ -132,26 +128,19 @@ nfPByte Floor ::allocTextureImage(int width, int height, int depth)
     mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
     return mpTexImg;
 }
-static unsigned char cc = 110;
 void Floor ::updateTextureData()
 {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextureDataId);
-    //reload image
-    /*
-    for (int i=0; i<TEX_HEIGHT; i++) {
-        for (int j=0; j<TEX_WIDTH; j++) {
-            mpTexImg[i*mTexWidth*4+ j*4 ] = 128; //R
-            mpTexImg[i*mTexWidth*4+ j*4 +1] = (i+j)%255;
-            mpTexImg[i*mTexWidth*4+ j*4 +2] = (cc)%255; //B
-            mpTexImg[i*mTexWidth*4+ j*4 +3] = 255;
-        }
-    }*/
-    cc++;
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTexWidth, mTexHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mpTexImg);
 
 }
+bool Floor ::loadTexture()
+{
+    return true;
+}
+
 /* \brief render floor image
  * \param bReload set true to reload texture
  *

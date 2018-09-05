@@ -32,7 +32,7 @@
 /// \param pRgb     output RGB32 buffer, must be allocated by caller before call
 /// \param uFirst   true if pYuv is YUYV, false if YVYU
 ///
-void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst)
+void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst, bool bMirror)
 {
     //YVYU - format
     int nBps = pYuv->width*4;//stride in RGB data
@@ -40,6 +40,12 @@ void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst)
 
     unsigned char* pV;
     unsigned char* pU;
+
+    int nStride = pYuv->stride;
+    if (bMirror) {
+        pY1 = pYuv->buffer +(pYuv->height-1)* pYuv->stride;
+        nStride = -pYuv->stride;
+    }
 
     if (uFirst) {
         pU = pY1+1; pV = pU+2;
@@ -69,9 +75,9 @@ void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst)
             pLine1[j*4+6] = YUV2R(y1, u, v);//r
             pLine1[j*4+7] = 0xff;
         }
-        pY1 += pYuv->stride;
-        pV += pYuv->stride;
-        pU += pYuv->stride;
+        pY1 += nStride;
+        pV += nStride;
+        pU += nStride;
         pLine1 += nBps;
 
     }

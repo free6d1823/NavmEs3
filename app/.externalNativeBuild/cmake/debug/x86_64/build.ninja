@@ -91,12 +91,12 @@ build CMakeFiles/navmes3.dir/Floor.cpp.o: CXX_COMPILER__navmes3 /home/cj/Android
   IN_ABS = /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/Floor.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
-build CMakeFiles/navmes3.dir/Cube.cpp.o: CXX_COMPILER__navmes3 /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/Cube.cpp
+build CMakeFiles/navmes3.dir/Car.cpp.o: CXX_COMPILER__navmes3 /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/Car.cpp
   DEFINES = -Dnavmes3_EXPORTS
-  DEP_FILE = CMakeFiles/navmes3.dir/Cube.cpp.o.d
+  DEP_FILE = CMakeFiles/navmes3.dir/Car.cpp.o.d
   FLAGS = -isystem /opt/android/sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O0 -fno-limit-debug-info  -fPIC
   INCLUDES = -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android/sdk/ndk-bundle/sources/android/support/include -isystem /opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
-  IN_ABS = /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/Cube.cpp
+  IN_ABS = /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/Car.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
 
@@ -107,7 +107,7 @@ build CMakeFiles/navmes3.dir/Cube.cpp.o: CXX_COMPILER__navmes3 /home/cj/AndroidS
 #############################################
 # Link the shared library /home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/debug/obj/x86_64/libnavmes3.so
 
-build /home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/debug/obj/x86_64/libnavmes3.so: CXX_SHARED_LIBRARY_LINKER__navmes3 CMakeFiles/navmes3.dir/navmjni.cpp.o CMakeFiles/navmes3.dir/GlHelper.cpp.o CMakeFiles/navmes3.dir/imglab/vecmath.cpp.o CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o CMakeFiles/navmes3.dir/Floor.cpp.o CMakeFiles/navmes3.dir/Cube.cpp.o
+build /home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/debug/obj/x86_64/libnavmes3.so: CXX_SHARED_LIBRARY_LINKER__navmes3 CMakeFiles/navmes3.dir/navmjni.cpp.o CMakeFiles/navmes3.dir/GlHelper.cpp.o CMakeFiles/navmes3.dir/imglab/vecmath.cpp.o CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o CMakeFiles/navmes3.dir/Floor.cpp.o CMakeFiles/navmes3.dir/Car.cpp.o
   LANGUAGE_COMPILE_FLAGS = -isystem /opt/android/sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O0 -fno-limit-debug-info
   LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -nostdlib++ --sysroot /opt/android/sdk/ndk-bundle/platforms/android-21/arch-x86_64 -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -L/opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86_64 -Wl,--no-undefined -Wl,-z,noexecstack -Qunused-arguments -Wl,-z,relro -Wl,-z,now
   LINK_LIBRARIES = -lGLESv3 -landroid -lEGL -llog -lm -latomic -lm "/opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86_64/libc++_static.a" "/opt/android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86_64/libc++abi.a"

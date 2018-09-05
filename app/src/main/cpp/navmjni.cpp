@@ -10,7 +10,7 @@
 #include "navmjni.h"
 #include "GlHelper.h"
 #include "Floor.h"
-#include "Cube.h"
+#include "Car.h"
 #define LOG_TAG "GLES3JNI"
 #include "common.h"
 #include "imglab/ImgProcess.h"
@@ -18,7 +18,7 @@
 #include <android/asset_manager_jni.h>
 #include <cassert>
 
-Cube  mCube;
+Car  mCar;
 Floor mFloor;
 static void printGlString(const char* name, GLenum s) {
     const char* v = (const char*)glGetString(s);
@@ -55,7 +55,7 @@ void MainJni::step()
 
     }
 
-    mCube.update(proj);
+    mCar.update(proj);
     mFloor.update(proj);
 }
 void MainJni::render()
@@ -64,7 +64,7 @@ void MainJni::render()
     glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     mFloor.draw();
-//    mCube.draw();
+    mCar.draw();
 
     checkGlError("Renderer::render");
 }
@@ -98,59 +98,152 @@ static MainJni* g_main = NULL;
 // ----------------------------------------------------------------------------
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj);
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init2(JNIEnv* env, jobject obj, jobject assetManager);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager);
 
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj);
 };
 
+AAssetManager* gAmgr = NULL;
+
 JNIEXPORT void JNICALL
-Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj) {
+Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
     if (g_main) {
         delete g_main;
         g_main = NULL;
     }
-
     printGlString("Version", GL_VERSION);
     printGlString("Vendor", GL_VENDOR);
     printGlString("Renderer", GL_RENDERER);
     printGlString("Extensions", GL_EXTENSIONS);
+
     g_main = new MainJni;
-    mFloor.init();
-    mCube.init();
 
-
-}
-
-void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst);
-JNIEXPORT void JNICALL
-Java_com_nforetek_navmes3_NavmEs3Lib_init2(JNIEnv* env, jobject obj, jobject assetManager) {
-    // use asset manager to open asset by filename
-    AAssetManager* mgr = AAssetManager_fromJava(env, assetManager);
-    assert(NULL != mgr);
-
-    AAsset* testAsset = AAssetManager_open(mgr, "camera1800x1440.yuv", AASSET_MODE_UNKNOWN);
+    AAsset* testAsset = AAssetManager_open(gAmgr, "camera1800x1440.yuv", AASSET_MODE_UNKNOWN);
     if (testAsset)
     {
         assert(testAsset);
 
         size_t assetLength = AAsset_getLength(testAsset);
 
-        LOGI("Native Audio Asset file size: %d\n", assetLength);
+        LOGI("Native Asset file size: %lu\n", assetLength);
         nfImage* pSrc = nfImage::create(1800, 1440, assetLength/(1800*1440));
         nfPByte dest = mFloor.allocTextureImage(1800, 1440, 4);
         if (pSrc && dest) {
             AAsset_read(testAsset, pSrc->buffer, assetLength);
-            nfYuyvToRgb32(pSrc, dest, true);
+            nfYuyvToRgb32(pSrc, dest, true, true);
         }
         AAsset_close(testAsset);
         nfImage::destroy(&pSrc);
     }
     else
     {
-        LOGE("Cannot open file in assets!");
+        LOGE("Cannot open floor image in assets!");
     }
+    mFloor.init();
+
+    testAsset = AAssetManager_open(gAmgr, "redskin_100x100.yuv", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        LOGI("Native Asset skin file size: %lu\n", assetLength);
+        nfImage* pSrc = nfImage::create(100, 100, 2);
+        nfPByte dest = mCar.allocTextureImage(100, 100, 4);
+        if (pSrc && dest) {
+            AAsset_read(testAsset, pSrc->buffer, assetLength);
+            nfYuyvToRgb32(pSrc, dest, true, true);
+        }
+        AAsset_close(testAsset);
+        nfImage::destroy(&pSrc);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    mCar.init();
+    //
+    testAsset = AAssetManager_open(gAmgr, "porch_body.bin", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        LOGI("Load 3D object 0: %lu\n", assetLength);
+        void * pBuffer = malloc(assetLength);
+        if (pBuffer) {
+            AAsset_read(testAsset, pBuffer, assetLength);
+            if(!mCar.loadObject(0, pBuffer, assetLength)){
+                LOGE("Load 3D object 0 error!");
+            }
+            free(pBuffer);
+        }
+        AAsset_close(testAsset);
+
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    testAsset = AAssetManager_open(gAmgr, "frontwheels.bin", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        LOGI("Load 3D object 1: %lu\n", assetLength);
+        void * pBuffer = malloc(assetLength);
+        if (pBuffer) {
+            AAsset_read(testAsset, pBuffer, assetLength);
+            if(!mCar.loadObject(1, pBuffer, assetLength)){
+                LOGE("Load 3D object 1 error!");
+            }
+            free(pBuffer);
+        }
+        AAsset_close(testAsset);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    testAsset = AAssetManager_open(gAmgr, "rearwheels.bin", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        LOGI("Load 3D object 1: %lu\n", assetLength);
+        void * pBuffer = malloc(assetLength);
+        if (pBuffer) {
+            AAsset_read(testAsset, pBuffer, assetLength);
+            if(!mCar.loadObject(2, pBuffer, assetLength)){
+                LOGE("Load 3D object 2 error!");
+            }
+            free(pBuffer);
+        }
+        AAsset_close(testAsset);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    ////
+}
+
+void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst);
+JNIEXPORT void JNICALL
+Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager) {
+
+    // use asset manager to open asset by filename
+    gAmgr = AAssetManager_fromJava(env, assetManager);
+    assert(NULL != gAmgr);
+
 
 }
 JNIEXPORT void JNICALL

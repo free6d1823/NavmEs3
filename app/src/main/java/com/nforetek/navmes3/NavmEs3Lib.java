@@ -15,8 +15,8 @@ public class NavmEs3Lib {
           System.loadLibrary("navmes3");
      }
 
-     public static native void init();
-     public static native void init2(AssetManager assetManager);
+     public static native void init(AssetManager assetManager);
+     public static native void start();
      public static native void resize(int width, int height);
      public static native void step();
 }

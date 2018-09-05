@@ -26,7 +26,7 @@ class nfBuffer{
 public:
 	nfBuffer(){};
 	nfBuffer(unsigned int elements);
-	~nfBuffer();
+	virtual ~nfBuffer();
 	void set(unsigned int offset, char value){};
 	void* data(){return NULL;}
 
@@ -45,7 +45,7 @@ protected:
 class nfFloatBuffer : public nfBuffer {
 public:
 	nfFloatBuffer(unsigned int elements);
-	~nfFloatBuffer();
+    virtual ~nfFloatBuffer();
 	float* data(){ return mpData;}
 	void set(unsigned int offset, float value){ mpData[offset] = value;};
 static nfFloatBuffer* create(unsigned int counts);
@@ -57,7 +57,7 @@ private:
 class nfUshortBuffer : public nfBuffer {
 public:
 	nfUshortBuffer(unsigned int elements);
-	~nfUshortBuffer();
+    virtual ~nfUshortBuffer();
 	void set(unsigned int offset, unsigned short value){ mpData[offset] = value;};
 	unsigned short* data(){ return mpData;}
 static nfUshortBuffer* create(unsigned int counts);
@@ -66,7 +66,7 @@ private:
     unsigned short* mpData;
 };
 
-void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst);
+void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst, bool bMirror);
 //void doFec(double u, double v, double &x, double &y, FecParam* m_pFec);
 //void calculateHomoMatrix(dbPOINT* fps, dbPOINT* fpt, HomoParam* homo);
 //bool doHomoTransform(double s, double t, double &u, double &v, double h[3][3]);

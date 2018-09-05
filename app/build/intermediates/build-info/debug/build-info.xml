@@ -6,7 +6,7 @@
     density="xxhdpi"
     format="10"
     plugin-version="3.1.4"
-    timestamp="1536115444842"
+    timestamp="1536155714759"
     token="1610485574790328344"
     verifier="COLD_SWAP_REQUESTED" >
 
@@ -24,28 +24,22 @@
         duration="0" />
 
     <artifact
-        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
-        type="SPLIT" />
-    <artifact
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
         type="SPLIT" />
     <artifact
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_2.apk"
         type="SPLIT" />
     <artifact
-        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
+        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
         type="SPLIT" />
     <artifact
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
         type="SPLIT" />
     <artifact
-        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
+        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
         type="SPLIT" />
     <artifact
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_5.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
         type="SPLIT" />
     <artifact
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_6.apk"
@@ -54,16 +48,19 @@
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_8.apk"
         type="SPLIT" />
     <artifact
+        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
+        type="SPLIT" />
+    <artifact
         location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/instant-run-apk/debug/app-debug.apk"
         type="SPLIT_MAIN" />
 
     <build
         build-mode="FULL"
-        timestamp="1536115444842"
+        timestamp="1536155714759"
         verifier="COLD_SWAP_REQUESTED" >
-        <artifact
-            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
-            type="SPLIT" />
         <artifact
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
             type="SPLIT" />
@@ -71,25 +68,28 @@
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_2.apk"
             type="SPLIT" />
         <artifact
-            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
+            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
             type="SPLIT" />
         <artifact
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
             type="SPLIT" />
         <artifact
-            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
+            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
             type="SPLIT" />
         <artifact
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_5.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
             type="SPLIT" />
         <artifact
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_6.apk"
             type="SPLIT" />
         <artifact
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_8.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
             type="SPLIT" />
         <artifact
             location="/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/instant-run-apk/debug/app-debug.apk"

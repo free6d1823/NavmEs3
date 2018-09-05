@@ -1,4 +1,4 @@
-#Wed Sep 05 10:44:06 CST 2018
+#Wed Sep 05 21:55:15 CST 2018
 path.3=classes.dex
 path.2=classes.dex
 path.1=classes.dex
@@ -7,7 +7,7 @@ renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.3=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1085
-base.2=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1084
-base.1=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1086
-base.0=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1083
+base.3=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1696
+base.2=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1698
+base.1=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1695
+base.0=/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/transforms/dexMerger/debug/1697
