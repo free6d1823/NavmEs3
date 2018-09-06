@@ -38,6 +38,9 @@ public:
     void render();
 
     void changeViewMode(int mode);
+    int getViewMode();
+    void setAutoRun(int value);
+
     void zoom(float factor);
     void rotate(float degree);
     MainJni();

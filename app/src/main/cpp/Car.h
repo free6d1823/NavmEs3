@@ -55,6 +55,10 @@ public:
     virtual ~Wheels();
     bool loadObject(void* data, unsigned int length);
     void draw(GLuint program, Mat4& pojection );
+
+private:
+    Vec3    mVecAxis;
+    float   mAngle; /* current wheel rotation angle */
 };
 
 class Car {

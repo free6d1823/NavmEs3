@@ -28,8 +28,7 @@
         android:debuggable="true"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/main_activity"
-        android:testOnly="true" >
+        android:label="@string/main_activity" >
         <activity
             android:name="com.nforetek.navmes3.MainActivity"
             android:configChanges="orientation|keyboardHidden"

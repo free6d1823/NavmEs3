@@ -20,6 +20,14 @@
 
 Car  mCar;
 Floor mFloor;
+
+#define MODE_BIRDVIEW   0
+#define MODE_REARVIEW   1
+#define MODE_FRONTVIEW  2
+#define MODE_BACKVIEW  3
+#define MODE_MASK       0x03
+#define MODE_CRUISING   8
+
 static void printGlString(const char* name, GLenum s) {
     const char* v = (const char*)glGetString(s);
     LOGI("GL %s: %s\n", name, v);
@@ -27,7 +35,12 @@ static void printGlString(const char* name, GLenum s) {
 
 MainJni::MainJni() : mMode(0), mZoom(1), mAngle(0)
 {
-    changeViewMode(0);
+    // Enable depth buffer
+    glEnable(GL_DEPTH_TEST);
+    // Enable back face culling
+    glEnable(GL_CULL_FACE);
+
+    changeViewMode(MODE_FRONTVIEW);
 }
 MainJni:: ~MainJni() {
 }
@@ -38,23 +51,38 @@ void MainJni::resize(int w, int h)
 
 void MainJni::step()
 {
-    rotate(0.1);
+
+    if(mMode & MODE_CRUISING)
+        rotate(0.1);
 
     Mat4 proj;
+    switch (mMode & MODE_MASK)
+    {
+        case MODE_BACKVIEW: {
+            Vec3 pos = mPosCenter;
+            pos.rotateY(-mAngle);
+            Mat4 view = Mat4::LookAt(mPosCam, pos, mDirCam);
+            proj = mMatProj * view;
 
-    if(mMode == 0){
-        Vec3 posCam = mDirCam;
-        posCam.rotateY(mAngle);
-        Mat4 view = Mat4::LookAt(mPosCam, mPosCenter, posCam);
-        proj = mMatProj* view;
-    }else {
-        Vec3 posCam = mPosCam;
-        posCam.rotateY(mAngle);
-        Mat4 view = Mat4::LookAt(posCam, mPosCenter, mDirCam);
-        proj = mMatProj* view;
-
+        }
+        break;
+        case MODE_FRONTVIEW:
+        case MODE_REARVIEW: {
+            Vec3 posCam = mPosCam;
+            posCam.rotateY(mAngle);
+            Mat4 view = Mat4::LookAt(posCam, mPosCenter, mDirCam);
+            proj = mMatProj * view;
+        }
+            break;
+        case MODE_BIRDVIEW: {
+            Vec3 posCam = mDirCam;
+            posCam.rotateY(mAngle);
+            Mat4 view = Mat4::LookAt(mPosCam, mPosCenter, posCam);
+            proj = mMatProj * view;
+        }
+        default:
+            break;
     }
-
     mCar.update(proj);
     mFloor.update(proj);
 }
@@ -68,26 +96,85 @@ void MainJni::render()
 
     checkGlError("Renderer::render");
 }
+int MainJni::getViewMode()
+{
+    return (mMode & MODE_MASK);
+}
+void MainJni::setAutoRun(int value)
+{
+    if (value == 1)
+        mMode |= MODE_CRUISING;
+    else
+        mMode &= (~MODE_CRUISING);
+}
 
 void MainJni::changeViewMode(int mode)
 {
-    mMode = mode;
-    if (mMode == 0)//bird view
-    {
-        mPosCam = Vec3(0,7,0);
-        mPosCenter = Vec3(0,0,0);
-        mDirCam = Vec3(0,0,1);
-        mMatProj= Mat4::Perspective(4,4,1,100);
-    }else { //back view
-        mPosCam = Vec3(0,0,-5);
-        mPosCenter = Vec3(0,0,0);
-        mDirCam = Vec3(0,1,0);
-        mMatProj= Mat4::Perspective(1,1,1,100);
+    mMode = (mMode & ~MODE_MASK) | mode;
+
+    LOGE(" ----- New mode is %d", mode);
+    switch(mode) {
+        case MODE_BACKVIEW:
+            mPosCam = Vec3(0,5,0);
+            mPosCenter = Vec3(0,0,-10);
+            mDirCam = Vec3(0,1,0);
+            mMatProj= Mat4::Perspective(1,2,1,100);
+            break;
+        case MODE_REARVIEW:
+            mPosCam = Vec3(0,3,-10);
+            mPosCenter = Vec3(0,0,0);
+            mDirCam = Vec3(0,1,0);
+            mMatProj= Mat4::Perspective(1,2,1,100);
+            break;
+        case MODE_FRONTVIEW:
+            mPosCam = Vec3(0,3,10);
+            mPosCenter = Vec3(0,0,0);
+            mDirCam = Vec3(0,1,0);
+            mMatProj= Mat4::Perspective(1,2,1,100);
+            break;
+
+        case MODE_BIRDVIEW:
+        default:
+            mPosCam = Vec3(0,7,0);
+            mPosCenter = Vec3(0,0,0);
+            mDirCam = Vec3(0,0,1);
+            mMatProj= Mat4::Perspective(1,1,1,100);
+            break;
     }
 }
+#define MAX_BIRDVIEW_ZOOM    10
+#define MIN_BIRDVIEW_ZOOM    5
+#define MAX_ZOOM    10
+#define MIN_ZOOM    5
+#define MAX_BACKVIEW_ZOOM    -10
+#define MIN_BACKVIEW_ZOOM    -5
 void MainJni::zoom(float factor)
 {
+    float newValue;
+    switch(mMode & MODE_MASK)
+    {
+        case MODE_BACKVIEW:
+            newValue = mPosCenter.getZ() - factor;//farther if more negative
+            if (newValue < MAX_BACKVIEW_ZOOM)newValue = MAX_BACKVIEW_ZOOM;
+            if (newValue > MIN_BACKVIEW_ZOOM)newValue = MIN_BACKVIEW_ZOOM;
+            mPosCenter.setZ( newValue);
+            break;
 
+        case MODE_BIRDVIEW:
+            newValue = mPosCam.getY() + factor;
+            if (newValue > MAX_BIRDVIEW_ZOOM)newValue = MAX_BIRDVIEW_ZOOM;
+            if (newValue < MIN_BIRDVIEW_ZOOM)newValue = MIN_BIRDVIEW_ZOOM;
+            mPosCam.setY( newValue);
+            break;
+
+        case MODE_REARVIEW:
+        default:
+            newValue = mPosCam.getZ() + factor;
+            if (newValue > MAX_ZOOM)newValue = MAX_ZOOM;
+            if (newValue < MIN_ZOOM)newValue = MIN_ZOOM;
+            mPosCam.setZ( newValue);
+            break;
+    }
 }
 void MainJni::rotate(float degree)
 {
@@ -98,11 +185,17 @@ static MainJni* g_main = NULL;
 // ----------------------------------------------------------------------------
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj);
 
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_rotate(JNIEnv* env, jobject obj, jfloat degree);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_zoom(JNIEnv* env, jobject obj, jfloat farther);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setMode(JNIEnv* env, jobject obj, jint mode);
+    JNIEXPORT jint  JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_getMode(JNIEnv* env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setAutoRun(JNIEnv* env, jobject obj, jint autorun);
+
 };
 
 AAssetManager* gAmgr = NULL;
@@ -196,7 +289,6 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
 
         size_t assetLength = AAsset_getLength(testAsset);
 
-        LOGI("Load 3D object 1: %lu\n", assetLength);
         void * pBuffer = malloc(assetLength);
         if (pBuffer) {
             AAsset_read(testAsset, pBuffer, assetLength);
@@ -218,7 +310,6 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
 
         size_t assetLength = AAsset_getLength(testAsset);
 
-        LOGI("Load 3D object 1: %lu\n", assetLength);
         void * pBuffer = malloc(assetLength);
         if (pBuffer) {
             AAsset_read(testAsset, pBuffer, assetLength);
@@ -261,4 +352,29 @@ Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj) {
         g_main->step();
         g_main->render();
     }
+}
+JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_rotate(JNIEnv* env, jobject obj, jfloat degree){
+    if (g_main)
+        g_main->rotate(degree);
+}
+JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_zoom(JNIEnv* env, jobject obj, jfloat farther)
+{
+    if (g_main)
+        g_main->zoom( farther);
+
+}
+JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setMode(JNIEnv* env, jobject obj, jint mode)
+{
+    if (g_main)
+        g_main->changeViewMode(mode);
+}
+JNIEXPORT jint  JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_getMode(JNIEnv* env, jobject obj)
+{
+    if (g_main) return g_main->getViewMode();
+    else return -1;
+}
+JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setAutoRun(JNIEnv* env, jobject obj, jint autorun)
+{
+    if (g_main)
+        g_main->setAutoRun(autorun);
 }

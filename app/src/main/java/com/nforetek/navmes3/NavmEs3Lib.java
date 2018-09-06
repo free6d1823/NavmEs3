@@ -19,4 +19,11 @@ public class NavmEs3Lib {
      public static native void start();
      public static native void resize(int width, int height);
      public static native void step();
+
+     public static native void rotate(float degree);
+     public static native void zoom(float farther);
+     public static native void setMode(int mode);
+     public static native int getMode();
+     public static native void setAutoRun(int autorun);
+
 }

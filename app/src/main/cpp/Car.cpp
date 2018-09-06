@@ -34,6 +34,8 @@ static const char FRAGMENT_SHADER[] =
 Parts::Parts(): mNumToDraw(0)
 {
     memset(&mVertexBufId, 0, sizeof(mVertexBufId));
+    mMatModle = Mat4::Identity(); //internal state matrix related to car
+    mMatTransform = Mat4::Identity(); //car state related to world
 }
 Parts::~Parts()
 {
@@ -58,8 +60,10 @@ void Parts::draw(GLuint program, Mat4& pojection )
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[INDE_BUF]);
 
 
+    Mat4 view = pojection * mMatTransform * mMatModle;
+
     GLint mMvpMatrixUniform = glGetUniformLocation(program, "mvp_matrix");
-    glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, pojection.Ptr());
+    glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, view.Ptr());
 
     glDrawElements(GL_TRIANGLES, mNumToDraw, GL_UNSIGNED_SHORT, 0 );
 
@@ -168,18 +172,49 @@ bool Body::loadObject(void* data, unsigned int length)
 {
     return Parts::loadObject(data, length);
 };
-Wheels::Wheels(int id) {
+Wheels::Wheels(int id) :mAngle(0){
     mID = id;
+
 }
 Wheels::~Wheels() {
 }
 bool Wheels::loadObject(void* data, unsigned int length)
 {
+    if(mID == 1)
+        mVecAxis = Vec3(-0.000818, 0.327574, -1.203252);
+    else //rear
+        mVecAxis = Vec3(0.001061, 0.327574, 1.156935);
+
     return Parts::loadObject(data, length);
 };
 void Wheels::draw(GLuint program, Mat4& pojection )
 {
-    Parts::draw(program, pojection );
+    GLuint mVertexAttrib = (GLuint) glGetAttribLocation(program, "vertexPosition");
+    glEnableVertexAttribArray(mVertexAttrib);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[VERT_BUF]);
+    glVertexAttribPointer(mVertexAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(nfFloat3D), (const GLvoid*)0);
+
+    GLuint mUvAttrib =  (GLuint)glGetAttribLocation(program, "vertexUv");
+    glEnableVertexAttribArray(mUvAttrib);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[TEXT_BUF]);
+    glVertexAttribPointer(mUvAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvoid*)0);
+
+    // Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[INDE_BUF]);
+
+
+    GLint mMvpMatrixUniform = glGetUniformLocation(program, "mvp_matrix");
+    Mat4 obj = Mat4::Translation(0, mVecAxis.getY(), mVecAxis.getZ())* Mat4::RotationX(mAngle)* Mat4::Translation(0, -mVecAxis.getY(), -mVecAxis.getZ())* mMatModle;
+    Mat4 view = pojection * mMatTransform * obj;
+    mAngle += M_PI/90;
+    if (mAngle > M_2_PI) mAngle -= M_2_PI;
+
+    glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, view.Ptr());
+
+    glDrawElements(GL_TRIANGLES, mNumToDraw, GL_UNSIGNED_SHORT, 0 );
+
+    glDisableVertexAttribArray(mVertexAttrib);
+    glDisableVertexAttribArray(mUvAttrib);
 }
 /**************************************************************************************************/
 Car::Car()
@@ -242,6 +277,13 @@ bool Car ::init()
 
     glGenVertexArrays(1, &mVaoId);
     glBindVertexArray(mVaoId);
+
+    Mat4 state = Mat4::Translation(0,0.605885,0);//initial car position related to world
+    mFrontWheels.setState(state);
+    mRearWheels.setState(state);
+    Mat4 state2 = Mat4::RotationY(M_PI);
+    mBody.setState(state);
+
     return true;
 }
 //called before init
