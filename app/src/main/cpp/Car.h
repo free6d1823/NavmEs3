@@ -97,12 +97,14 @@ public:
 private:
     bool initVertexData();
     void updateTextureData();
+
+    const EGLContext mEglContext;
     Body    mBody;
     Wheels  mFrontWheels;
     Wheels  mRearWheels;
 
     Mat4 m_matMvp;
-    const EGLContext mEglContext;
+
 
     nfPByte  mpTexImg;   /*<! texture image data */
     int mTexWidth;

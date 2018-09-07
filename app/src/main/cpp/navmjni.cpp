@@ -14,12 +14,14 @@
 #define LOG_TAG "GLES3JNI"
 #include "common.h"
 #include "imglab/ImgProcess.h"
+#include "inifile/inifile.h"
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <cassert>
 
 Car  mCar;
 Floor mFloor;
+char gIniFile[256];
 
 #define MODE_BIRDVIEW   0
 #define MODE_REARVIEW   1
@@ -33,14 +35,14 @@ static void printGlString(const char* name, GLenum s) {
     LOGI("GL %s: %s\n", name, v);
 }
 
-MainJni::MainJni() : mMode(0), mZoom(1), mAngle(0)
+MainJni::MainJni() : mMode(0), mAngle(0)
 {
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
     // Enable back face culling
     glEnable(GL_CULL_FACE);
 
-    changeViewMode(MODE_FRONTVIEW);
+    changeViewMode(MODE_BIRDVIEW);
 }
 MainJni:: ~MainJni() {
 }
@@ -142,7 +144,7 @@ void MainJni::changeViewMode(int mode)
             break;
     }
 }
-#define MAX_BIRDVIEW_ZOOM    10
+#define MAX_BIRDVIEW_ZOOM    18
 #define MIN_BIRDVIEW_ZOOM    5
 #define MAX_ZOOM    10
 #define MIN_ZOOM    5
@@ -180,12 +182,53 @@ void MainJni::rotate(float degree)
 {
     mAngle += degree * M_PI/ 180;
 }
+/* other ini helper functions *******************************************************************/
+extern AAssetManager* gAmgr;
+
+bool nfCreateDefaultIniFile(const char* iniFile)
+{
+    time_t T= time(NULL);
+    struct  tm tm = *localtime(&T);
+
+    FILE* fp = fopen(iniFile, "w");
+    if (!fp)
+        return false;
+    fprintf(fp, "[system]\r\n");
+    fprintf(fp, "created= %04d/%02d/%02d %02d:%02d:%02d\r\n", tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    fprintf(fp, "MAX_CAMERAS= %d\r\n", MAX_CAMERAS);
+    fprintf(fp, "MAX_FP_AREA= %d\r\n", MAX_FP_AREA);
+    fprintf(fp, "FP_COUNTS= %d\r\n", FP_COUNTS);
+LOGI("copy default.ini to %s", iniFile);
+    AAsset* testAsset = AAssetManager_open(gAmgr, "default.ini", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        LOGI("default.ini  file size: %lu\n", assetLength);
+        char* pSrc = (char*) malloc(assetLength);
+        if (pSrc) {
+            AAsset_read(testAsset, pSrc, assetLength);
+            fwrite(pSrc, 1, assetLength, fp);
+        }
+        AAsset_close(testAsset);
+        free(pSrc);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+
+    fclose(fp);
+    return true;
+}
 
 static MainJni* g_main = NULL;
 // ----------------------------------------------------------------------------
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager, jstring iniFile);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj);
 
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height);
@@ -220,7 +263,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
 
         size_t assetLength = AAsset_getLength(testAsset);
 
-        LOGI("Native Asset file size: %lu\n", assetLength);
+        LOGI("Floor file size: %lu\n", assetLength);
         nfImage* pSrc = nfImage::create(1800, 1440, assetLength/(1800*1440));
         nfPByte dest = mFloor.allocTextureImage(1800, 1440, 4);
         if (pSrc && dest) {
@@ -265,8 +308,6 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
         assert(testAsset);
 
         size_t assetLength = AAsset_getLength(testAsset);
-
-        LOGI("Load 3D object 0: %lu\n", assetLength);
         void * pBuffer = malloc(assetLength);
         if (pBuffer) {
             AAsset_read(testAsset, pBuffer, assetLength);
@@ -329,20 +370,30 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
 
 void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst);
 JNIEXPORT void JNICALL
-Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager) {
+Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager, jstring iniFile) {
 
     // use asset manager to open asset by filename
     gAmgr = AAssetManager_fromJava(env, assetManager);
     assert(NULL != gAmgr);
 
+    const char* jnamestr = env->GetStringUTFChars(iniFile, 0);
+    strncpy(gIniFile, jnamestr, sizeof(gIniFile));
+    FILE* fp = fopen(jnamestr,"r");
+    if(!fp) {
+        LOGE("Setting file %s not found, copy default settings.", gIniFile);
+        nfCreateDefaultIniFile(gIniFile);
+    }
+    fclose(fp);
+    TexProcess::LoadAllAreaSettings();
 
+    LOGE("ini file is %s", gIniFile);
 }
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height) {
     if (g_main) {
         g_main->resize(width, height);
     }
-    LOGD("resize %dx%d", width, height);
+    LOGI("resize %dx%d", width, height);
 
 }
 

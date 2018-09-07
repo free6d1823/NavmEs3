@@ -7,12 +7,17 @@ package com.nforetek.navmes3;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import android.content.res.AssetManager;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -24,6 +29,8 @@ class NavmView extends GLSurfaceView {
     private static final String TAG = "NavmView";
     private static final boolean DEBUG = true;
 
+    public static String mIniFile = "/navmsettings.ini";
+
     public NavmView(Context context) {
         super(context);
 
@@ -32,8 +39,8 @@ class NavmView extends GLSurfaceView {
         setEGLConfigChooser(8, 8, 8, 0, 16, 0);
         setEGLContextClientVersion(3);
         setRenderer(new Renderer(context));
-        NavmEs3Lib.init( context.getAssets());
-
+        /* find settings file name */
+        NavmEs3Lib.init( context.getAssets(), context.getFilesDir().getAbsolutePath()+mIniFile);
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {

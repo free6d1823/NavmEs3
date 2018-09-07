@@ -35,8 +35,8 @@ Floor::Floor()
         :   mEglContext(eglGetCurrentContext()),
             mpVertexBuf(0), /*<! vertex coordinates, 3D */
             mpUvBuf(0),     /*<! texture UV coordinates, 2D */
-            mpTexImg(0),   /*<! texture image data */
             mNumToDraw(0),  /*<! number of elements to draw */
+            mpTexImg(0),   /*<! texture image data */
             mProgramId(-1), /*<! Shader program ID */
             mTextureDataId(-1),
             mVertexAttrib(-1),      /*<! ID of Vertex position uniform */
@@ -115,7 +115,7 @@ bool Floor ::init()
     glGenTextures(1, &mTextureDataId);
     updateTextureData();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     return true;
 }
 

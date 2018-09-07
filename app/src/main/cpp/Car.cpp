@@ -119,7 +119,7 @@ bool Parts::loadObject(void* data, unsigned int length)
         memcpy(pUvBuf->data(), p, pUvBuf->length()); p+= pUvBuf->length();
 
         if ( memcmp("NORM", p, 4)!= 0){
-            LOGD("not NORM tag !\n");
+            LOGE("not NORM tag !\n");
             break;
         }
         p+=4;
@@ -127,7 +127,7 @@ bool Parts::loadObject(void* data, unsigned int length)
         memcpy(pNormBuf->data(), p, pNormBuf->length()); p+= pNormBuf->length();
 
         if ( memcmp("INDE", p, 4)!= 0){
-            LOGD("not INDE tag !\n");
+            LOGE("not INDE tag !\n");
             break;
         }
         p+=4;
@@ -219,9 +219,9 @@ void Wheels::draw(GLuint program, Mat4& pojection )
 /**************************************************************************************************/
 Car::Car()
         :   mEglContext(eglGetCurrentContext()),
+            mBody(0),
             mFrontWheels(1),
             mRearWheels(2),
-            mBody(0),
             mpTexImg(0),   /*<! texture image data */
             mProgramId(-1), /*<! Shader program ID */
             mTextureDataId(-1),
@@ -281,8 +281,7 @@ bool Car ::init()
     Mat4 state = Mat4::Translation(0,0.605885,0);//initial car position related to world
     mFrontWheels.setState(state);
     mRearWheels.setState(state);
-    Mat4 state2 = Mat4::RotationY(M_PI);
-    mBody.setState(state);
+    mBody.setState(state); //Mat4::RotationY(M_PI);
 
     return true;
 }

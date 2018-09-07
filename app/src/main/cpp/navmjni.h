@@ -50,7 +50,6 @@ private:
     Vec3    mDirCam;
     Mat4    mMatProj;
     int mMode;
-    float mZoom;
     float mAngle; /*<! in radian */
 };
 #endif // NAVMJNI_H

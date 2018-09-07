@@ -39,6 +39,8 @@ add_library(navmes3 SHARED
             GlHelper.cpp
             ./imglab/vecmath.cpp
             ./imglab/ImgProcess.cpp
+            ./imglab/Mat.cpp
+            ./inifile/inifile.cpp
             Floor.cpp
             Car.cpp)
 

@@ -83,17 +83,24 @@ public class MainActivity extends Activity {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
-            //Log.i("TAG", "onScroll: x=" + distanceX + " y= "+ distanceY);
+          //  Log.i("TAG", "onScroll: x=" + distanceX + " y= "+ distanceY+ " e2= "+e2.getY() );
             distanceX /= 10;
             distanceY /= 100;
-
-            if (distanceX > 1 || distanceX < -1)
-                NavmEs3Lib.rotate(distanceX);
-            else if (distanceY > 0.1 || distanceY < -0.1)
-                NavmEs3Lib.zoom(distanceY);
-            else
-                return true; //process further
-            return false;
+            if (Math.abs(distanceX) > Math.abs(distanceY)) {
+                if (distanceX > 1 || distanceX < -1) {
+                    if (e2.getY() > 900)
+                        NavmEs3Lib.rotate(distanceX);
+                    else
+                        NavmEs3Lib.rotate(-distanceX);
+                    return false;
+                }
+            }else {
+                if (distanceY > 0.1 || distanceY < -0.1) {
+                    NavmEs3Lib.zoom(distanceY);
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

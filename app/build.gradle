@@ -11,6 +11,8 @@ android {
         applicationId 'com.nforetek.navmes3'
         minSdkVersion "${platformVersion}"
         targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'

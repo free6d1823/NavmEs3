@@ -1,9 +1,11 @@
 #ifndef ImgProcess_H
 #define ImgProcess_H
+
+#include <cstdlib>
 #include <vector>
+#include "../common.h"
 
 using namespace std;
-
 
 #define SAFE_FREE(p) if(p) { free(p); p=NULL;}
 #define SAFE_ALLOC(p, n) { if(p) free(p); p=(typeof(p)) malloc(n);}
@@ -81,25 +83,28 @@ void ApplyFec(unsigned char* pSrc, int width, int inStride,  int height, unsigne
 static void findHomoMatreix(dbPOINT s[4], dbPOINT t[4], double hcoef[3][3]);
 
 
+#endif
 class TexProcess
 {
 public:
-    TexProcess();
-    ~TexProcess();
-    bool init();
-    int createVertices(vector<QVector3D> & vert, vector<unsigned short>& indices);
-    int updateUv(vector <QVector2D> &uv);
-    int reloadIndices(vector<unsigned short>& indices);
+	TexProcess();
+	~TexProcess();
+	bool init();
+	int createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices);
+	int updateUv(vector <nfFloat2D> &uv);
+	int reloadIndices(vector<unsigned short>& indices);
+public:
+	static void LoadAllAreaSettings();
+	static AreaSettings gAreaSettings[MAX_CAMERAS];
 
 private:
-    void initVertices(vector<QVector3D> & vert, dbRECT region);
-    void updateIndices(vector<unsigned short>& indices, int nCam, int nRegion);
-    AreaSettings m_as[MAX_CAMERAS];
-static   QPointF s_offsetCam[MAX_CAMERAS];
-    ///
-    /// \brief m_RegionMap indicates the region should be shown or hiden
-    ///        0 for hidden
-    int m_RegionMap[MAX_CAMERAS][MAX_FP_AREA];
+	void initVertices(vector<nfFloat3D> & vert, nfRectF region);
+	void updateIndices(vector<unsigned short>& indices, int nCam, int nRegion);
+	static   nfFloat2D s_offsetCam[MAX_CAMERAS];
+	///
+	/// \brief m_RegionMap indicates the region should be shown or hiden
+	///        0 for hidden
+	int m_RegionMap[MAX_CAMERAS][MAX_FP_AREA];
 };
-#endif
+
 #endif // ImgProcess_H
