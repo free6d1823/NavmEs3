@@ -328,6 +328,6 @@ void Car ::draw(bool bReload)
  */
 void Car ::update(Mat4& pojection )
 {
-    m_matMvp = pojection;
+    m_matMvp = pojection*Mat4::RotationY(M_PI) ;
 
 }

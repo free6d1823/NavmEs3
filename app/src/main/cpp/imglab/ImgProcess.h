@@ -5,6 +5,21 @@
 #include <vector>
 #include "../common.h"
 
+#if 0
+#define IMAGE_PATH  ":/camera1800x1440.yuv"
+#define IMAGE_WIDTH 1800
+#define IMAGE_HEIGHT    1440
+#define IMAGE_AREA_WIDTH    900
+#define IMAGE_AREA_HEIGHT   720
+#endif
+#define IMAGE_PATH  "camera1440x960.yuv"
+#define IMAGE_WIDTH 1440
+#define IMAGE_HEIGHT    960
+#define IMAGE_AREA_WIDTH    720
+#define IMAGE_AREA_HEIGHT   480
+
+
+
 using namespace std;
 
 #define SAFE_FREE(p) if(p) { free(p); p=NULL;}
@@ -89,15 +104,18 @@ class TexProcess
 public:
 	TexProcess();
 	~TexProcess();
-	bool init();
+	bool update();
 	int createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices);
 	int updateUv(vector <nfFloat2D> &uv);
-	int reloadIndices(vector<unsigned short>& indices);
+    int updateUvNoFisheye(vector <nfFloat2D> &uv);
+
+        int reloadIndices(vector<unsigned short>& indices);
 public:
-	static void LoadAllAreaSettings();
-	static AreaSettings gAreaSettings[MAX_CAMERAS];
+	void LoadAllAreaSettings();
+	AreaSettings mAreaSettings[MAX_CAMERAS];
 
 private:
+    bool mIsSettingsUpdated;
 	void initVertices(vector<nfFloat3D> & vert, nfRectF region);
 	void updateIndices(vector<unsigned short>& indices, int nCam, int nRegion);
 	static   nfFloat2D s_offsetCam[MAX_CAMERAS];

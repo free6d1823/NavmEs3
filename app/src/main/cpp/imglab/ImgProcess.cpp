@@ -7,12 +7,6 @@
 #include "../common.h"
 #include "../inifile/inifile.h"
 
-#define IMAGE_PATH  ":/camera1800x1440.yuv"
-#define IMAGE_WIDTH 1800
-#define IMAGE_HEIGHT    1440
-#define IMAGE_AREA_WIDTH    900
-#define IMAGE_AREA_HEIGHT   720
-
 
 
 #define CLIP(X) ( (X) > 255 ? 255 : (X) < 0 ? 0 : X)
@@ -421,8 +415,6 @@ void nfCalculateHomoMatrix(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
 nfFloat2D TexProcess::s_offsetCam[MAX_CAMERAS]={ {0,0}, {0.5, 0},
                           {0, 0.5}, {0.5, 0.5}};
 
-AreaSettings TexProcess::gAreaSettings[MAX_CAMERAS];
-bool mIsUpdated = false;
 extern char gIniFile[256];
 
 bool    LoadFecParam(FecParam* pFecParam, int nArea)
@@ -572,34 +564,38 @@ bool    SaveAreaSettings(AreaSettings* pParam, int nArea)
 }
 void TexProcess::LoadAllAreaSettings()
 {
-    if (mIsUpdated)
+    if (mIsSettingsUpdated)
         return;
     int i ;
     for (i=0; i< MAX_CAMERAS; i++) {
-        LoadAreaSettings(&gAreaSettings[i], i);
+        LoadAreaSettings(&mAreaSettings[i], i);
     }
-    mIsUpdated = true;
+    mIsSettingsUpdated = true;
 }
 TexProcess::TexProcess()
 {
+    for (int m=0; m< MAX_CAMERAS; m++) {
+        for(int k=0; k<MAX_FP_AREA; k++)
+            m_RegionMap[m][k] = 1;
+    }
+    m_RegionMap[1][0] = 0;
+    m_RegionMap[1][3] = 0;
+    m_RegionMap[3][0] = 0;
+    m_RegionMap[3][3] = 0;
+    mIsSettingsUpdated = false;
 }
 /////////////
-/// \brief TexProcess::init call init if AreaSettings has changed
+/// \brief TexProcess::update call update if AreaSettings has changed
 /// \param xIntv horizontal intervals numbers
 /// \param yIntv vertical interval numbers
 /// \return false if any error
 ///
-bool TexProcess::init()
+bool TexProcess::update()
 {
     LoadAllAreaSettings();
     for (int m=0; m< MAX_CAMERAS; m++) {
-       nfCalculateHomoMatrix(gAreaSettings[m].fps, gAreaSettings[m].fpt, gAreaSettings[m].homo);
-       for(int k=0; k<MAX_FP_AREA; k++) {
-           if(k==0)
-               m_RegionMap[m][k] = 0;
-           else
-               m_RegionMap[m][k] = 1;
-       }
+       nfCalculateHomoMatrix(mAreaSettings[m].fps, mAreaSettings[m].fpt, mAreaSettings[m].homo);
+
     }
 
 
@@ -625,6 +621,7 @@ void TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
     int i,j;
     float s,t;
     nfFloat3D v;
+
     for (i=0; i<= Y_INTV; i++) {
         t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
         for (j=0; j<=X_INTV; j++) {
@@ -640,12 +637,13 @@ void TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
         }
     }
 }
-int g_show = 0;
+//int g_show = 0;
 int TexProcess::reloadIndices(vector<unsigned short>& indices)
 {
     int m,k;
     indices.clear();
 //simulate indices changed
+/*
     for (m=0; m< MAX_CAMERAS; m++) {
         for(k=0; k<MAX_FP_AREA; k++) {
             if(k==0)
@@ -655,6 +653,7 @@ int TexProcess::reloadIndices(vector<unsigned short>& indices)
         }
     }
     g_show = 1-g_show;
+*/
 //end of simulation
 
     for(m=0; m< MAX_CAMERAS; m++){
@@ -700,7 +699,7 @@ int TexProcess::createVertices(vector<nfFloat3D> & vert, vector<unsigned short>&
     indices.clear();
     for(m=0; m< MAX_CAMERAS; m++){
         for (k=0; k<MAX_FP_AREA; k++){
-            initVertices(vert, gAreaSettings[m].region[k]);
+            initVertices(vert, mAreaSettings[m].region[k]);
             if(m_RegionMap[m][k] != 0)
                 updateIndices(indices, m, k);
         }
@@ -716,13 +715,13 @@ int TexProcess::updateUv(vector <nfFloat2D> &uv)
         for (k=0; k<MAX_FP_AREA; k++){
             ////---- update UV in the region  gAreaSettings[m].region[k]);
             float s,t,u,v,x,y;
-            nfRectF region = gAreaSettings[m].region[k];
+            nfRectF region = mAreaSettings[m].region[k];
             for (i=0; i<= Y_INTV; i++) {
-                t = (region.b - region.t)*(double)i/(double)Y_INTV + region.t;
+                t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
                 for (j=0; j<=X_INTV; j++) {
-                    s = (region.r - region.l)*(double)j/(double)X_INTV + region.l;
-                    if (nfDoHomoTransform(s,t,u,v, gAreaSettings[m].homo[k].h)) {
-                        nfDoFec(u,v,x,y, &gAreaSettings[m].fec);
+                    s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
+                    if (nfDoHomoTransform(s,t,u,v, mAreaSettings[m].homo[k].h)) {
+                        nfDoFec(u,v,x,y, &mAreaSettings[m].fec);
                         value.x = (x*0.5f+ s_offsetCam[m].x);
                         value.y = y*0.5f+ s_offsetCam[m].y;
 
@@ -730,6 +729,51 @@ int TexProcess::updateUv(vector <nfFloat2D> &uv)
                     }else{
                         value.x=value.y=0.5;
                     }
+                    //
+
+
+                    uv.push_back(value);
+                }
+            }
+            ////---- end of one region
+        }
+    }
+
+    return 0;
+}
+
+int TexProcess::updateUvNoFisheye(vector <nfFloat2D> &uv)
+{
+    int m,k,i,j;
+    uv.clear();
+    nfFloat2D value;
+    float rota[4] = {1,0,-1,0};
+    float rotb[4] = {0,1,0,-1};
+    float rotc[4] = {0,1,0,-1};
+    float rotd[4] = {-1,0,1,0};
+    float tx[4] = {0, 0, 1, 1};
+    float ty[4] = {1, 0, 0, 1};
+
+    for(m=0; m< MAX_CAMERAS; m++){
+        nfRectF area = mAreaSettings[m].range;
+
+        for (k=0; k<MAX_FP_AREA; k++){
+            ////---- update UV in the region  gAreaSettings[m].region[k]);
+            float s,t, u,v,x,y;
+            nfRectF region = mAreaSettings[m].region[k];
+            for (i=0; i<= Y_INTV; i++) {
+                t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
+                for (j=0; j<=X_INTV; j++) {
+                    s = (region.r - region.l)*(float)j/(float)X_INTV+region.l;
+
+                    u = (s - area.l )/ (area.r - area.l);
+                    v = (t- area.t)/(area.b - area.t);
+                    x = rota[m]*u + rotb[m]*v + tx[m];
+                    y = rotc[m]*u + rotd[m]*v + ty[m];
+                    value.x = (x*0.5f+ s_offsetCam[m].x);
+                    value.y = y*0.4f*0.5f+ s_offsetCam[m].y+0.3f; //take 0.2 to 0.6 of height in camera
+
+
                     //
                     uv.push_back(value);
                 }

@@ -6,6 +6,8 @@
 package com.nforetek.navmes3;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -19,14 +21,23 @@ public class MainActivity extends Activity {
     private GestureDetector mDetector;
 
     NavmView mView;
+    float mRotateThresholdMin = 500; //area to rotate scene
+    float mRotateThresholdMax = 500; //area to rotate scene
 
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         mView = new NavmView(getApplication());
         setContentView(mView);
 
         mDetector = new GestureDetector(this, new MyGestureListener());
         mView.setOnTouchListener(touchListener);
+
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        mRotateThresholdMin = size.y *0.4f;
+        mRotateThresholdMax = size.y *0.6f;
 
     }
     View.OnTouchListener touchListener = new View.OnTouchListener() {
@@ -88,9 +99,9 @@ public class MainActivity extends Activity {
             distanceY /= 100;
             if (Math.abs(distanceX) > Math.abs(distanceY)) {
                 if (distanceX > 1 || distanceX < -1) {
-                    if (e2.getY() > 900)
+                    if (e2.getY() > mRotateThresholdMax)
                         NavmEs3Lib.rotate(distanceX);
-                    else
+                    else if (e2.getY() < mRotateThresholdMin)
                         NavmEs3Lib.rotate(-distanceX);
                     return false;
                 }

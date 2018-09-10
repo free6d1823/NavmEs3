@@ -11,7 +11,9 @@
 
 #define LOG_TAG "FLOOR"
 #include "common.h"
+#include "CameraSource.h"
 
+extern TexProcess gTexProcess;
 static const char VERTEX_SHADER[] =
         "uniform mat4 mvp_matrix;\n"
                 "attribute vec3 vertexPosition;\n"
@@ -84,21 +86,33 @@ static const unsigned short gpIndices[6] = {
 
 bool Floor ::initVertexData()
 {
+    vector <nfFloat3D> vert;
+    vector <unsigned short> ind;
+    vector <nfFloat2D> uvs;
+    gTexProcess.createVertices(vert, ind);
+    if (1)
+        gTexProcess.updateUvNoFisheye(uvs);
+    else
+        gTexProcess.updateUv(uvs);
+    gTexProcess.reloadIndices(ind);
     glGenVertexArrays(1, &mVaoId);
     glBindVertexArray(mVaoId);
 
+
     glGenBuffers(3, mVertexBufId);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gpVertexBuf), &gpVertexBuf[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vert.size() * sizeof(nfFloat3D), &vert[0], GL_STATIC_DRAW);
 
 //
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gpUvTexture), &gpUvTexture[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, uvs.size()* sizeof(nfFloat2D), &uvs[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[2]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gpIndices), &gpIndices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ind.size()* sizeof(unsigned short), &ind[0], GL_STATIC_DRAW);
 
-    mNumToDraw = 6;
+    mNumToDraw = ind.size();
+
+    LOGI("-------- v=%d, U=%d i=%d", vert.size(), uvs.size(), ind.size());
     return true;
 }
 bool Floor ::init()
@@ -112,10 +126,15 @@ bool Floor ::init()
     mTextureUniform = glGetUniformLocation(mProgramId, "texture");
     initVertexData();
 
+    CameraSource* m_pCs = new CameraSource();
+    delete m_pCs;
+
     glGenTextures(1, &mTextureDataId);
     updateTextureData();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+
     return true;
 }
 
@@ -130,6 +149,8 @@ nfPByte Floor ::allocTextureImage(int width, int height, int depth)
 }
 void Floor ::updateTextureData()
 {
+
+
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextureDataId);
@@ -166,7 +187,6 @@ void Floor ::draw(bool bReload)
 
     glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, m_matMvp.Ptr());
 
-    //glDrawArrays(GL_TRIANGLE_STRIP, 0, mNumToDraw);
     glDrawElements(GL_TRIANGLES, mNumToDraw, GL_UNSIGNED_SHORT, 0 );
 
     glDisableVertexAttribArray(mVertexAttrib);

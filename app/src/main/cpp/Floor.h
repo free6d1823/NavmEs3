@@ -6,6 +6,7 @@
 #define NAVMES3_FLOOR_H
 #include "imglab/vecmath.h"
 #include "common.h"
+#include "imglab/ImgProcess.h"
 #include <GLES3/gl31.h>
 #include <EGL/egl.h>
 
@@ -40,6 +41,8 @@ private:
     bool initVertexData();
     void updateTextureData();
     bool loadTexture();
+
+
     Mat4 m_matMvp;
     const EGLContext mEglContext;
     nfFloat3D* mpVertexBuf;         /*<! vertex coordinates, 3D */

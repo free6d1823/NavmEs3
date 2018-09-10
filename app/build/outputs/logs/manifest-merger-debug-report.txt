@@ -1,23 +1,23 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
-INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
-INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
-INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
-INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
-INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
-INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
+INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
+INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
+INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
+INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
+INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
+INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
 	package
 		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:18:11-41
 		INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml
 		INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
 		INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-39:12
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:1-41:12
 		INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:17:11-69
@@ -33,36 +33,44 @@ uses-permission#android.permission.READ_EXTERNAL_STORAGE
 ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:22:3-77
 	android:name
 		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:22:20-75
+uses-permission#android.permission.CAMERA
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:23:3-63
+	android:name
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:23:20-60
+uses-feature#android.hardware.camera
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:24:3-58
+	android:name
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:24:17-55
 application
-ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:24:3-38:17
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:26:3-40:17
 	android:label
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:28:7-44
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:30:7-44
 	android:fullBackupContent
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:26:7-40
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:28:7-40
 	android:icon
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:27:7-41
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:29:7-41
 	android:allowBackup
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:25:7-34
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:27:7-34
 activity#com.nforetek.navmes3.MainActivity
-ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:29:5-37:16
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:31:5-39:16
 	android:launchMode
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:31:15-46
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:33:15-46
 	android:configChanges
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:32:15-65
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:34:15-65
 	android:theme
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:30:15-73
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:32:15-73
 	android:name
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:29:15-42
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:31:15-42
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:33:7-36:23
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:35:7-38:23
 action#android.intent.action.MAIN
-ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:34:9-61
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:36:9-61
 	android:name
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:34:17-58
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:36:17-58
 category#android.intent.category.LAUNCHER
-ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:35:17-77
+ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:37:17-77
 	android:name
-		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:35:27-74
+		ADDED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml:37:27-74
 uses-sdk
 INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/cj/AndroidStudioProjects/NavmEs3/app/src/main/AndroidManifest.xml

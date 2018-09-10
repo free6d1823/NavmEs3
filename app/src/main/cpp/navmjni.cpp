@@ -18,10 +18,12 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <cassert>
+#include "./imglab/ImgProcess.h"
 
 Car  mCar;
 Floor mFloor;
 char gIniFile[256];
+TexProcess gTexProcess;
 
 #define MODE_BIRDVIEW   0
 #define MODE_REARVIEW   1
@@ -41,6 +43,8 @@ MainJni::MainJni() : mMode(0), mAngle(0)
     glEnable(GL_DEPTH_TEST);
     // Enable back face culling
     glEnable(GL_CULL_FACE);
+//    glCullFace(GL_BACK);//default
+//    glCullFace(GL_FRONT);
 
     changeViewMode(MODE_BIRDVIEW);
 }
@@ -243,6 +247,7 @@ extern "C" {
 
 AAssetManager* gAmgr = NULL;
 
+
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
     if (g_main) {
@@ -256,7 +261,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
 
     g_main = new MainJni;
 
-    AAsset* testAsset = AAssetManager_open(gAmgr, "camera1800x1440.yuv", AASSET_MODE_UNKNOWN);
+    AAsset* testAsset = AAssetManager_open(gAmgr, IMAGE_PATH, AASSET_MODE_UNKNOWN);
     if (testAsset)
     {
         assert(testAsset);
@@ -264,8 +269,8 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
         size_t assetLength = AAsset_getLength(testAsset);
 
         LOGI("Floor file size: %lu\n", assetLength);
-        nfImage* pSrc = nfImage::create(1800, 1440, assetLength/(1800*1440));
-        nfPByte dest = mFloor.allocTextureImage(1800, 1440, 4);
+        nfImage* pSrc = nfImage::create(IMAGE_WIDTH, IMAGE_HEIGHT, assetLength/(IMAGE_WIDTH*IMAGE_HEIGHT));
+        nfPByte dest = mFloor.allocTextureImage(IMAGE_WIDTH, IMAGE_HEIGHT, 4);
         if (pSrc && dest) {
             AAsset_read(testAsset, pSrc->buffer, assetLength);
             nfYuyvToRgb32(pSrc, dest, true, true);
@@ -384,7 +389,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
         nfCreateDefaultIniFile(gIniFile);
     }
     fclose(fp);
-    TexProcess::LoadAllAreaSettings();
+    gTexProcess.update();
 
     LOGE("ini file is %s", gIniFile);
 }

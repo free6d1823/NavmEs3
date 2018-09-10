@@ -41,6 +41,8 @@ add_library(navmes3 SHARED
             ./imglab/ImgProcess.cpp
             ./imglab/Mat.cpp
             ./inifile/inifile.cpp
+            CameraManager.cpp
+            CameraSource.cpp
             Floor.cpp
             Car.cpp)
 
