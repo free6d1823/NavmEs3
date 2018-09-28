@@ -1,45 +1,56 @@
-/**
- * @file
- * @brief initialization file read and write API
- *	-size of the ini file must less than 16K
- *	-after '=' in key value pair, can not support empty char. this would not like WIN32 API
- *	-support comment using ';' prefix
- *	-can not support multi line
- * @author Deng Yangjun
- * @date 2007-1-9
- * @version 0.2
- */
- 
-#ifndef INI_FILE_H_
-#define INI_FILE_H_
+#ifndef INIFILE_H
+#define INIFILE_H
 
-#include "../imglab/ImgProcess.h"
-#include "../common.h"
+/*<! basic data type re-definition */
+#ifndef _NFORE_DATA_TYPE___
+#define _NFORE_DATA_TYPE___
 
-bool GetProfileString( const char *section, const char *key,char *value, int size,const char *default_value, const char *file);
-bool WriteProfileString( const char *section, const char *key,const char *value, const char *file);
+typedef unsigned char nfByte, *nfPByte;
 
-int GetProfileInt( const char *section, const char *key,int default_value, const char *file);
-bool WriteProfileInt( const char * lpSecName,const char * lpKeyName, int value, const char * lpFileName);
+typedef struct _nfFloat2D{
+    float x;
+    float y;
+}nfFloat2D;
 
-float GetProfileFloat(const char *lpSecName, const char *lpKeyName, float fDefault,  const char *lpFileName);
-bool WriteProfileFloat(  const char *lpSecName, const char * lpKeyName, float value,  const char*  lpFileName);
+typedef struct _nfFloat3D{
+    float x;
+    float y;
+    float z;
+}nfFloat3D;
 
-double GetProfileDouble(const char *lpSecName, const char *lpKeyName, double dbDefault,  const char *lpFileName);
-bool WriteProfileDouble(  const char *lpSecName, const char * lpKeyName, double value,  const char*  lpFileName);
-
-bool WriteProfilePointFloat(const char *lpSecName, const char *lpKeyName,  nfFloat2D *pPoint, const char *lpFileName);
-bool GetProfilePointFloat(const char * lpSecName, const char * lpKeyName,  nfFloat2D* pPoint, const char * lpFileName);
-
-bool WriteProfileArrayFloat(const char * lpSecName, const char * lpKeyName,  float* pValue, int nElements, const char * lpFileName);
-bool GetProfileArrayFloat(const char * lpSecName, const char * lpKeyName,   float* pValue, int nElements,  const char * lpFileName);
-bool	WriteProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, const char * lpFileName);
-bool GetProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, const char * lpFileName);
-bool WriteProfileArrayInt(const char * lpSecName, const char * lpKeyName,  int* pValue, int nElements, const char * lpFileName);
-bool GetProfileArrayInt(const char * lpSecName, const char * lpKeyName,   int* pValue, int nElements,  const char * lpFileName);
+typedef struct _nfRectF {
+    float l;
+    float t;
+    float r;
+    float b;
+}nfRectF;
+#endif //_NFORE_DATA_TYPE___
 
 
+void* openIniFile(const char* iniFilename, bool readOnly=false);
+bool saveAsIniFile(void* handle, const char* iniName);
+void closeIniFile(void* handle);
+bool GetProfileString( const char *section, const char *key,char *value, int size,const char *default_value, void * handle);
+bool WriteProfileString( const char *section, const char *key,const char *value, void *handle);
+int GetProfileInt( const char *section, const char *key,int default_value, void * handle);
+bool WriteProfileInt( const char * lpSecName,const char * lpKeyName, int value, void * handle);
+
+/*<! *************************     extented Profile functions      *************************************/
+float GetProfileFloat(const char *lpSecName, const char *lpKeyName, float fDefault,  void * handle);
+bool WriteProfileFloat(  const char *lpSecName, const char * lpKeyName, float value,  void * handle);
+
+double GetProfileDouble(const char *lpSecName, const char *lpKeyName, double dbDefault,  void * handle);
+bool WriteProfileDouble(  const char *lpSecName, const char * lpKeyName, double value,  void * handle);
+
+bool WriteProfilePointFloat(const char *lpSecName, const char *lpKeyName,  nfFloat2D *pPoint, void * handle);
+bool GetProfilePointFloat(const char * lpSecName, const char * lpKeyName,  nfFloat2D* pPoint, void * handle);
+
+bool WriteProfileArrayFloat(const char * lpSecName, const char * lpKeyName,  float* pValue, int nElements, void * handle);
+bool GetProfileArrayFloat(const char * lpSecName, const char * lpKeyName,   float* pValue, int nElements,  void * handle);
+bool	WriteProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, void * handle);
+bool GetProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, void * handle);
+bool WriteProfileArrayInt(const char * lpSecName, const char * lpKeyName,  int* pValue, int nElements, void * handle);
+bool GetProfileArrayInt(const char * lpSecName, const char * lpKeyName,   int* pValue, int nElements,  void * handle);
 
 
-#endif //end of INI_FILE_H_
-
+#endif // INIFILE_H

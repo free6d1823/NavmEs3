@@ -22,7 +22,6 @@
 
 Car  mCar;
 Floor mFloor;
-char gIniFile[256];
 TexProcess gTexProcess;
 
 #define MODE_BIRDVIEW   0
@@ -189,7 +188,7 @@ void MainJni::rotate(float degree)
 /* other ini helper functions *******************************************************************/
 extern AAssetManager* gAmgr;
 
-bool nfCreateDefaultIniFile(const char* iniFile)
+static bool CreateDefaultIniFile(const char* iniFile)
 {
     time_t T= time(NULL);
     struct  tm tm = *localtime(&T);
@@ -197,11 +196,6 @@ bool nfCreateDefaultIniFile(const char* iniFile)
     FILE* fp = fopen(iniFile, "w");
     if (!fp)
         return false;
-    fprintf(fp, "[system]\r\n");
-    fprintf(fp, "created= %04d/%02d/%02d %02d:%02d:%02d\r\n", tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    fprintf(fp, "MAX_CAMERAS= %d\r\n", MAX_CAMERAS);
-    fprintf(fp, "MAX_FP_AREA= %d\r\n", MAX_FP_AREA);
-    fprintf(fp, "FP_COUNTS= %d\r\n", FP_COUNTS);
 LOGI("copy default.ini to %s", iniFile);
     AAsset* testAsset = AAssetManager_open(gAmgr, "default.ini", AASSET_MODE_UNKNOWN);
     if (testAsset)
@@ -221,7 +215,7 @@ LOGI("copy default.ini to %s", iniFile);
     }
     else
     {
-        LOGE("Cannot open skin image in assets!");
+        LOGE("Cannot open default ini file in assets!");
     }
 
     fclose(fp);
@@ -232,12 +226,12 @@ static MainJni* g_main = NULL;
 // ----------------------------------------------------------------------------
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager, jstring iniFile);
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject  obj, jobject assetManager, jstring appFolder);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj );
 
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height);
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj);
-    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_rotate(JNIEnv* env, jobject obj, jfloat degree);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj );
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_rotate(JNIEnv* env, jobject obj , jfloat degree);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_zoom(JNIEnv* env, jobject obj, jfloat farther);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setMode(JNIEnv* env, jobject obj, jint mode);
     JNIEXPORT jint  JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_getMode(JNIEnv* env, jobject obj);
@@ -249,7 +243,11 @@ AAssetManager* gAmgr = NULL;
 
 
 JNIEXPORT void JNICALL
-Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
+Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject  obj ) {
+
+    (void) obj;
+
+
     if (g_main) {
         delete g_main;
         g_main = NULL;
@@ -273,7 +271,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
         nfPByte dest = mFloor.allocTextureImage(IMAGE_WIDTH, IMAGE_HEIGHT, 4);
         if (pSrc && dest) {
             AAsset_read(testAsset, pSrc->buffer, assetLength);
-            nfYuyvToRgb32(pSrc, dest, true, true);
+            nfYuyvToRgb32(pSrc, dest, true, false);
         }
         AAsset_close(testAsset);
         nfImage::destroy(&pSrc);
@@ -373,25 +371,41 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj) {
     ////
 }
 
+void RunServer(int serverPort, const char* workFolder);
+
+static int isInited = 0;
+#define DEFAULT_SETTING_FILE "/navmsettings.ini"
 void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst);
 JNIEXPORT void JNICALL
-Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager, jstring iniFile) {
+Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject assetManager, jstring appFolder) {
 
+    if (isInited)
+    {
+        return;
+    }
+    char szIniFile[256];
     // use asset manager to open asset by filename
     gAmgr = AAssetManager_fromJava(env, assetManager);
     assert(NULL != gAmgr);
 
-    const char* jnamestr = env->GetStringUTFChars(iniFile, 0);
-    strncpy(gIniFile, jnamestr, sizeof(gIniFile));
-    FILE* fp = fopen(jnamestr,"r");
+    const char* szRootDir = env->GetStringUTFChars(appFolder, 0);
+    strncpy(szIniFile, szRootDir, sizeof(szIniFile));
+    strncat(szIniFile, DEFAULT_SETTING_FILE, sizeof (szIniFile));
+
+    FILE* fp = fopen(szIniFile,"r");
     if(!fp) {
-        LOGE("Setting file %s not found, copy default settings.", gIniFile);
-        nfCreateDefaultIniFile(gIniFile);
-    }
-    fclose(fp);
+        LOGE("Setting file %s not found, copy default settings.", szIniFile);
+        CreateDefaultIniFile(szIniFile);
+    } else
+        fclose(fp);
+
+    gTexProcess.loadIniFile(szIniFile);
     gTexProcess.update();
 
-    LOGE("ini file is %s", gIniFile);
+    isInited = 1;
+    RunServer(9000, szRootDir);
+
+    LOGE("ini file is %s", szIniFile);
 }
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height) {

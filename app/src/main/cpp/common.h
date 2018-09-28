@@ -1,17 +1,26 @@
 #ifndef NAVMES3_COMMON_H_
 #define NAVMES3_COMMON_H_
+#ifdef ANDROID
 #include <android/log.h>
-
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#else
+#include <stdio.h>
+#define  LOGI(...)  fprintf(stdout, __VA_ARGS__)
+#define  LOGE(...)  fprintf(stderr, __VA_ARGS__)
+
+#endif
 
 #define MAX_CAMERAS 4   /*<! numbers of cameras, or number of separated area, in AVM */
-#define MAX_FP_AREA 4   /*<! number of feature points region in a camera area */
+#define MAX_FP_AREA 16   /*<! number of feature points region in a camera area */
 /*!<numbersof total FP in a camera area*/
-#define FP_COUNTS			10
+#define FP_COUNTS			30
 
 
 /*<! basic data type re-definition */
+#ifndef _NFORE_DATA_TYPE___
+#define _NFORE_DATA_TYPE___
+
 typedef unsigned char nfByte, *nfPByte;
 
 typedef struct _nfFloat2D{
@@ -31,7 +40,7 @@ typedef struct _nfRectF {
     float r;
     float b;
 }nfRectF;
-
+#endif //_NFORE_DATA_TYPE___
 /*!<Fisheye Correction parametters*/
 typedef struct _FecParam{
     nfFloat2D ptCenter;		/*!<symmetry center of image relative to top-left of rcInput, in pixels*/
@@ -54,8 +63,11 @@ typedef struct _HomoParam{
 typedef struct _AreaSettings {
     nfRectF  range;                  /*!<the coordinates on final normalized image, 1.0x1.0 of this area  */
     FecParam fec;                   /*!<FEC applied to all area */
+    int nFpCounts;                  /*!<numbers of feature points in this camera, le. than  FP_COUNTS*/
     nfFloat2D fpt[FP_COUNTS];         /*!<feature points at final image*/
     nfFloat2D fps[FP_COUNTS];         /*!<feature points at rectified image*/
+    nfFloat2D fpf[FP_COUNTS];         /*!<feature points at fisheye image*/
+    int nFpAreaCounts;                /*!<numbers of FP areas in this camera, l.e. than MAX_FP_AREA*/
     nfRectF	region[MAX_FP_AREA];      /*!<the normalized coordinates of homo_region on final image*/
     HomoParam homo[MAX_FP_AREA];    /*!<homo apply to selected region */
 }AreaSettings;

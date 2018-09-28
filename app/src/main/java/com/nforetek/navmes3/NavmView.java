@@ -29,8 +29,6 @@ class NavmView extends GLSurfaceView {
     private static final String TAG = "NavmView";
     private static final boolean DEBUG = true;
 
-    public static String mIniFile = "/navmsettings.ini";
-
     public NavmView(Context context) {
         super(context);
 
@@ -40,7 +38,8 @@ class NavmView extends GLSurfaceView {
         setEGLContextClientVersion(3);
         setRenderer(new Renderer(context));
         /* find settings file name */
-        NavmEs3Lib.init( context.getAssets(), context.getFilesDir().getAbsolutePath()+mIniFile);
+        NavmEs3Lib.init( context.getAssets(), context.getFilesDir().getAbsolutePath());
+
     }
 
     private static class Renderer implements GLSurfaceView.Renderer {

@@ -45,6 +45,7 @@ public:
     void rotate(float degree);
     MainJni();
 private:
+
     Vec3    mPosCam;
     Vec3    mPosCenter;
     Vec3    mDirCam;

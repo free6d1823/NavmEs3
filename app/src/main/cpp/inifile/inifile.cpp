@@ -1,356 +1,345 @@
-/**
- * @file
- * @brief initialization file read and write API implementation
- * @author Deng Yangjun
- * @date 2007-1-9
- * @version 0.2
- */
+#include "inifile.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-#include <ctype.h>
-#include <android/asset_manager.h>
-#include "inifile.h"
 
+class Node {
+public:
+    Node (const char* name){
+        mName = strdup(name);
+        mPrev=NULL;
+        mNext=NULL;
+        mChild=NULL;
+        mParent = NULL;
+    }
+    ~Node(){
+        if (mName) free(mName);
+        if (mChild)
+            killAllChildren();
+        if (mPrev)
+            mPrev->mNext = mNext;
+        if(mNext)
+            mNext->mPrev = mPrev;
+        if (mParent)
+            mParent->mChild = mNext;
 
-#define MAX_FILE_SIZE 1024*16
-#define LEFT_BRACE '['
-#define RIGHT_BRACE ']'
+    }
+    char* name(){return mName;}
+    Node* next(){return mNext;}
+    Node* prev(){return mPrev;}
+    Node* firstChild(){return mChild;}
+    Node* lastChild(){
+        if (!mChild)
+            return mChild;
+        Node* pNext = mChild;
+        while(pNext->next())pNext=pNext->next();
+        return pNext;
+    }
 
-static bool load_ini_file(const char *file, char *buf,int *file_size)
+    /*<! insert a sibling below this */
+    Node* insert(Node* node){
+        node->mPrev = this;
+        node->mNext = this->next();
+        mNext = node;
+        if(node->mNext)node->mNext->mPrev = node;
+        return node;
+    }
+    /*<! append a child in the end*/
+    Node* append(Node* node){
+        if(!mChild) {
+            mChild = node;
+            node->mParent = this;
+        } else {
+            Node* first = mChild;
+            while (first->next()){
+                first = first->next();
+            }
+            first->mNext = node;
+            node->mPrev = first;
+        }
+        return node;
+    }
+
+    /*<! killAllChildren */
+    void  killAllChildren(){
+        if (!mChild)
+            return;
+        Node* pNext = mChild;
+        while(pNext){
+            Node* tmp = pNext;
+            pNext = pNext->mNext;
+            delete tmp;
+        }
+    }
+
+    /*<! find a child with name */
+    Node* findChild(const char* name) {
+        Node* first = mChild;
+
+        while(first) {
+            if( strcmp(first->mName, name)==0){
+                break;
+            }
+            first = first->next();
+        }
+        return first;
+    }
+
+public:
+    Node* mPrev;
+    Node* mNext;
+    Node* mChild;
+    Node* mParent;
+    char* mName;
+};
+class Leave : public Node{
+public:
+    Leave(const char* name, const char* value):Node(name){
+
+        mValue  = strdup(value);
+    }
+    ~Leave(){
+        if (mValue) free(mValue);
+
+    }
+    char* value(){return mValue;}
+    void setValue(const char* value){
+        if (mValue) free (mValue);
+        mValue = strdup(value);
+    }
+
+private:
+
+    char* mValue;
+};
+
+typedef struct _INI_CB{
+    char* ininame;
+    bool readonly;
+    Node* root;
+}INI_CB;
+
+static Node* findSection(char* buffer)
 {
-	FILE *in = NULL;
-	int i=0;
-	*file_size =0;
+    char* p1 = strchr(buffer, '[');
+    if(!p1)
+        return NULL;
+    p1++;
+    char* p2 = strchr(p1, ']');
+    if (!p2)
+        return NULL;
+    *p2 = 0;
+    Node* node = new Node(p1);
+    return node;
+}
+static Leave* parserLeave(char* buffer)
+{
+    char* p2 = strchr(buffer, '=');
+    if (!p2)
+        return NULL;
+    *p2++ = 0;
+    while(*p2 == ' ')p2++;
+    char* p3;
+    p3 = p2 + strlen(p2) -1;
+    while(*p3 == '\r' || *p3 == '\n' || *p3 == ' '){
+        *p3 = 0; p3--;
+    }
+    char* p1 = buffer;
+    while(*p1 == ' ')p1++;
+    p3 = p1 + strlen(p1)-1;
+    while(*p3 == ' '){
+        *p3 = 0; p3--;
+    }
+    Leave* leave = new Leave(p1,p2);
+    return leave;
+}
+static bool writeSection(Node* pNode, FILE* fp)
+{
+    fprintf(fp, "[%s]\r\n", pNode->name());
 
-	assert(file !=NULL);
-	assert(buf !=NULL);
-
-	in = fopen(file,"r");
-	if( NULL == in) {
-        return false;
-	}
-
-	buf[i]=fgetc(in);
-	
-	//load initialization file
-	while( buf[i]!= (char)EOF) {
-		i++;
-		assert( i < MAX_FILE_SIZE ); //file too big, you can redefine MAX_FILE_SIZE to fit the big file 
-		buf[i]=fgetc(in);
-	}
-	
-	buf[i]='\0';
-	*file_size = i;
-
-	fclose(in);
+    Leave* pLeave = (Leave*) pNode->firstChild();
+    while(pLeave){
+        fprintf(fp, "%s=%s\r\n", pLeave->name(), pLeave->value());
+        pLeave = (Leave*) pLeave->next();
+    }
     return true;
 }
 
-static bool newline(char c)
+void* openIniFile(const char* iniFilename, bool readOnly)
 {
-    return ('\n' == c ||  '\r' == c )? true : false;
+    char* pIniName = strdup (iniFilename);
+    FILE* fp;
+    if(readOnly) fp = fopen(pIniName, "r");
+    else fp = fopen(pIniName,"w+");
+    if (!fp){
+        fprintf(stderr, "open file %s error!\n", iniFilename);
+        return NULL;
+    }
+    INI_CB* handle = (INI_CB*) malloc(sizeof(INI_CB));
+    handle->readonly = readOnly;
+    handle->ininame = pIniName;
+    handle->root = new Node("root");
+    //parser file
+    char buffer[512];
+
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        if(buffer[0]==';')
+            continue;
+        if(buffer[0] == '[') {
+            Node* pNode = findSection(buffer);
+            if (pNode)
+                handle->root->append(pNode);
+        } else {
+            Node* pNode = handle->root->lastChild();
+            if (pNode) {
+            Leave* pLeave = parserLeave(buffer);
+                if(pLeave)
+                    pNode->append(pLeave);
+            }
+        }
+    }
+    //
+    fclose(fp);
+    return (void*) handle;
 }
-static bool end_of_string(char c)
+
+void closeIniFile(void* handle)
 {
-    return '\0'==c? true : false;
+    INI_CB* pCb = (INI_CB* )handle;
+    if (pCb->root &&pCb->ininame && !pCb->readonly){
+        FILE* fp = fopen(pCb->ininame, "w");
+        if (fp) {
+            ///////////////////////////
+            ///
+            ///
+            Node* pSection = pCb->root->firstChild();
+            while (pSection){
+                writeSection(pSection, fp);
+                pSection = pSection->next();
+            }
+            fclose(fp);
+        }
+
+    }
+    free(pCb->ininame);
+    if(pCb->root) delete pCb->root;
+    free(pCb);
 }
-static bool left_barce(char c)
+bool saveAsIniFile(void* handle, const char* iniName)
 {
-    return LEFT_BRACE == c? true : false;
-}
-static bool isright_brace(char c )
-{
-    return RIGHT_BRACE == c? true : false;
-}
-static bool parse_file(const char *section, const char *key, const char *buf,int *sec_s,int *sec_e,
-					  int *key_s,int *key_e, int *value_s, int *value_e)
-{
-	const char *p = buf;
-	int i=0;
-
-	assert(buf!=NULL);
-	assert(section != NULL && strlen(section));
-	assert(key != NULL && strlen(key));
-
-	*sec_e = *sec_s = *key_e = *key_s = *value_s = *value_e = -1;
-
-	while( !end_of_string(p[i]) ) {
-		//find the section
-		if( ( 0==i ||  newline(p[i-1]) ) && left_barce(p[i]) )
-		{
-			int section_start=i+1;
-
-			//find the ']'
-			do {
-				i++;
-			} while( !isright_brace(p[i]) && !end_of_string(p[i]));
-
-			if( 0 == strncmp(p+section_start,section, i-section_start)) {
-				int newline_start=0;
-
-				i++;
-
-				//Skip over space char after ']'
-				while(isspace(p[i])) {
-					i++;
-				}
-
-				//find the section
-				*sec_s = section_start;
-				*sec_e = i;
-
-				while( ! (newline(p[i-1]) && left_barce(p[i])) 
-				&& !end_of_string(p[i]) ) {
-					int j=0;
-					//get a new line
-					newline_start = i;
-
-					while( !newline(p[i]) &&  !end_of_string(p[i]) ) {
-						i++;
-					}
-					
-					//now i  is equal to end of the line
-					j = newline_start;
-
-					if(';' != p[j]) //skip over comment
-					{
-						while(j < i && p[j]!='=') {
-							j++;
-							if('=' == p[j]) {
-								if(strncmp(key,p+newline_start,j-newline_start)==0)
-								{
-									//find the key ok
-									*key_s = newline_start;
-									*key_e = j-1;
-
-									*value_s = j+1;
-									*value_e = i;
-
-                                    return true;
-								}
-							}
-						}
-					}
-
-					i++;
-				}
-			}
-		}
-		else
-		{
-			i++;
-		}
-	}
+    INI_CB* pCb = (INI_CB* )handle;
+    FILE* fp = fopen(iniName, "w");
+    if (fp) {
+        ///////////////////////////
+        ///
+        ///
+        Node* pSection = pCb->root->firstChild();
+        while (pSection){
+            writeSection(pSection, fp);
+            pSection = pSection->next();
+        }
+        fclose(fp);
+        return true;
+    }
     return false;
 }
 
-/**
-*@brief read string in initialization file\n
-* retrieves a string from the specified section in an initialization file
-*@param section [in] name of the section containing the key name
-*@param key [in] name of the key pairs to value 
-*@param value [in] pointer to the buffer that receives the retrieved string
-*@param size [in] size of result's buffer 
-*@param default_value [in] default value of result
-*@param file [in] path of the initialization file
-*@return true : read success; \n false : read fail
-*/
-bool GetProfileString( const char *section, const char *key,char *value,
-		 int size, const char *default_value, const char *file)
+bool GetProfileString( const char *section, const char *key,char *value, int size,const char *default_value, void * handle)
 {
-	char buf[MAX_FILE_SIZE]={0};
-	int file_size;
-	int sec_s,sec_e,key_s,key_e, value_s, value_e;
-
-	//check parameters
-	assert(section != NULL && strlen(section));
-	assert(key != NULL && strlen(key));
-	assert(value != NULL);
-	assert(size > 0);
-	assert(file !=NULL &&strlen(key));
-
-	if(!load_ini_file(file,buf,&file_size))
-	{
-		if(default_value!=NULL)
-		{
-			strncpy(value,default_value, size);
-		}
+    INI_CB* pCb = (INI_CB* )handle;
+    if (!pCb->root)
         return false;
-	}
-
-	if(!parse_file(section,key,buf,&sec_s,&sec_e,&key_s,&key_e,&value_s,&value_e))
-	{
-		if(default_value!=NULL)
-		{
-			strncpy(value,default_value, size);
-		}
-        
-        return false; //not find the key
-	}
-	else
-	{
-		int cpcount = value_e -value_s;
-
-		if( size-1 < cpcount)
-		{
-			cpcount =  size-1;
-		}
-	
-		memset(value, 0, size);
-		memcpy(value,buf+value_s, cpcount );
-		value[cpcount] = '\0';
-
-        return true;
-	}
-}
-
-/**
-*@brief read int value in initialization file\n
-* retrieves int value from the specified section in an initialization file
-*@param section [in] name of the section containing the key name
-*@param key [in] name of the key pairs to value 
-*@param default_value [in] default value of result
-*@param file [in] path of the initialization file
-*@return profile int value,if read fail, return default value
-*/
-int GetProfileInt( const char *section, const char *key,int default_value,
-				const char *file)
-{
-	char value[32] = {0};
-    if(!GetProfileString(section,key,value, sizeof(value),NULL,file))
-	{
-		return default_value;
-	}
-	else
-	{
-		return atoi(value);
-	}
-}
-
-/**
- * @brief write a profile string to a ini file
- * @param section [in] name of the section,can't be NULL and empty string
- * @param key [in] name of the key pairs to value, can't be NULL and empty string
- * @param value [in] profile string value
- * @param file [in] path of ini file
- * @return 1 : success\n 0 : failure
- */
-bool WriteProfileString(const char *section, const char *key,
-					const char *value, const char *file)
-{
-	char buf[MAX_FILE_SIZE]={0};
-	char w_buf[MAX_FILE_SIZE]={0};
-	int sec_s,sec_e,key_s,key_e, value_s, value_e;
-	int value_len = (int)strlen(value);
-	int file_size;
-	FILE *out;
-
-	//check parameters
-	assert(section != NULL && strlen(section));
-	assert(key != NULL && strlen(key));
-	assert(value != NULL);
-	assert(file !=NULL &&strlen(key));
-
-	if(!load_ini_file(file,buf,&file_size))
-	{
-		sec_s = -1;
-	}
-	else
-	{
-		parse_file(section,key,buf,&sec_s,&sec_e,&key_s,&key_e,&value_s,&value_e);
-	}
-
-	if( -1 == sec_s)
-	{
-		if(0==file_size)
-		{
-			sprintf(w_buf+file_size,"[%s]\n%s=%s\n",section,key,value);
-		}
-		else
-		{
-			//not find the section, then add the new section at end of the file
-			memcpy(w_buf,buf,file_size);
-			sprintf(w_buf+file_size,"\n[%s]\n%s=%s\n",section,key,value);
-		}
-	}
-	else if(-1 == key_s)
-	{
-		//not find the key, then add the new key=value at end of the section
-		memcpy(w_buf,buf,sec_e);
-		sprintf(w_buf+sec_e,"%s=%s\n",key,value);
-		sprintf(w_buf+sec_e+strlen(key)+strlen(value)+2,buf+sec_e, file_size - sec_e);
-	}
-	else
-	{
-		//update value with new value
-		memcpy(w_buf,buf,value_s);
-		memcpy(w_buf+value_s,value, value_len);
-		memcpy(w_buf+value_s+value_len, buf+value_e, file_size - value_e);
-	}
-	
-	out = fopen(file,"w");
-	if(NULL == out)
-	{
-        return false;
-	}
-	
-	if(-1 == fputs(w_buf,out) )
-	{
-		fclose(out);
-        return false;
-	}
-
-	fclose(out);
+    Node* pNode = pCb->root->findChild(section);
+    if(pNode){
+        Leave* pLeave = (Leave*) pNode->findChild(key);
+        if (pLeave) {
+            strncpy(value, pLeave->value(), size);
+            return true;
+        }
+    }
+    strncpy(value, default_value, size);
     return true;
 }
 
-bool WriteProfileInt( const char * lpSecName,const char * lpKeyName, int value, const char * lpFileName)
+bool WriteProfileString( const char *section, const char *key,const char *value, void *handle)
 {
-    char szString[32];
-    sprintf(szString, "%d", value);
-    return WriteProfileString(lpSecName, lpKeyName, szString, lpFileName);
+    INI_CB* pCb = (INI_CB* )handle;
+    if (!pCb->root)
+        return false;
+    Node* pNode = pCb->root->findChild(section);
+    if (!pNode) {
+        pNode = new Node(section);
+        pCb->root->append(pNode);
+    }
+    Leave* pLeave = (Leave*) pNode->findChild(key);
+    if (!pLeave){
+        pLeave = new Leave(key, value);
+        pNode->append(pLeave);
+    }else {
+        pLeave->setValue(value);
+    }
+    return true;
 }
-bool WriteProfileFloat(  const char *lpSecName, const char * lpKeyName, float value,  const char*  lpFileName)
+
+int GetProfileInt( const char *section, const char *key,int default_value, void * handle)
+{
+    char buffer[256];
+    sprintf(buffer, "%d", default_value);
+    if (GetProfileString(section, key,buffer, sizeof(buffer),buffer, handle)){
+        return atoi(buffer);
+    }
+    return default_value;
+}
+
+bool WriteProfileInt( const char * lpSecName,const char * lpKeyName, int value, void * handle)
+{
+    char buffer[64];
+    sprintf(buffer, "%d", value);
+
+    return WriteProfileString(lpSecName, lpKeyName, buffer, handle);
+}
+
+
+/*<! *************************     extented Profile functions      *************************************/
+bool WriteProfileFloat(  const char *lpSecName, const char * lpKeyName, float value,  void * handle)
 {
     char szString[32];
     sprintf(szString, "%10.5f", value);
 
-    return WriteProfileString(lpSecName, lpKeyName, szString, lpFileName);
+    return WriteProfileString(lpSecName, lpKeyName, szString, handle);
 }
-bool WriteProfileDouble(  const char *lpSecName, const char * lpKeyName, double value,  const char*  lpFileName)
+bool WriteProfileDouble(  const char *lpSecName, const char * lpKeyName, double value,  void * handle)
 {
     char szString[32];
     sprintf(szString, "%12.7f", value);
 
-    return WriteProfileString(lpSecName, lpKeyName, szString, lpFileName);
+    return WriteProfileString(lpSecName, lpKeyName, szString, handle);
 }
-float GetProfileFloat(const char *lpSecName, const char *lpKeyName, float fDefault,  const char *lpFileName)
+float GetProfileFloat(const char *lpSecName, const char *lpKeyName, float fDefault,  void * handle)
 {
     char value[64];
-    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", lpFileName))
+    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", handle))
         return fDefault;
     return (float) atof(value);
 }
-double GetProfileDouble(const char *lpSecName, const char *lpKeyName, double dbDefault,  const char *lpFileName)
+double GetProfileDouble(const char *lpSecName, const char *lpKeyName, double dbDefault,  void * handle)
 {
     char value[64];
-    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", lpFileName))
+    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", handle))
         return dbDefault;
     return atof(value);
 }
 
-bool WriteProfilePointFloat(const char *lpSecName, const char *lpKeyName,  nfFloat2D *pPoint, const char *lpFileName)
+bool WriteProfilePointFloat(const char *lpSecName, const char *lpKeyName,  nfFloat2D *pPoint, void * handle)
 {
     char szString[64];
     sprintf(szString, "%10.5f, %10.5f", pPoint->x, pPoint->y);
-    return WriteProfileString(lpSecName, lpKeyName, szString, lpFileName);
+    return WriteProfileString(lpSecName, lpKeyName, szString, handle);
 }
-bool GetProfilePointFloat(const char * lpSecName, const char * lpKeyName,  nfFloat2D* pPoint, const char * lpFileName)
+bool GetProfilePointFloat(const char * lpSecName, const char * lpKeyName,  nfFloat2D* pPoint, void * handle)
 {
     char value[256];
-    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", lpFileName))
+    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", handle))
         return false;
 
     char* p1 = strtok(value, ",");
@@ -362,7 +351,7 @@ bool GetProfilePointFloat(const char * lpSecName, const char * lpKeyName,  nfFlo
     return true;
 }
 
-bool WriteProfileArrayFloat(const char * lpSecName, const char * lpKeyName,  float* pValue, int nElements, const char * lpFileName)
+bool WriteProfileArrayFloat(const char * lpSecName, const char * lpKeyName,  float* pValue, int nElements, void * handle)
 {
     char szString[64];
     char szArray[512]={0};
@@ -370,12 +359,12 @@ bool WriteProfileArrayFloat(const char * lpSecName, const char * lpKeyName,  flo
         sprintf(szString, "%10.5f,", pValue[i]);
         strcat(szArray, szString);
     }
-    return WriteProfileString(lpSecName, lpKeyName, szArray, lpFileName);
+    return WriteProfileString(lpSecName, lpKeyName, szArray, handle);
 }
-bool GetProfileArrayFloat(const char * lpSecName, const char * lpKeyName,   float* pValue, int nElements,  const char * lpFileName)
+bool GetProfileArrayFloat(const char * lpSecName, const char * lpKeyName,   float* pValue, int nElements,  void * handle)
 {
     char value[512];
-    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", lpFileName))
+    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", handle))
         return false;
     char* p1 = strtok(value, ",");
     bool bResult = true;
@@ -389,7 +378,7 @@ bool GetProfileArrayFloat(const char * lpSecName, const char * lpKeyName,   floa
     }
     return bResult;
 }
-bool WriteProfileArrayInt(const char * lpSecName, const char * lpKeyName,  int* pValue, int nElements, const char * lpFileName)
+bool WriteProfileArrayInt(const char * lpSecName, const char * lpKeyName,  int* pValue, int nElements, void * handle)
 {
     char szString[64];
     char szArray[512]={0};
@@ -397,13 +386,13 @@ bool WriteProfileArrayInt(const char * lpSecName, const char * lpKeyName,  int* 
         sprintf(szString, " %d,", pValue[i]);
         strcat(szArray, szString);
     }
-    return WriteProfileString(lpSecName, lpKeyName, szArray, lpFileName);
+    return WriteProfileString(lpSecName, lpKeyName, szArray, handle);
 }
 
-bool GetProfileArrayInt(const char * lpSecName, const char * lpKeyName,   int* pValue, int nElements,  const char * lpFileName)
+bool GetProfileArrayInt(const char * lpSecName, const char * lpKeyName,   int* pValue, int nElements,  void * handle)
 {
     char value[512];
-    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", lpFileName))
+    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", handle))
         return false;
     char* p1 = strtok(value, ",");
     bool bResult = true;
@@ -419,17 +408,17 @@ bool GetProfileArrayInt(const char * lpSecName, const char * lpKeyName,   int* p
 }
 
 
-bool	WriteProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, const char * lpFileName)
+bool	WriteProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, void * handle)
 {
     char szString[512];
     sprintf(szString, "%10.5f, %10.5f, %10.5f, %10.5f", pRect->l, pRect->t, pRect->r, pRect->b);
-    return WriteProfileString(lpSecName, lpKeyName, szString, lpFileName);
+    return WriteProfileString(lpSecName, lpKeyName, szString, handle);
 
 }
-bool GetProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, const char * lpFileName)
+bool GetProfileRectFloat(const char * lpSecName, const char * lpKeyName,  nfRectF* pRect, void * handle)
 {
     char value[256];
-    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", lpFileName))
+    if( false == GetProfileString(lpSecName, lpKeyName, value, sizeof(value), "0", handle))
         return false;
 
     char* p1 = strtok(value, ",");

@@ -43,6 +43,7 @@ add_library(navmes3 SHARED
             ./inifile/inifile.cpp
             CameraManager.cpp
             CameraSource.cpp
+            server.cpp
             Floor.cpp
             Car.cpp)
 

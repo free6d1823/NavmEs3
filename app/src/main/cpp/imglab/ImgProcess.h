@@ -12,7 +12,7 @@
 #define IMAGE_AREA_WIDTH    900
 #define IMAGE_AREA_HEIGHT   720
 #endif
-#define IMAGE_PATH  "camera1440x960.yuv"
+#define IMAGE_PATH  "camera_1440x960.yuv"
 #define IMAGE_WIDTH 1440
 #define IMAGE_HEIGHT    960
 #define IMAGE_AREA_WIDTH    720
@@ -28,15 +28,37 @@ using namespace std;
 class nfImage {
 public:
 static nfImage* create(unsigned int w, unsigned int h, unsigned int bpp);
-static nfImage* ref(unsigned char* data, unsigned int w, unsigned int h, unsigned int bpp);
+///
+/// \brief ref create a nfImage object associated with existed data. It doesn't own the data,
+/// so the bufer is not destroed when nfImage is destroyed.
+/// \param data
+/// \param w
+/// \param h
+/// \param bpp
+/// \return the nfImage object
+///
+static nfImage* ref(unsigned char* data, unsigned int w, unsigned int h, unsigned int stride);
+
+////
+/// \brief clone create a nfImage object but share the same buffer as source. The new object owns the buffer, so the source should use detach() to release the buffer
+/// \param source
+/// \return pointer to the clone nfImage
+///
+static nfImage* clone(nfImage* pSource);
+
 static void destroy(nfImage** ppImage);
+///
+/// \brief dettach the buffer from a nfImage object and destroy this object
+/// \param ppImage object to be destroyed
+/// \return the image buffer
+///
+static nfPByte dettach(nfImage** ppImage);
+
     unsigned char* buffer;   /*<! image data */
     unsigned int width;  /*<! image width in pixel */
     unsigned int stride; /*<! bytes per scan line */
     unsigned int height; /*<! image height in lines */
     bool bRef; /*!<true: buffer is referenced, don't free */
-static    int seq;
-
 };
 
 class nfBuffer{
@@ -44,7 +66,7 @@ public:
 	nfBuffer(){};
 	nfBuffer(unsigned int elements);
 	virtual ~nfBuffer();
-	void set(unsigned int offset, char value){};
+    void set(unsigned int /* offset */, char /*value*/){};
 	void* data(){return NULL;}
 
 	virtual	unsigned int length(){return mLength;}
@@ -84,21 +106,15 @@ private:
 };
 
 void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst, bool bMirror);
-//void doFec(double u, double v, double &x, double &y, FecParam* m_pFec);
-//void calculateHomoMatrix(dbPOINT* fps, dbPOINT* fpt, HomoParam* homo);
-//bool doHomoTransform(double s, double t, double &u, double &v, double h[3][3]);
+void nfDoFec(float u, float v, float &x, float &y, FecParam* pFec);
+void nfInvFec(float x, float y, float &u, float &v, FecParam* pFec);
+void nfFindHomoMatrix(nfFloat2D s[4], nfFloat2D t[4], float hcoef[3][3]);
+bool nfDoHomoTransform(float s, float t, float &u, float &v, float h[3][3]);
+void nfCalculateHomoMatrix4(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo);
+void nfCalculateHomoMatrix12(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo);
+void nfCalculateHomoMatrix16(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo);
 
 
-#if 0
-IMAGE* loadImage();
-IMAGE* loadImageArea(int idArea, FecParam* pFec);
-void ApplyFec(unsigned char* pSrc, int width, int inStride,  int height, unsigned char* pTar, int outStride, FecParam* pFec);
-
-    /*!<S= HT, S=source, T=target on stitched view */
-static void findHomoMatreix(dbPOINT s[4], dbPOINT t[4], double hcoef[3][3]);
-
-
-#endif
 class TexProcess
 {
 public:
@@ -108,14 +124,15 @@ public:
 	int createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices);
 	int updateUv(vector <nfFloat2D> &uv);
     int updateUvNoFisheye(vector <nfFloat2D> &uv);
-
         int reloadIndices(vector<unsigned short>& indices);
+    bool loadIniFile(const char* filename);
+    bool saveIniFile(const char* filename);
+    nfImage* getSourceImage();
 public:
-	void LoadAllAreaSettings();
 	AreaSettings mAreaSettings[MAX_CAMERAS];
+    char* mpSourceImageName;
 
 private:
-    bool mIsSettingsUpdated;
 	void initVertices(vector<nfFloat3D> & vert, nfRectF region);
 	void updateIndices(vector<unsigned short>& indices, int nCam, int nRegion);
 	static   nfFloat2D s_offsetCam[MAX_CAMERAS];

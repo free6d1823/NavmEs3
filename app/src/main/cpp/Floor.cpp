@@ -90,7 +90,7 @@ bool Floor ::initVertexData()
     vector <unsigned short> ind;
     vector <nfFloat2D> uvs;
     gTexProcess.createVertices(vert, ind);
-    if (1)
+    if (0)
         gTexProcess.updateUvNoFisheye(uvs);
     else
         gTexProcess.updateUv(uvs);
