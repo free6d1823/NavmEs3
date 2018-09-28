@@ -13,6 +13,8 @@
 #define LOG_TAG "CAR"
 #include "common.h"
 
+/* adjust this to make Car size fits the scene */
+#define SCALE_FACTOR    2.2f
 
 static const char VERTEX_SHADER[] =
         "uniform mat4 mvp_matrix;\n"
@@ -108,7 +110,9 @@ bool Parts::loadObject(void* data, unsigned int length)
         }
         p+= 4;
         pVertexBuf = nfFloatBuffer::create(na*3);
-        memcpy(pVertexBuf->data(), p, pVertexBuf->length()); p+= pVertexBuf->length();
+        memcpy(pVertexBuf->data(), p, pVertexBuf->length());
+
+        p+= pVertexBuf->length();
 
         if ( memcmp("TEXT", p, 4)!= 0){
             LOGE("not TEXT tag !\n");
@@ -141,6 +145,10 @@ bool Parts::loadObject(void* data, unsigned int length)
 
     if (!bOK)
         return bOK;
+    //scale up Vertex
+    for(int i=0; i<pVertexBuf->size(); i++){
+        pVertexBuf->data()[i] *= SCALE_FACTOR;
+    }
     glGenBuffers(TOTAL_BUF, mVertexBufId);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[VERT_BUF]);
     glBufferData(GL_ARRAY_BUFFER, pVertexBuf->length(), pVertexBuf->data(), GL_STATIC_DRAW);
@@ -181,9 +189,9 @@ Wheels::~Wheels() {
 bool Wheels::loadObject(void* data, unsigned int length)
 {
     if(mID == 1)
-        mVecAxis = Vec3(-0.000818, 0.327574, -1.203252);
+        mVecAxis = Vec3(-0.000818*SCALE_FACTOR, 0.327574*SCALE_FACTOR, -1.203252*SCALE_FACTOR);
     else //rear
-        mVecAxis = Vec3(0.001061, 0.327574, 1.156935);
+        mVecAxis = Vec3(0.001061*SCALE_FACTOR, 0.327574*SCALE_FACTOR, 1.156935*SCALE_FACTOR);
 
     return Parts::loadObject(data, length);
 };
@@ -278,7 +286,7 @@ bool Car ::init()
     glGenVertexArrays(1, &mVaoId);
     glBindVertexArray(mVaoId);
 
-    Mat4 state = Mat4::Translation(0,0.605885,0);//initial car position related to world
+    Mat4 state = Mat4::Translation(0,0.605885*SCALE_FACTOR,0);//initial car position related to world
     mFrontWheels.setState(state);
     mRearWheels.setState(state);
     mBody.setState(state); //Mat4::RotationY(M_PI);

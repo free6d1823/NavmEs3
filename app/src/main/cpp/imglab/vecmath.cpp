@@ -43,6 +43,15 @@ void Vec3::rotateY(float rad)
   x_ = x;
   z_ = z;
 }
+void Vec3::rotateX(float rad)
+{
+    float sa = sin(rad);
+    float ca = cos(rad);
+    float y = ca * y_ - sa * z_;
+    float z = sa * y_ + ca * z_;
+    y_ = y;
+    z_ = z;
+}
 //--------------------------------------------------------------------------------
 // vec4
 //--------------------------------------------------------------------------------
@@ -324,8 +333,36 @@ Mat4 Mat4::Translation(const Vec3 vec) {
   ret.f_[15] = 1.0f;
   return ret;
 }
+/* fov, asp, near, far */
+Mat4 Mat4::Perspective(float fovy,  float aspect,  float zNear,  float zFar)
+{
+  float n2 = 2.0f * zNear;
+  float rcpnmf = 1.f / (zNear - zFar);
+  float f = 1/tan(fovy/2);
 
-Mat4 Mat4::Perspective(float width, float height, float nearPlane,
+  Mat4 result;
+  result.f_[0] = f / aspect;
+  result.f_[4] = 0;
+  result.f_[8] = 0;
+  result.f_[12] = 0;
+  result.f_[1] = 0;
+  result.f_[5] = f;
+  result.f_[9] = 0;
+  result.f_[13] = 0;
+  result.f_[2] = 0;
+  result.f_[6] = 0;
+  result.f_[10] = (zFar + zNear) * rcpnmf;
+  result.f_[14] = zFar * rcpnmf * n2;
+  result.f_[3] = 0;
+  result.f_[7] = 0;
+  result.f_[11] = -1.0;
+  result.f_[15] = 0;
+
+  return result;
+}
+
+
+Mat4 Mat4::Perspective2(float width, float height, float nearPlane,
                        float farPlane) {
   float n2 = 2.0f * nearPlane;
   float rcpnmf = 1.f / (nearPlane - farPlane);

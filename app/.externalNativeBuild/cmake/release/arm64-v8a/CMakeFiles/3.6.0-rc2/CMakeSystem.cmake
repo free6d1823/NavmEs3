@@ -1,9 +1,9 @@
-set(CMAKE_HOST_SYSTEM "Linux-4.15.0-33-generic")
+set(CMAKE_HOST_SYSTEM "Linux-4.13.0-36-generic")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
-set(CMAKE_HOST_SYSTEM_VERSION "4.15.0-33-generic")
+set(CMAKE_HOST_SYSTEM_VERSION "4.13.0-36-generic")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
-include("/opt/android/sdk/ndk-bundle/build/cmake/android.toolchain.cmake")
+include("/opt/android-sdk/ndk-bundle/build/cmake/android.toolchain.cmake")
 
 set(CMAKE_SYSTEM "Android-1")
 set(CMAKE_SYSTEM_NAME "Android")

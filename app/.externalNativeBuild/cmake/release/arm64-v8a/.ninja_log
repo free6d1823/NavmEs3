@@ -1,6 +1,0 @@
-# ninja log v5
-0	129	0	CMakeFiles/navmes3.dir/RendererES3.cpp.o	c60e4e94ab737cf7
-0	136	0	CMakeFiles/navmes3.dir/RendererES2.cpp.o	8f1b5ca2c3b6fb01
-0	145	0	CMakeFiles/navmes3.dir/GlHelper.cpp.o	4ba1911607aaa311
-0	189	0	CMakeFiles/navmes3.dir/navmjni.cpp.o	4bcc1394b69b031
-189	240	0	/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/release/obj/arm64-v8a/libnavmes3.so	aac5703e1cae92ef

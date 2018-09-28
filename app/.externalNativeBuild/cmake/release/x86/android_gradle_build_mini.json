@@ -1,16 +1,16 @@
 {
   "buildFiles": [
-    "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/CMakeLists.txt"
+    "/home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/CMakeLists.txt"
   ],
   "cleanCommands": [
-    "/opt/android/sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/release/x86 --target clean"
+    "/opt/android-sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidProjects/NavmEs3/app/.externalNativeBuild/cmake/release/x86 --target clean"
   ],
   "libraries": {
     "navmes3-Release-x86": {
       "artifactName": "navmes3",
-      "buildCommand": "/opt/android/sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/release/x86 --target navmes3",
+      "buildCommand": "/opt/android-sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidProjects/NavmEs3/app/.externalNativeBuild/cmake/release/x86 --target navmes3",
       "abi": "x86",
-      "output": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/release/obj/x86/libnavmes3.so"
+      "output": "/home/cj/AndroidProjects/NavmEs3/app/build/intermediates/cmake/release/obj/x86/libnavmes3.so"
     }
   }
 }

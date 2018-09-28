@@ -45,12 +45,14 @@ public:
     void rotate(float degree);
     MainJni();
 private:
-
+    float mAspectRatio;
     Vec3    mPosCam;
     Vec3    mPosCenter;
     Vec3    mDirCam;
     Mat4    mMatProj;
     int mMode;
     float mAngle; /*<! in radian */
+    float mCamAngle; /*<!camera position pitch angle, used in rear/front view */
+    float mCamDist; /*<!camera distance, used in rear/front view */
 };
 #endif // NAVMJNI_H

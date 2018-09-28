@@ -1,16 +1,16 @@
 {
   "buildFiles": [
-    "/home/cj/AndroidStudioProjects/NavmEs3/app/src/main/cpp/CMakeLists.txt"
+    "/home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/CMakeLists.txt"
   ],
   "cleanCommands": [
-    "/opt/android/sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target clean"
+    "/opt/android-sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target clean"
   ],
   "libraries": {
     "navmes3-Debug-armeabi-v7a": {
       "artifactName": "navmes3",
-      "buildCommand": "/opt/android/sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidStudioProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target navmes3",
+      "buildCommand": "/opt/android-sdk/cmake/3.6.4111459/bin/cmake --build /home/cj/AndroidProjects/NavmEs3/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target navmes3",
       "abi": "armeabi-v7a",
-      "output": "/home/cj/AndroidStudioProjects/NavmEs3/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libnavmes3.so"
+      "output": "/home/cj/AndroidProjects/NavmEs3/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libnavmes3.so"
     }
   }
 }
