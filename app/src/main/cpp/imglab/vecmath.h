@@ -18,6 +18,7 @@
 #define VECMATH_H_
 
 #include <cmath>
+#include <stdint.h>
 
 /******************************************************************
  * Helper class for vector math operations
@@ -774,10 +775,10 @@ class Mat4 {
   // Misc
   //--------------------------------------------------------------------------------
   static Mat4 Perspective2(float width, float height, float nearPlane,
-                          float farPlane);
-  static  Mat4 Perspective(float fovy,  float aspect,  float zNear,  float zFar);
+                           float farPlane);
+  static Mat4 Perspective(float fovy, float aspect, float zNear, float zFar);
 
-    static Mat4 Ortho2D(float left, float top, float right, float bottom);
+  static Mat4 Ortho2D(float left, float top, float right, float bottom);
 
   static Mat4 LookAt(const Vec3& vEye, const Vec3& vAt, const Vec3& vUp);
 

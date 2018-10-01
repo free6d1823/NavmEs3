@@ -81,6 +81,8 @@ void MainJni::setAutoRun(int value)
 
 void MainJni::changeViewMode(int mode)
 {
+    if (mode >= 3) //I don't support mode 3
+        mode =0;
     mMode = (mMode & ~MODE_MASK) | mode;
 
     LOGE(" ----- New mode is %d", mode);
@@ -245,8 +247,8 @@ static MainJni* g_main = NULL;
 
 extern "C" {
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject  obj, jobject assetManager, jstring appFolder);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject  obj, jstring simVideoFile);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject obj );
-
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj );
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_rotate(JNIEnv* env, jobject obj , jfloat degree);
@@ -258,6 +260,111 @@ extern "C" {
 };
 
 AAssetManager* gAmgr = NULL;
+
+JNIEXPORT void JNICALL
+Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring simVideoFile) {
+    if (g_main) {
+        delete g_main;
+        g_main = NULL;
+    }
+    g_main = new MainJni;
+    if (gAmgr == NULL) {
+        LOGE("ini() must be called first!");
+        return;
+    }
+    const char* szFile = env->GetStringUTFChars(simVideoFile, 0);
+    mFloor.setSimVideoFileRgb(IMAGE_WIDTH, IMAGE_HEIGHT, 4, szFile);
+    mFloor.init();
+
+    AAsset* testAsset = AAssetManager_open(gAmgr, "redskin_100x100.yuv", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        LOGI("Native Asset skin file size: %lu\n", assetLength);
+        nfImage* pSrc = nfImage::create(100, 100, 2);
+        nfPByte dest = mCar.allocTextureImage(100, 100, 4);
+        if (pSrc && dest) {
+            AAsset_read(testAsset, pSrc->buffer, assetLength);
+            nfYuyvToRgb32(pSrc, dest, true, true);
+        }
+        AAsset_close(testAsset);
+        nfImage::destroy(&pSrc);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    mCar.init();
+    //
+    testAsset = AAssetManager_open(gAmgr, "porch_body.bin", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+        void * pBuffer = malloc(assetLength);
+        if (pBuffer) {
+            AAsset_read(testAsset, pBuffer, assetLength);
+            if(!mCar.loadObject(0, pBuffer, assetLength)){
+                LOGE("Load 3D object 0 error!");
+            }
+            free(pBuffer);
+        }
+        AAsset_close(testAsset);
+
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    testAsset = AAssetManager_open(gAmgr, "frontwheels.bin", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        void * pBuffer = malloc(assetLength);
+        if (pBuffer) {
+            AAsset_read(testAsset, pBuffer, assetLength);
+            if(!mCar.loadObject(1, pBuffer, assetLength)){
+                LOGE("Load 3D object 1 error!");
+            }
+            free(pBuffer);
+        }
+        AAsset_close(testAsset);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    testAsset = AAssetManager_open(gAmgr, "rearwheels.bin", AASSET_MODE_UNKNOWN);
+    if (testAsset)
+    {
+        assert(testAsset);
+
+        size_t assetLength = AAsset_getLength(testAsset);
+
+        void * pBuffer = malloc(assetLength);
+        if (pBuffer) {
+            AAsset_read(testAsset, pBuffer, assetLength);
+            if(!mCar.loadObject(2, pBuffer, assetLength)){
+                LOGE("Load 3D object 2 error!");
+            }
+            free(pBuffer);
+        }
+        AAsset_close(testAsset);
+    }
+    else
+    {
+        LOGE("Cannot open skin image in assets!");
+    }
+    ////
+    LOGE("exit Java_com_nforetek_navmes3_NavmEs3Lib_start" );
+}
 
 
 JNIEXPORT void JNICALL
@@ -420,7 +527,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
         fclose(fp);
 
     LOGI("SloadIniFile %s .", szIniFile);
-    gTexProcess.loadIniFile(szIniFile);
+    gTexProcess.loadIniFile2(szIniFile);
     LOGI("gTexProcess update ");
     gTexProcess.update(); //takes 10 secs
     LOGI("SloadIniFile %s .", szIniFile);
@@ -430,6 +537,9 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
 
     LOGE("ini file is %s", szIniFile);
 }
+
+
+
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height) {
     if (g_main) {

@@ -5,19 +5,22 @@
 
 package com.nforetek.navmes3;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-
-import java.io.File;
 
 public class MainActivity extends Activity {
+    private static final String TAG = "MainActivity";
     private GestureDetector mDetector;
 
     NavmView mView;
@@ -60,7 +63,93 @@ public class MainActivity extends Activity {
         super.onResume();
         mView.onResume();
     }
+/*    TODO runtime permission later
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (checkPermissionPass()) {
+            startTask();
+        }
+    }
+    //Remember to add these permission in AndroidManifest.xml <uses-permission//
+    final String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    final int MULTI_PERMISSIONS_ID = 1001;
+    private boolean hasPermissions(String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null) {
+            for (String permission : permissions) {
+                if (!shouldShowRequestPermissionRationale(permission))
+                    return false;
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    if (shouldShowRequestPermissionRationale(permission)) {
+                        continue;
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
+    boolean checkPermissionPass(){
+        if (hasPermissions(PERMISSIONS))
+            return true;
+        // if the user has rejected permission, the next time will not show RequestPermission dialog, and directly give
+        // PERMISSION_GRANTED. User have to uninstall the APP and give again.
+        ActivityCompat.requestPermissions(this,
+                PERMISSIONS,
+                MULTI_PERMISSIONS_ID);
+        return false;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult = " + requestCode + " size="+ permissions.length);
+        if (requestCode == MULTI_PERMISSIONS_ID)
+        {
+            int needTotalGranted = PERMISSIONS.length;
+            for (int i=0; i< grantResults.length; i++) {
+                Log.d(TAG, "onRequestPermissionsResult string = "+permissions[i]+ " grantResults = "+grantResults[i] );
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    for (int j=0; j<PERMISSIONS.length; j++) {
+                        if (permissions[i].equals(PERMISSIONS[j]))
+                            needTotalGranted--;
+                    }
+                }
+            }
+            if (needTotalGranted == 0) {
+                startTask();
+            } else {
+                showDialogOK("This program stop due to not granted necessary permissions. If you want to run again please uninstall the program and run again.",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        //;
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        // proceed with logic by disabling the related features or quit the app.
+                                        break;
+                                }
+                            }
+                        });
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    private void showDialogOK(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", okListener)
+                .create()
+                .show();
+    }
+    void startTask() {
+        //do something
+    }
+    */
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override

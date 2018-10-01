@@ -5,6 +5,7 @@
 package com.nforetek.navmes3;
 
 import android.content.Context;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Environment;
@@ -16,14 +17,19 @@ import android.view.MotionEvent;
 import android.content.res.AssetManager;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
+
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 class NavmView extends GLSurfaceView {
     private static final String TAG = "NavmView";
@@ -54,9 +60,34 @@ class NavmView extends GLSurfaceView {
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             NavmEs3Lib.resize(width, height);
         }
+        public static void copy(File src, File dst) throws IOException {
+            InputStream in = new FileInputStream(src);
+            try {
+                OutputStream out = new FileOutputStream(dst);
+                try {
+                    // Transfer bytes from in to out
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                } finally {
+                    out.close();
+                }
+            } finally {
+                in.close();
+            }
+        }
+
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            NavmEs3Lib.start();
+
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/video_1440x960.rgb";
+            File file = new File(path);
+            if (file.exists()){
+                NavmEs3Lib.start2(path);
+            }else
+                NavmEs3Lib.start();
 
 
         }

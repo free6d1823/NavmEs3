@@ -17,7 +17,10 @@
 //--------------------------------------------------------------------------------
 // vecmath.cpp
 //--------------------------------------------------------------------------------
+#ifdef ANDROID
 #include <jni.h>
+#endif
+
 #define  LOG_TAG    "vecmath"
 #include "../common.h"
 #include "vecmath.h"
@@ -45,12 +48,12 @@ void Vec3::rotateY(float rad)
 }
 void Vec3::rotateX(float rad)
 {
-    float sa = sin(rad);
-    float ca = cos(rad);
-    float y = ca * y_ - sa * z_;
-    float z = sa * y_ + ca * z_;
-    y_ = y;
-    z_ = z;
+  float sa = sin(rad);
+  float ca = cos(rad);
+  float y = ca * y_ - sa * z_;
+  float z = sa * y_ + ca * z_;
+  y_ = y;
+  z_ = z;
 }
 //--------------------------------------------------------------------------------
 // vec4
@@ -333,6 +336,7 @@ Mat4 Mat4::Translation(const Vec3 vec) {
   ret.f_[15] = 1.0f;
   return ret;
 }
+
 /* fov, asp, near, far */
 Mat4 Mat4::Perspective(float fovy,  float aspect,  float zNear,  float zFar)
 {
@@ -360,7 +364,6 @@ Mat4 Mat4::Perspective(float fovy,  float aspect,  float zNear,  float zFar)
 
   return result;
 }
-
 
 Mat4 Mat4::Perspective2(float width, float height, float nearPlane,
                        float farPlane) {

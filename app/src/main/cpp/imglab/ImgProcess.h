@@ -12,7 +12,7 @@
 #define IMAGE_AREA_WIDTH    900
 #define IMAGE_AREA_HEIGHT   720
 #endif
-#define IMAGE_PATH  "camera_1440x960.yuv"
+#define IMAGE_PATH  "camera1440x960.yuv"
 #define IMAGE_WIDTH 1440
 #define IMAGE_HEIGHT    960
 #define IMAGE_AREA_WIDTH    720
@@ -124,9 +124,26 @@ public:
 	int createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices);
 	int updateUv(vector <nfFloat2D> &uv);
     int updateUvNoFisheye(vector <nfFloat2D> &uv);
-        int reloadIndices(vector<unsigned short>& indices);
+    int reloadIndices(vector<unsigned short>& indices);
+    /*<! ini process functions */
+    ///
+    /// \brief loadIniFile load settings from ini file, used for calibration
+    /// \param filename
+    /// \return
+    ///
     bool loadIniFile(const char* filename);
     bool saveIniFile(const char* filename);
+    void normalizeFpf(int nAreaId);
+    void calculateFps(int nAreaId);
+    void calculateHomo(int nAreaId);
+    int getDataState(int nAreaId){return mAreaSettings[nAreaId].state;}
+    ///
+    /// \brief loadIniFile2 used for deployment. load calculated fps and home cooefficents
+    /// \param filename
+    /// \return
+    ///
+    bool loadIniFile2(const char* filename);
+
     nfImage* getSourceImage();
 public:
 	AreaSettings mAreaSettings[MAX_CAMERAS];

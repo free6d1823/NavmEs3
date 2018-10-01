@@ -5,10 +5,8 @@
 #include <string.h>
 #ifdef ANDROID
 #include <android/log.h>
-
 #endif
 #define  LOG_TAG    "Floor"
-
 #include "../common.h"
 #include "../inifile/inifile.h"
 
@@ -331,8 +329,8 @@ bool nfDoHomoTransform(float s, float t, float &u, float &v, float h[3][3])
     if (scale != 0) {
         u = u/scale;
         v = v/scale;
-        if(u>=1 || v>=1 ||u<0 ||v <0)
-            return false;
+//        if(u>=1 || v>=1 ||u<0 ||v <0)
+//            return false;
         return true;
     }
     return false;
@@ -489,7 +487,6 @@ bool    LoadFecParam(FecParam* pFecParam, int nArea, void* iniFile)
     return true;
 }
 /* please real time calculate homo coefficients by fpf and fpt */
-#if 0
 bool    LoadHomoParam(HomoParam* pParam, int nArea, int nFp, void* iniFile)
 {
 
@@ -511,8 +508,7 @@ bool    LoadHomoParam(HomoParam* pParam, int nArea, int nFp, void* iniFile)
     }
     return true;
 }
-#endif
-bool    LoadAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
+bool    LoadAreaSettings(AreaSettings* pParam, int nArea, void* iniFile, bool bDeployment)
 {
 
     char section[32];
@@ -534,16 +530,20 @@ bool    LoadAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
         }
         /*  fps for temp use only*/
 
-        sprintf(key, "fps_%d", i);
-        if(!GetProfilePointFloat(section, key, &pParam->fps[i], iniFile)){
-            fprintf(stderr, "[%s] %s value not found!\n", section, key);
-        }
-
         sprintf(key, "fpf_%d", i);
         if(!GetProfilePointFloat(section, key, &pParam->fpf[i], iniFile)){
             fprintf(stderr, "[%s] %s value not found!\n", section, key);
         }
     }
+    if (bDeployment) {
+        for (int i=0; i< pParam->nFpCounts; i++) {
+            sprintf(key, "fps_%d", i);
+            if(!GetProfilePointFloat(section, key, &pParam->fps[i], iniFile)){
+                fprintf(stderr, "[%s] %s value not found!\n", section, key);
+            }
+        }
+    }
+
     LoadFecParam(&pParam->fec, nArea, iniFile);
 
     pParam->nFpAreaCounts = GetProfileInt(section, "fp_regions", 4, iniFile);
@@ -557,8 +557,14 @@ bool    LoadAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
 
         }
 
-        //LoadHomoParam(&pParam->homo[i], nArea, i, iniFile);
+
     }
+    if(bDeployment){
+        for (int i=0; i< pParam->nFpAreaCounts; i++) {
+            LoadHomoParam(&pParam->homo[i], nArea, i, iniFile);
+        }
+    }
+    pParam->state = DATA_STATE_LOADED;
     return true;
 }
 bool    SaveFecParam(FecParam* pFecParam, int nArea, void* iniFile)
@@ -588,8 +594,6 @@ bool    SaveFecParam(FecParam* pFecParam, int nArea, void* iniFile)
         return false;
     return true;
 }
-/* please real time calculate homo coefficients by fpf and fpt */
-#if 0
 bool    SaveHomoParam(HomoParam* pParam, int nArea, int nFp, void* iniFile)
 {
     char section[32];
@@ -607,7 +611,6 @@ bool    SaveHomoParam(HomoParam* pParam, int nArea, int nFp, void* iniFile)
 
     return true;
 }
-#endif
 bool    SaveAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
 {
     char section[32];
@@ -621,11 +624,14 @@ bool    SaveAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
         sprintf(key, "fpt_%d", i);
         if(!WriteProfilePointFloat(section, key, &pParam->fpt[i], iniFile))
             return false;
+    }
+    for (int i=0; i< pParam->nFpCounts; i++) {
 
         sprintf(key, "fps_%d", i);
         if(!WriteProfilePointFloat(section, key, &pParam->fps[i], iniFile))
             return false;
-
+    }
+    for (int i=0; i< pParam->nFpCounts; i++) {
         sprintf(key, "fpf_%d", i);
         if(!WriteProfilePointFloat(section, key, &pParam->fpf[i], iniFile))
             return false;
@@ -640,7 +646,7 @@ bool    SaveAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
         if(!WriteProfileRectFloat(section, key, &pParam->region[i], iniFile)){
         }
 
-        //SaveHomoParam(&pParam->homo[i], nArea, i, iniFile);
+        SaveHomoParam(&pParam->homo[i], nArea, i, iniFile);
     }
     return true;
 }
@@ -701,6 +707,7 @@ nfImage* TexProcess::getSourceImage()
     return pRgb;
 }
 
+/* used for calibration */
 bool TexProcess::loadIniFile(const char* filename)
 {
     int i ;
@@ -721,7 +728,30 @@ bool TexProcess::loadIniFile(const char* filename)
     }
     memset(mAreaSettings, 0, sizeof(mAreaSettings));
     for (i=0; i< MAX_CAMERAS; i++) {
-        bOK = LoadAreaSettings(&mAreaSettings[i], i, handle);
+        bOK = LoadAreaSettings(&mAreaSettings[i], i, handle, false);
+        if (bOK != true)
+            break;
+    }
+    closeIniFile(handle);
+    return bOK;
+}
+bool TexProcess::loadIniFile2(const char* filename)
+{
+    int i ;
+    bool bOK;
+    char sourceImg[256];
+
+    if(mpSourceImageName){
+        free (mpSourceImageName);
+        mpSourceImageName = NULL;
+    }
+    void* handle  = openIniFile(filename, true);
+    if(!handle)
+        return false;
+
+    memset(mAreaSettings, 0, sizeof(mAreaSettings));
+    for (i=0; i< MAX_CAMERAS; i++) {
+        bOK = LoadAreaSettings(&mAreaSettings[i], i, handle, true);
         if (bOK != true)
             break;
     }
@@ -747,17 +777,53 @@ bool TexProcess::saveIniFile(const char* filename)
     closeIniFile(handle);
     return bOK;
 }
+void TexProcess::normalizeFpf(int nAreaId)
+{
+    if (mAreaSettings[nAreaId].fpf[3].x > 2 || mAreaSettings[nAreaId].fpf[3].y > 2)
+    { //normalize to [0,1]
+        for (int i=0; i<mAreaSettings[nAreaId].nFpCounts; i++){
+            mAreaSettings[nAreaId].fpf[i].x /= (float)(IMAGE_WIDTH/2);
+            mAreaSettings[nAreaId].fpf[i].y /= (float)(IMAGE_HEIGHT/2);
+        }
+    }
+    mAreaSettings[nAreaId].state = DATA_STATE_FPF;
+}
+void TexProcess::calculateFps(int nAreaId)
+{
+    for (int i=0; i<mAreaSettings[nAreaId].nFpCounts; i++){
+        nfInvFec(mAreaSettings[nAreaId].fpf[i].x, mAreaSettings[nAreaId].fpf[i].y,
+                 mAreaSettings[nAreaId].fps[i].x, mAreaSettings[nAreaId].fps[i].y,
+                 &mAreaSettings[nAreaId].fec);
+    }
+    mAreaSettings[nAreaId].state = DATA_STATE_FPS;
+}
+void TexProcess::calculateHomo(int nAreaId)
+{
+    if(mAreaSettings[nAreaId].nFpAreaCounts == 16)
+        nfCalculateHomoMatrix16(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+    else if (mAreaSettings[nAreaId].nFpAreaCounts == 12)
+        nfCalculateHomoMatrix12(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+    else
+        nfCalculateHomoMatrix4(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+
+    mAreaSettings[nAreaId].state = DATA_STATE_HOMO;
+
+}
 TexProcess::TexProcess():mpSourceImageName(NULL)
 {
     for (int m=0; m< MAX_CAMERAS; m++) {
         for(int k=0; k<MAX_FP_AREA; k++)
             m_RegionMap[m][k] = 1;
     }
-    /* decide which egion don't show
+    m_RegionMap[0][6] = 1;
+    m_RegionMap[0][11] = 1;
+    m_RegionMap[2][6] = 1;
+    m_RegionMap[2][11] = 1;
     m_RegionMap[1][0] = 0;
-    m_RegionMap[1][3] = 0;
     m_RegionMap[3][0] = 0;
-    m_RegionMap[3][3] = 0; */
+    m_RegionMap[1][7] = 0;
+    m_RegionMap[3][7] = 0;
+
 }
 /////////////
 /// \brief TexProcess::update call update if AreaSettings has changed
@@ -768,11 +834,6 @@ TexProcess::TexProcess():mpSourceImageName(NULL)
 bool TexProcess::update()
 {
     for (int m=0; m< MAX_CAMERAS; m++) {
-        //recalculate fps
-        for (int i=0; i<mAreaSettings[m].nFpCounts; i++){
-            nfInvFec(mAreaSettings[m].fpf[i].x, mAreaSettings[m].fpf[i].y, mAreaSettings[m].fps[i].x, mAreaSettings[m].fps[i].y, &mAreaSettings[m].fec);
-        }
-
         if (mAreaSettings[m].nFpAreaCounts == 16){
             nfCalculateHomoMatrix16(mAreaSettings[m].fps, mAreaSettings[m].fpt, mAreaSettings[m].homo);
         }

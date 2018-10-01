@@ -16,6 +16,8 @@ public class NavmEs3Lib {
      }
 
      public static native void init(AssetManager assetManager, String appFolder);
+     /*<! call satrt2 instead of start, to use sim video file */
+     public static native void start2(String simVideoFile);
      public static native void start();
      public static native void resize(int width, int height);
      public static native void step();
