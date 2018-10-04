@@ -11,6 +11,7 @@
 #include "GlHelper.h"
 #include "Floor.h"
 #include "Car.h"
+#include "Plat.h"
 #define LOG_TAG "GLES3JNI"
 #include "common.h"
 #include "imglab/ImgProcess.h"
@@ -22,6 +23,7 @@
 
 Car  mCar;
 Floor mFloor;
+Plat    mPlat1;
 TexProcess gTexProcess;
 
 #define MODE_BIRDVIEW   0
@@ -45,15 +47,17 @@ MainJni::MainJni() : mMode(0), mAngle(0)
 //    glCullFace(GL_BACK);//default
 //    glCullFace(GL_FRONT);
 
-    mAspectRatio  = 2;
+    mAspectRatio  = 1;
     changeViewMode(MODE_BIRDVIEW);
 }
 MainJni:: ~MainJni() {
 }
 void MainJni::resize(int w, int h)
 {
-    glViewport(0, 0, w, h);
-    mAspectRatio = (float)w/(float)h;
+    glViewport(w-h, 0, h, h);
+    mDisplayWidth = w;
+    mDisplayHeight = h;
+    mAspectRatio = 1;//(float)w/(float)h;
 }
 
 void MainJni::render()
@@ -61,8 +65,16 @@ void MainJni::render()
 
     glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(mDisplayWidth-mDisplayHeight, 0, mDisplayHeight, mDisplayHeight);
+
     mFloor.draw();
     mCar.draw();
+
+    glViewport(0, 0, mDisplayWidth-mDisplayHeight, mDisplayHeight);
+    mPlat1.draw();
+
+
 
     checkGlError("Renderer::render");
 }
@@ -298,6 +310,8 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring si
         LOGE("Cannot open skin image in assets!");
     }
     mCar.init();
+    mPlat1.setSimVideoFileRgb(IMAGE_WIDTH, IMAGE_HEIGHT, 4, szFile);
+    mPlat1.init();
     //
     testAsset = AAssetManager_open(gAmgr, "porch_body.bin", AASSET_MODE_UNKNOWN);
     if (testAsset)
@@ -363,7 +377,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring si
         LOGE("Cannot open skin image in assets!");
     }
     ////
-    LOGE("exit Java_com_nforetek_navmes3_NavmEs3Lib_start" );
+    LOGE("exit Java_com_nforetek_navmes3_NavmEs3Lib_start2" );
 }
 
 
@@ -430,6 +444,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject  obj ) {
         LOGE("Cannot open skin image in assets!");
     }
     mCar.init();
+    mPlat1.init();
     //
     testAsset = AAssetManager_open(gAmgr, "porch_body.bin", AASSET_MODE_UNKNOWN);
     if (testAsset)
@@ -520,6 +535,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
     strncpy(szIniFile, szRootDir, sizeof(szIniFile));
     strncat(szIniFile, DEFAULT_SETTING_FILE, sizeof (szIniFile));
     FILE* fp = fopen(szIniFile,"r");
+    //FILE* fp = NULL; //force overwrite inifile
     if(!fp) {
         LOGE("Setting file %s not found, copy default settings.", szIniFile);
         CreateDefaultIniFile(szIniFile);

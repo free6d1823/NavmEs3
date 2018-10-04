@@ -833,6 +833,7 @@ TexProcess::TexProcess():mpSourceImageName(NULL)
 ///
 bool TexProcess::update()
 {
+    /*
     for (int m=0; m< MAX_CAMERAS; m++) {
         if (mAreaSettings[m].nFpAreaCounts == 16){
             nfCalculateHomoMatrix16(mAreaSettings[m].fps, mAreaSettings[m].fpt, mAreaSettings[m].homo);
@@ -844,6 +845,8 @@ bool TexProcess::update()
         }
 
     }
+     */
+
     return true;
 }
 

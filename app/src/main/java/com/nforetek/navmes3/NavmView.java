@@ -79,15 +79,20 @@ class NavmView extends GLSurfaceView {
             }
         }
 
-
+        final boolean mUseSimFile = true;
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/video_1440x960.rgb";
-            File file = new File(path);
-            if (file.exists()){
-                NavmEs3Lib.start2(path);
-            }else
-                NavmEs3Lib.start();
+            if (mUseSimFile) {
+                String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/video_1440x960.rgb";
+                Log.e(TAG, "Download is " + path);
+                File file = new File(path);
+                if (file.exists()) {
+                    NavmEs3Lib.start2(path);
+                    return;
+                }
+            }
+            //use video input
+            NavmEs3Lib.start();
 
 
         }

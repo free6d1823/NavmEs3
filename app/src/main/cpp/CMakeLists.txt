@@ -45,6 +45,7 @@ add_library(navmes3 SHARED
             CameraSource.cpp
             server.cpp
             Floor.cpp
+            Plat.cpp
             Car.cpp)
 
 # Include libraries needed for gles3jni lib

@@ -1,0 +1,284 @@
+//
+// Created by cj on 2018/9/3.
+//
+#include <GLES3/gl31.h>
+#include <EGL/egl.h>
+#include <cstdlib>
+
+#include "GlHelper.h"
+#include "Plat.h"
+
+
+#define LOG_TAG "FLOOR"
+#include "common.h"
+#include "CameraSource.h"
+
+extern TexProcess gTexProcess;
+static const char VERTEX_SHADER[] =
+                "attribute vec3 vertexPosition;\n"
+                "attribute vec2 vertexUv;\n"
+                "varying vec2 v_texcoord;\n"
+                "void main() {\n"
+                "  gl_Position =vec4(vertexPosition, 1);\n"
+                "  v_texcoord = vertexUv;\n"
+                "}\n";
+
+static const char FRAGMENT_SHADER[] =
+        "precision mediump float;\n"
+                "varying vec2 v_texcoord;\n"
+                "uniform sampler2D texture;\n"
+                "void main() {\n"
+                "  gl_FragColor = texture2D(texture, v_texcoord);\n"
+                "}\n";
+
+//#define SAFE_FREE(p) if(p){free(p); p=NULL;}
+Plat::Plat()
+        :   mEglContext(eglGetCurrentContext()),
+            mpVertexBuf(0), /*<! vertex coordinates, 3D */
+            mpUvBuf(0),     /*<! texture UV coordinates, 2D */
+            mNumToDraw(0),  /*<! number of elements to draw */
+            mpTexImg(0),   /*<! texture image data */
+            mProgramId(-1), /*<! Shader program ID */
+            mTextureDataId(-1),
+            mVertexAttrib(-1),      /*<! ID of Vertex position uniform */
+            mUvAttrib(-1),    /*<! ID of texture uniform in shader program */
+            mTextureUniform(-1),      /*<! ID of texture uniform */
+            mMvpMatrixUniform(-1),       /*<! ID of matrix uniform in shader program */
+            mVaoId(-1) /*<! ID of Vertex array object*/
+
+{
+    mVertexBufId[0] = mVertexBufId[1] = -1;
+    mVertexBufId[2] = -1;
+
+    mUseSim = false;
+    mFp = NULL;
+    mpYuvImg = NULL;
+    mTotalFrames = 0;
+}
+Plat ::~Plat()
+{
+    cleanup();
+}
+void Plat ::cleanup()
+{
+    SAFE_FREE(mpVertexBuf);
+    SAFE_FREE(mpUvBuf);
+    SAFE_FREE(mpTexImg);
+
+    //if use sim file
+    if(mFp) {
+        fclose(mFp);
+        mFp = NULL;
+    }
+    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
+    mUseSim = false;
+
+    if(mVertexBufId[0]) {
+        glDeleteBuffers(3, mVertexBufId);
+    }
+
+    if (mVaoId) {
+        glDeleteVertexArrays(1, &mVaoId);
+    }
+
+    if(mProgramId)                   /*<! Shader program ID */
+        glDeleteProgram(mProgramId);
+    if(mTextureDataId)               /*<! ID of texture data */
+        glDeleteTextures(1, &mTextureDataId);
+}
+#define SX  1 //1.0f/354.0f
+#define SY  1 //1.0f/540.0f
+static const nfFloat3D gpVertexBuf[12] = {
+        {-SX,  SY, 0}, { 0, SY, 0}, {-SX, 0, 0},{ 0, 0, 0},
+        {0,  SY, 0}, { SX, SY, 0}, {0, 0, 0},{ SX, 0, 0},
+        {-SX,  0, 0}, { SX, 0, 0}, {-SX, -SY, 0},{ SX, -SY, 0},
+
+};
+static const nfFloat2D gpUvTexture[12] = {
+        {0.596527778f,0.0375f}, {0.911111f,0.0375f}, {0.5027778f,0.282291667f}, {0.9986111f,0.282291667f},
+        {0.1000694f, 0.52604167f}, {0.39375f, 0.52604167f},{0.0020833f, 0.80416667f},{0.496111f, 0.80416667f},
+        {0.6007f, 0.52604167f}, {0.89653f, 0.52604167f},{0.5001f, 0.80416667f},{0.9986111f, 0.80416667f},
+};
+static const unsigned short gpIndices[18] = {
+        0,2,1,2,3,1,
+        4,6,5,6,7,5,
+        8,10,9,10,11,9,
+};
+
+bool Plat ::initVertexData()
+{
+
+    glGenVertexArrays(1, &mVaoId);
+    glBindVertexArray(mVaoId);
+
+    glGenBuffers(3, mVertexBufId);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(gpVertexBuf), &gpVertexBuf[0], GL_STATIC_DRAW);
+
+//
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(gpUvTexture), &gpUvTexture[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[2]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gpIndices), &gpIndices[0], GL_STATIC_DRAW);
+
+    mNumToDraw = sizeof(gpIndices)/sizeof(gpIndices[0]);
+
+    return true;
+}
+bool Plat ::init()
+{
+     mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+    if (!mProgramId)
+        return false;
+    mVertexAttrib = glGetAttribLocation(mProgramId, "vertexPosition");
+    mUvAttrib =  glGetAttribLocation(mProgramId, "vertexUv");
+    mTextureUniform = glGetUniformLocation(mProgramId, "texture");
+    initVertexData();
+
+//    CameraSource* m_pCs = new CameraSource();
+//    delete m_pCs;
+
+    glGenTextures(1, &mTextureDataId);
+    updateTextureData();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+
+    return true;
+}
+
+nfPByte Plat ::allocTextureImage(int width, int height, int depth)
+{
+    mUseSim = false;
+    SAFE_FREE(mpTexImg);
+    mTexWidth = width;
+    mTexHeight = height;
+    mTexDepth = depth;
+    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
+    return mpTexImg;
+}
+/* \brief use video file to simulate, called before init
+ *
+ */
+void Plat ::setSimVideoFile(int width, int height, int depth, const char* szFile)
+{
+    SAFE_FREE(mpTexImg);
+    mTexWidth = width;
+    mTexHeight = height;
+    mTexDepth = depth;
+    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
+    mUseSim = true;
+    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
+    mpYuvImg = nfImage::create(mTexWidth, mTexHeight, 2);
+    mCurFrame = 0;
+
+    if (mFp ) {
+        fclose(mFp);
+    }
+    mFp = fopen(szFile, "r");
+    if (!mFp) {
+        LOGE("Failed to open video simulation file %s!!", szFile);
+        return;
+    }
+    fseek(mFp, 0, SEEK_END);
+    long length = ftell(mFp);
+    LOGE("File length = %ld bytes", length);
+    mTotalFrames = length /(mTexWidth*mTexHeight*2);
+    fseek(mFp, 0, SEEK_SET);
+
+    LOGE("Use sim file %s as video input %dx%d, %d frames ", szFile, width, height, mTotalFrames);
+}
+void Plat ::setSimVideoFileRgb(int width, int height, int depth, const char* szFile)
+{
+    SAFE_FREE(mpTexImg);
+    mTexWidth = width;
+    mTexHeight = height;
+    mTexDepth = depth;
+    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
+    mUseSim = true;
+    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
+    mpYuvImg = NULL;
+    mCurFrame = 0;
+    if (mFp ) {
+        fclose(mFp);
+    }
+    mFp = fopen(szFile, "r");
+    if (!mFp) {
+        LOGE("Failed to open video simulation file %s!!", szFile);
+        return;
+    }
+    fseek(mFp, 0, SEEK_END);
+    long length = ftell(mFp);
+    LOGE("Plat: File length = %ld bytes", length);
+    mTotalFrames = length /(mTexWidth*mTexHeight*mTexDepth);
+    fseek(mFp, 0, SEEK_SET);
+}
+void Plat ::updateTextureData()
+{
+    loadTexture();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mTextureDataId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTexWidth, mTexHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mpTexImg);
+
+}
+bool Plat ::loadTexture()
+{
+    if (mUseSim && mFp ) {
+        if (mCurFrame >= mTotalFrames) {
+            fseek(mFp, 0, SEEK_SET);
+            mCurFrame = 0;
+        }
+
+        if(mpYuvImg) {//input is YUYV
+            fread(mpYuvImg->buffer, 1, mTexWidth * mTexHeight * 2, mFp);
+            nfYuyvToRgb32(mpYuvImg, mpTexImg, true, false);
+        }
+        else //input is RGB32
+            fread(mpTexImg, 1, mTexWidth * mTexHeight * 4, mFp);
+        mCurFrame++;
+
+    }
+    return true;
+}
+
+/* \brief render Plat image
+ * \param bReload set true to reload texture
+ *
+ */
+void Plat ::draw(bool bReload)
+{    glUseProgram(mProgramId);
+    checkGlError("RendererES2::glUseProgram");
+    updateTextureData();
+    glUniform1i(mTextureUniform, 0);//"texture" to use first texture data
+    glBindBuffer(GL_ARRAY_BUFFER, mTextureDataId);
+
+
+    glEnableVertexAttribArray(mVertexAttrib);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[0]);
+    glVertexAttribPointer(mVertexAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(nfFloat3D), (const GLvoid*)0);
+
+    glEnableVertexAttribArray(mUvAttrib);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[1]);
+    glVertexAttribPointer(mUvAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvoid*)0);
+
+    // Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[2]);
+
+    glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, m_matMvp.Ptr());
+
+    glDrawElements(GL_TRIANGLES, mNumToDraw, GL_UNSIGNED_SHORT, 0 );
+
+    glDisableVertexAttribArray(mVertexAttrib);
+    glDisableVertexAttribArray(mUvAttrib);
+}
+
+/* \brief update basic matrics
+ * \param pojection
+
+ */
+void Plat ::update(Mat4& pojection )
+{
+//    m_matMvp = pojection;
+
+}
