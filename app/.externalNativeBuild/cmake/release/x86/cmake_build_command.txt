@@ -3,7 +3,7 @@ arguments :
 -H/home/cj/AndroidProjects/NavmEs3/app/src/main/cpp
 -B/home/cj/AndroidProjects/NavmEs3/app/.externalNativeBuild/cmake/release/x86
 -DANDROID_ABI=x86
--DANDROID_PLATFORM=android-18
+-DANDROID_PLATFORM=android-23
 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/cj/AndroidProjects/NavmEs3/app/build/intermediates/cmake/release/obj/x86
 -DCMAKE_BUILD_TYPE=Release
 -DANDROID_NDK=/opt/android-sdk/ndk-bundle

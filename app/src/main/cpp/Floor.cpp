@@ -32,7 +32,7 @@ static const char FRAGMENT_SHADER[] =
                 "  gl_FragColor = texture2D(texture, v_texcoord);\n"
                 "}\n";
 
-#define SAFE_FREE(p) if(p){free(p); p=NULL;}
+
 Floor::Floor()
         :   mEglContext(eglGetCurrentContext()),
             mpVertexBuf(0), /*<! vertex coordinates, 3D */
@@ -88,15 +88,6 @@ void Floor ::cleanup()
         glDeleteTextures(1, &mTextureDataId);
 }
 
-static const nfFloat3D gpVertexBuf[4] = {
-        {-10,  0, 10}, { 10, 0, 10}, {-10, 0,  -10},{ 10, 0, -10},
-};
-static const nfFloat2D gpUvTexture[4] = {
-        {0.0f,0.0f}, {1,0}, {0,1}, {1,1}
-};
-static const unsigned short gpIndices[6] = {
-        0,1,2,2,1,3
-};
 
 bool Floor ::initVertexData()
 {

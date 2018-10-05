@@ -55,7 +55,7 @@ build CMakeFiles/navmes3.dir/navmjni.cpp.o: CXX_COMPILER__navmes3 /home/cj/Andro
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/navmjni.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/navmjni.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -63,7 +63,7 @@ build CMakeFiles/navmes3.dir/GlHelper.cpp.o: CXX_COMPILER__navmes3 /home/cj/Andr
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/GlHelper.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/GlHelper.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -71,7 +71,7 @@ build CMakeFiles/navmes3.dir/imglab/vecmath.cpp.o: CXX_COMPILER__navmes3 /home/c
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/imglab/vecmath.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/imglab/vecmath.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir/imglab
@@ -79,7 +79,7 @@ build CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o: CXX_COMPILER__navmes3 /hom
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/imglab/ImgProcess.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir/imglab
@@ -87,7 +87,7 @@ build CMakeFiles/navmes3.dir/imglab/Mat.cpp.o: CXX_COMPILER__navmes3 /home/cj/An
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/imglab/Mat.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/imglab/Mat.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir/imglab
@@ -95,7 +95,7 @@ build CMakeFiles/navmes3.dir/inifile/inifile.cpp.o: CXX_COMPILER__navmes3 /home/
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/inifile/inifile.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/inifile/inifile.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir/inifile
@@ -103,7 +103,7 @@ build CMakeFiles/navmes3.dir/CameraManager.cpp.o: CXX_COMPILER__navmes3 /home/cj
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/CameraManager.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/CameraManager.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -111,7 +111,7 @@ build CMakeFiles/navmes3.dir/CameraSource.cpp.o: CXX_COMPILER__navmes3 /home/cj/
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/CameraSource.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/CameraSource.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -119,7 +119,7 @@ build CMakeFiles/navmes3.dir/server.cpp.o: CXX_COMPILER__navmes3 /home/cj/Androi
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/server.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/server.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -127,7 +127,7 @@ build CMakeFiles/navmes3.dir/Floor.cpp.o: CXX_COMPILER__navmes3 /home/cj/Android
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/Floor.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/Floor.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -135,7 +135,7 @@ build CMakeFiles/navmes3.dir/Plat.cpp.o: CXX_COMPILER__navmes3 /home/cj/AndroidP
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/Plat.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/Plat.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -143,7 +143,7 @@ build CMakeFiles/navmes3.dir/Car.cpp.o: CXX_COMPILER__navmes3 /home/cj/AndroidPr
   DEFINES = -Dnavmes3_EXPORTS
   DEP_FILE = CMakeFiles/navmes3.dir/Car.cpp.o.d
   FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG  -fPIC
-  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/android/support/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /home/cj/AndroidProjects/NavmEs3/app/src/main/cpp/Car.cpp
   OBJECT_DIR = CMakeFiles/navmes3.dir
   OBJECT_FILE_DIR = CMakeFiles/navmes3.dir
@@ -157,8 +157,8 @@ build CMakeFiles/navmes3.dir/Car.cpp.o: CXX_COMPILER__navmes3 /home/cj/AndroidPr
 
 build /home/cj/AndroidProjects/NavmEs3/app/build/intermediates/cmake/release/obj/x86/libnavmes3.so: CXX_SHARED_LIBRARY_LINKER__navmes3 CMakeFiles/navmes3.dir/navmjni.cpp.o CMakeFiles/navmes3.dir/GlHelper.cpp.o CMakeFiles/navmes3.dir/imglab/vecmath.cpp.o CMakeFiles/navmes3.dir/imglab/ImgProcess.cpp.o CMakeFiles/navmes3.dir/imglab/Mat.cpp.o CMakeFiles/navmes3.dir/inifile/inifile.cpp.o CMakeFiles/navmes3.dir/CameraManager.cpp.o CMakeFiles/navmes3.dir/CameraSource.cpp.o CMakeFiles/navmes3.dir/server.cpp.o CMakeFiles/navmes3.dir/Floor.cpp.o CMakeFiles/navmes3.dir/Plat.cpp.o CMakeFiles/navmes3.dir/Car.cpp.o
   LANGUAGE_COMPILE_FLAGS = -isystem /opt/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=c++11 -fno-rtti -fno-exceptions -Wall -O2 -DNDEBUG
-  LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -nostdlib++ --sysroot /opt/android-sdk/ndk-bundle/platforms/android-18/arch-x86 -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -L/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86 -Wl,--no-undefined -Wl,-z,noexecstack -Qunused-arguments -Wl,-z,relro -Wl,-z,now
-  LINK_LIBRARIES = -lGLESv3 -landroid -lEGL -llog -lm -latomic -lm "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86/libc++_static.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86/libc++abi.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86/libandroid_support.a"
+  LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -nostdlib++ --sysroot /opt/android-sdk/ndk-bundle/platforms/android-23/arch-x86 -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -L/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86 -Wl,--no-undefined -Wl,-z,noexecstack -Qunused-arguments -Wl,-z,relro -Wl,-z,now
+  LINK_LIBRARIES = -lGLESv3 -landroid -lEGL -llog -lm -latomic -lm "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86/libc++_static.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/x86/libc++abi.a"
   OBJECT_DIR = CMakeFiles/navmes3.dir
   POST_BUILD = :
   PRE_LINK = :

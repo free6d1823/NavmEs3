@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -31,11 +32,12 @@ public class MainActivity extends Activity {
         super.onCreate(icicle);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        mView = new NavmView(getApplication());
-        setContentView(mView);
+
+//        mView = new NavmView(getApplication());
+//        setContentView(mView);
 
         mDetector = new GestureDetector(this, new MyGestureListener());
-        mView.setOnTouchListener(touchListener);
+
 
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
@@ -54,61 +56,57 @@ public class MainActivity extends Activity {
 
         }
     };
+    boolean mInited = false;
     @Override protected void onPause() {
         super.onPause();
-        mView.onPause();
+        if (mInited)
+            mView.onPause();
     }
 
     @Override protected void onResume() {
         super.onResume();
-        mView.onResume();
+        if (mInited)
+            mView.onResume();
     }
-/*    TODO runtime permission later
+
+    //Remember to add these permission in AndroidManifest.xml <uses-permission//
+    final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    final int MULTI_PERMISSIONS_ID = 1001;
     @Override
     public void onStart() {
         super.onStart();
-        if (checkPermissionPass()) {
+        if (hasPermissions(PERMISSIONS)) {
             startTask();
+        } else {
         }
     }
-    //Remember to add these permission in AndroidManifest.xml <uses-permission//
-    final String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-    final int MULTI_PERMISSIONS_ID = 1001;
+
     private boolean hasPermissions(String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permissions != null) {
             for (String permission : permissions) {
-                if (!shouldShowRequestPermissionRationale(permission))
-                    return false;
+
                 if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                     if (shouldShowRequestPermissionRationale(permission)) {
-                        continue;
+                        ActivityCompat.requestPermissions(this,
+                                PERMISSIONS,
+                                MULTI_PERMISSIONS_ID);
                     }
                     return false;
                 }
             }
         }
+        mInited = true;
         return true;
     }
 
-    boolean checkPermissionPass(){
-        if (hasPermissions(PERMISSIONS))
-            return true;
-        // if the user has rejected permission, the next time will not show RequestPermission dialog, and directly give
-        // PERMISSION_GRANTED. User have to uninstall the APP and give again.
-        ActivityCompat.requestPermissions(this,
-                PERMISSIONS,
-                MULTI_PERMISSIONS_ID);
-        return false;
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult = " + requestCode + " size="+ permissions.length);
-        if (requestCode == MULTI_PERMISSIONS_ID)
+        //first time we got grantResults.length=0
+        if (requestCode == MULTI_PERMISSIONS_ID && grantResults.length>0)
         {
             int needTotalGranted = PERMISSIONS.length;
             for (int i=0; i< grantResults.length; i++) {
-                Log.d(TAG, "onRequestPermissionsResult string = "+permissions[i]+ " grantResults = "+grantResults[i] );
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     for (int j=0; j<PERMISSIONS.length; j++) {
                         if (permissions[i].equals(PERMISSIONS[j]))
@@ -147,9 +145,11 @@ public class MainActivity extends Activity {
                 .show();
     }
     void startTask() {
-        //do something
+        mView = new NavmView(getApplication());
+        setContentView(mView);
+        mView.setOnTouchListener(touchListener);
     }
-    */
+
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override

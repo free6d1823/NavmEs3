@@ -18,6 +18,13 @@
 static vector <Camera*>    m_listCam;
 static CameraManager theCameraManager;
 CameraManager* GetCameraManager(){return &theCameraManager;}
+
+
+//Android
+/*
+#include <camera/NdkCameraManager.h>
+ACameraManager* gpCameraManager = NULL;
+*/
 /******************************************************************
  *  Global functions
  * ****************************************************************/
@@ -50,8 +57,24 @@ void CameraManager::Clean()
 }
 CameraManager::CameraManager()
 {
+    /*
+    gpCameraManager = NULL;
+    gpCameraManager = ACameraManager_create();
+LOGE("---- enter new CameraManager");
+    if (gpCameraManager) {
+        ACameraIdList* pList;
+        camera_status_t ret = ACameraManager_getCameraIdList(gpCameraManager,&pList);
+        if (ret == ACAMERA_OK ){
+            m_listCam.clear();
+            for (int i=0; i< pList->numCameras; i++){
+LOGE("%d -- cam=%s", i, pList->cameraIds[i]);
+            }
+            ACameraManager_deleteCameraIdList(pList);
+        }
+    }
+*/
     m_listCam.clear();
-    Reflesh();
+//    Reflesh();
 }
 CameraManager::~CameraManager()
 {
@@ -124,7 +147,8 @@ int CameraManager::Reflesh()
     char device[32];
     int i;
 LOGI("--- CameraManager::Reflesh()");
-    for (i=0;i<20; i++){
+
+    for (i=0;i<10; i++){
         sprintf(device, "/dev/video%d", i);
 LOGI("-- open cam %s", device);
         int fd = open(device, O_RDWR | O_NONBLOCK, 0);

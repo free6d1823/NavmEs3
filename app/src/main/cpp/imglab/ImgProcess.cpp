@@ -739,7 +739,6 @@ bool TexProcess::loadIniFile2(const char* filename)
 {
     int i ;
     bool bOK;
-    char sourceImg[256];
 
     if(mpSourceImageName){
         free (mpSourceImageName);

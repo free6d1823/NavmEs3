@@ -21,7 +21,7 @@ ANDROID_ABI:UNINITIALIZED=x86_64
 ANDROID_NDK:UNINITIALIZED=/opt/android-sdk/ndk-bundle
 
 //No help, variable specified on the command line.
-ANDROID_PLATFORM:UNINITIALIZED=android-18
+ANDROID_PLATFORM:UNINITIALIZED=android-23
 
 //No help, variable specified on the command line.
 ANDROID_STL:UNINITIALIZED=c++_static

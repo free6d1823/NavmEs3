@@ -21,7 +21,7 @@ ANDROID_ABI:UNINITIALIZED=armeabi-v7a
 ANDROID_NDK:UNINITIALIZED=/opt/android-sdk/ndk-bundle
 
 //No help, variable specified on the command line.
-ANDROID_PLATFORM:UNINITIALIZED=android-18
+ANDROID_PLATFORM:UNINITIALIZED=android-23
 
 //No help, variable specified on the command line.
 ANDROID_STL:UNINITIALIZED=c++_static
@@ -59,7 +59,7 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
 //Libraries linked by default with all C++ applications.
-CMAKE_CXX_STANDARD_LIBRARIES:STRING=-latomic -lm "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_static.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++abi.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libandroid_support.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libunwind.a" "-ldl"
+CMAKE_CXX_STANDARD_LIBRARIES:STRING=-latomic -lm "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_static.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++abi.a" "/opt/android-sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libunwind.a" "-ldl"
 
 //Flags used by the compiler during all build types.
 CMAKE_C_FLAGS:STRING=
