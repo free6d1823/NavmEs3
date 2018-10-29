@@ -10,7 +10,7 @@
 #include <GLES3/gl31.h>
 #include <EGL/egl.h>
 
-
+class CameraSource;
 class Floor {
 public:
     Floor();
@@ -28,14 +28,6 @@ public:
      * \param pojection
      */
     void update(Mat4& pojection );
-
-    /* \brief alloc texture buffer
-     * \param width width of the image
-     * \param height height of the image
-     * \param depth bytes per pixel
-     * \return pointer to the buffer
-     */
-    nfPByte allocTextureImage(int width, int height, int depth);
 
     /* \brief use video file to simulate, called before init
      * \param width width of the image
@@ -76,11 +68,7 @@ private:
     GLuint mMvpMatrixUniform;        /*<! ID of matrix uniform in shader program */
     GLuint mVaoId;              /*<! ID of Vertex array object*/
     GLuint mVertexBufId[3];     /*<! buffer ID: 0=Vertex, 1=UV texture, buffer */
-    bool mUseSim; /*<! true to use file to simulate scene*/
-    int mCurFrame;
-    int mTotalFrames;
-    FILE* mFp; /*<! video file FILE pointer */
-    nfImage*  mpYuvImg;   /*<! texture image data */
+
 
 };
 

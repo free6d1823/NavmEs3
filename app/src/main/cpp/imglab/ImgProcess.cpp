@@ -57,7 +57,7 @@ void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst, bool bMirror
     unsigned char y1,u,v;
     for (unsigned int i=0; i<pYuv->height; i++)
     {
-        for (unsigned int j=0; j<pYuv->width; j+=2)
+        for (unsigned int j=0; j<pYuv->width; j++)
         {
             y1 = pY1[2*j];
             u = pU[2*j];
@@ -66,12 +66,12 @@ void nfYuyvToRgb32(nfImage* pYuv, unsigned char* pRgb, bool uFirst, bool bMirror
             pLine1[j*4+1] = YUV2G(y1, u, v);//g
             pLine1[j*4+2] = YUV2R(y1, u, v);//r
             pLine1[j*4+3] = 0xff;
-
-            y1 = pY1[2*j+2];
-            pLine1[j*4+4] = YUV2B(y1, u, v);//b
-            pLine1[j*4+5] = YUV2G(y1, u, v);//g
-            pLine1[j*4+6] = YUV2R(y1, u, v);//r
-            pLine1[j*4+7] = 0xff;
+            j++;
+            y1 = pY1[2*j];
+            pLine1[j*4] = YUV2B(y1, u, v);//b
+            pLine1[j*4+1] = YUV2G(y1, u, v);//g
+            pLine1[j*4+2] = YUV2R(y1, u, v);//r
+            pLine1[j*4+3] = 0xff;
         }
         pY1 += nStride;
         pV += nStride;

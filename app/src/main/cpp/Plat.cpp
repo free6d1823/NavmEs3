@@ -14,6 +14,8 @@
 #include "CameraSource.h"
 
 extern TexProcess gTexProcess;
+extern CameraSource gCameraSource;
+
 static const char VERTEX_SHADER[] =
                 "attribute vec3 vertexPosition;\n"
                 "attribute vec2 vertexUv;\n"
@@ -49,11 +51,6 @@ Plat::Plat()
 {
     mVertexBufId[0] = mVertexBufId[1] = -1;
     mVertexBufId[2] = -1;
-
-    mUseSim = false;
-    mFp = NULL;
-    mpYuvImg = NULL;
-    mTotalFrames = 0;
 }
 Plat ::~Plat()
 {
@@ -63,15 +60,7 @@ void Plat ::cleanup()
 {
     SAFE_FREE(mpVertexBuf);
     SAFE_FREE(mpUvBuf);
-    SAFE_FREE(mpTexImg);
 
-    //if use sim file
-    if(mFp) {
-        fclose(mFp);
-        mFp = NULL;
-    }
-    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
-    mUseSim = false;
 
     if(mVertexBufId[0]) {
         glDeleteBuffers(3, mVertexBufId);
@@ -128,16 +117,16 @@ bool Plat ::initVertexData()
 }
 bool Plat ::init()
 {
-     mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+    mTexWidth = gCameraSource.Width();
+    mTexHeight = gCameraSource.Height();
+
+    mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     if (!mProgramId)
         return false;
     mVertexAttrib = glGetAttribLocation(mProgramId, "vertexPosition");
     mUvAttrib =  glGetAttribLocation(mProgramId, "vertexUv");
     mTextureUniform = glGetUniformLocation(mProgramId, "texture");
     initVertexData();
-
-//    CameraSource* m_pCs = new CameraSource();
-//    delete m_pCs;
 
     glGenTextures(1, &mTextureDataId);
     updateTextureData();
@@ -148,72 +137,6 @@ bool Plat ::init()
     return true;
 }
 
-nfPByte Plat ::allocTextureImage(int width, int height, int depth)
-{
-    mUseSim = false;
-    SAFE_FREE(mpTexImg);
-    mTexWidth = width;
-    mTexHeight = height;
-    mTexDepth = depth;
-    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
-    return mpTexImg;
-}
-/* \brief use video file to simulate, called before init
- *
- */
-void Plat ::setSimVideoFile(int width, int height, int depth, const char* szFile)
-{
-    SAFE_FREE(mpTexImg);
-    mTexWidth = width;
-    mTexHeight = height;
-    mTexDepth = depth;
-    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
-    mUseSim = true;
-    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
-    mpYuvImg = nfImage::create(mTexWidth, mTexHeight, 2);
-    mCurFrame = 0;
-
-    if (mFp ) {
-        fclose(mFp);
-    }
-    mFp = fopen(szFile, "r");
-    if (!mFp) {
-        LOGE("Failed to open video simulation file %s!!", szFile);
-        return;
-    }
-    fseek(mFp, 0, SEEK_END);
-    long length = ftell(mFp);
-    LOGE("File length = %ld bytes", length);
-    mTotalFrames = length /(mTexWidth*mTexHeight*2);
-    fseek(mFp, 0, SEEK_SET);
-
-    LOGE("Use sim file %s as video input %dx%d, %d frames ", szFile, width, height, mTotalFrames);
-}
-void Plat ::setSimVideoFileRgb(int width, int height, int depth, const char* szFile)
-{
-    SAFE_FREE(mpTexImg);
-    mTexWidth = width;
-    mTexHeight = height;
-    mTexDepth = depth;
-    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
-    mUseSim = true;
-    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
-    mpYuvImg = NULL;
-    mCurFrame = 0;
-    if (mFp ) {
-        fclose(mFp);
-    }
-    mFp = fopen(szFile, "r");
-    if (!mFp) {
-        LOGE("Failed to open video simulation file %s!!", szFile);
-        return;
-    }
-    fseek(mFp, 0, SEEK_END);
-    long length = ftell(mFp);
-    LOGE("Plat: File length = %ld bytes", length);
-    mTotalFrames = length /(mTexWidth*mTexHeight*mTexDepth);
-    fseek(mFp, 0, SEEK_SET);
-}
 void Plat ::updateTextureData()
 {
     loadTexture();
@@ -224,21 +147,7 @@ void Plat ::updateTextureData()
 }
 bool Plat ::loadTexture()
 {
-    if (mUseSim && mFp ) {
-        if (mCurFrame >= mTotalFrames) {
-            fseek(mFp, 0, SEEK_SET);
-            mCurFrame = 0;
-        }
-
-        if(mpYuvImg) {//input is YUYV
-            fread(mpYuvImg->buffer, 1, mTexWidth * mTexHeight * 2, mFp);
-            nfYuyvToRgb32(mpYuvImg, mpTexImg, true, false);
-        }
-        else //input is RGB32
-            fread(mpTexImg, 1, mTexWidth * mTexHeight * 4, mFp);
-        mCurFrame++;
-
-    }
+    mpTexImg = gCameraSource.GetFrameData();
     return true;
 }
 

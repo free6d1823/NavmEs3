@@ -19,7 +19,6 @@
 #define IMAGE_AREA_HEIGHT   480
 
 
-
 using namespace std;
 
 #define SAFE_FREE(p) if(p) { free(p); p=NULL;}

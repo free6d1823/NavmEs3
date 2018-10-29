@@ -13,6 +13,8 @@
 #include "common.h"
 #include "CameraSource.h"
 
+CameraSource gCameraSource;
+
 extern TexProcess gTexProcess;
 static const char VERTEX_SHADER[] =
         "uniform mat4 mvp_matrix;\n"
@@ -51,10 +53,6 @@ Floor::Floor()
     mVertexBufId[0] = mVertexBufId[1] = -1;
     mVertexBufId[2] = -1;
 
-    mUseSim = false;
-    mFp = NULL;
-    mpYuvImg = NULL;
-    mTotalFrames = 0;
 }
 Floor ::~Floor()
 {
@@ -64,15 +62,7 @@ void Floor ::cleanup()
 {
     SAFE_FREE(mpVertexBuf);
     SAFE_FREE(mpUvBuf);
-    SAFE_FREE(mpTexImg);
 
-    //if use sim file
-    if(mFp) {
-        fclose(mFp);
-        mFp = NULL;
-    }
-    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
-    mUseSim = false;
 
     if(mVertexBufId[0]) {
         glDeleteBuffers(3, mVertexBufId);
@@ -131,8 +121,12 @@ bool Floor ::init()
     mTextureUniform = glGetUniformLocation(mProgramId, "texture");
     initVertexData();
 
-//    CameraSource* m_pCs = new CameraSource();
-//    delete m_pCs;
+    if(!gCameraSource.init())
+        return false;
+    mTexWidth = gCameraSource.Width();
+    mTexHeight = gCameraSource.Height();
+    mTexDepth = 32; //RGBA32
+    mpTexImg = NULL; //buffer is provided by CameraSource
 
     glGenTextures(1, &mTextureDataId);
     updateTextureData();
@@ -143,74 +137,19 @@ bool Floor ::init()
     return true;
 }
 
-nfPByte Floor ::allocTextureImage(int width, int height, int depth)
-{
-    mUseSim = false;
-    SAFE_FREE(mpTexImg);
-    mTexWidth = width;
-    mTexHeight = height;
-    mTexDepth = depth;
-    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
-    return mpTexImg;
-}
 /* \brief use video file to simulate, called before init
  *
  */
 void Floor ::setSimVideoFile(int width, int height, int depth, const char* szFile)
 {
-    SAFE_FREE(mpTexImg);
-    mTexWidth = width;
-    mTexHeight = height;
-    mTexDepth = depth;
-    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
-    mUseSim = true;
-    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
-    mpYuvImg = nfImage::create(mTexWidth, mTexHeight, 2);
-    mCurFrame = 0;
-
-    if (mFp ) {
-        fclose(mFp);
-    }
-    mFp = fopen(szFile, "r");
-    if (!mFp) {
-        LOGE("Failed to open video simulation file %s!!", szFile);
-        return;
-    }
-    fseek(mFp, 0, SEEK_END);
-    long length = ftell(mFp);
-    LOGE("File length = %ld bytes", length);
-    mTotalFrames = length /(mTexWidth*mTexHeight*2);
-    fseek(mFp, 0, SEEK_SET);
-
-    LOGE("Use sim file %s as video input %dx%d, %d frames ", szFile, width, height, mTotalFrames);
+    gCameraSource.setSimFileYuv(width, height, 2, szFile);
+    LOGE("Use sim YUV file %s as video input %dx%d", szFile, width, height);
 }
 void Floor ::setSimVideoFileRgb(int width, int height, int depth, const char* szFile)
 {
-    SAFE_FREE(mpTexImg);
-    mTexWidth = width;
-    mTexHeight = height;
-    mTexDepth = depth;
-    mpTexImg = (nfPByte) malloc(mTexWidth*mTexHeight*mTexDepth);
-    mUseSim = true;
-    if(mpYuvImg) nfImage::destroy(&mpYuvImg);
-    mpYuvImg = NULL;
-    mCurFrame = 0;
 
-    if (mFp ) {
-        fclose(mFp);
-    }
-    mFp = fopen(szFile, "r");
-    if (!mFp) {
-        LOGE("Failed to open video simulation file %s!!", szFile);
-        return;
-    }
-    fseek(mFp, 0, SEEK_END);
-    long length = ftell(mFp);
-    LOGE("File length = %ld bytes", length);
-    mTotalFrames = length /(mTexWidth*mTexHeight*mTexDepth);
-    fseek(mFp, 0, SEEK_SET);
-
-    LOGE("Use sim file %s as video input %dx%d, %d frames ", szFile, width, height, mTotalFrames);
+    gCameraSource.setSimFileRgb32(width, height, 4, szFile);
+    LOGE("Use sim RGB file %s as video input %dx%d", szFile, width, height);
 }
 void Floor ::updateTextureData()
 {
@@ -222,21 +161,7 @@ void Floor ::updateTextureData()
 }
 bool Floor ::loadTexture()
 {
-    if (mUseSim && mFp ) {
-        if (mCurFrame >= mTotalFrames) {
-            fseek(mFp, 0, SEEK_SET);
-            mCurFrame = 0;
-        }
-
-        if(mpYuvImg) {//input is YUYV
-            fread(mpYuvImg->buffer, 1, mTexWidth * mTexHeight * 2, mFp);
-            nfYuyvToRgb32(mpYuvImg, mpTexImg, true, false);
-        }
-        else //input is RGB32
-            fread(mpTexImg, 1, mTexWidth * mTexHeight * 4, mFp);
-        mCurFrame++;
-
-    }
+    mpTexImg = gCameraSource.GetFrameData();
     return true;
 }
 
@@ -244,7 +169,9 @@ bool Floor ::loadTexture()
  * \param bReload set true to reload texture
  *
  */
-void Floor ::draw(bool bReload)
+void Floor ::draw(bool bReload)L_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvoid*)0);
+
+// Index buffer
 {    glUseProgram(mProgramId);
     checkGlError("RendererES2::glUseProgram");
     updateTextureData();
@@ -258,9 +185,7 @@ void Floor ::draw(bool bReload)
 
     glEnableVertexAttribArray(mUvAttrib);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[1]);
-    glVertexAttribPointer(mUvAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvoid*)0);
-
-    // Index buffer
+    glVertexAttribPointer(mUvAttrib, 2, G
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[2]);
 
     glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, m_matMvp.Ptr());

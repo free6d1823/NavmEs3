@@ -29,28 +29,12 @@ public:
      */
     void update(Mat4& pojection );
 
-    /* \brief alloc texture buffer
-     * \param width width of the image
-     * \param height height of the image
-     * \param depth bytes per pixel
-     * \return pointer to the buffer
-     */
-    nfPByte allocTextureImage(int width, int height, int depth);
-
     /* \brief use video file to simulate, called before init
      * \param width width of the image
      * \param height height of the image
      * \param depth bytes per pixel = 4
      * \param szFile YUYV file
      */
-    void setSimVideoFile(int width, int height, int depth, const char* szFile);
-    /* \brief use video file to simulate, called before init
-     * \param width width of the image
-     * \param height height of the image
-     * \param depth bytes per pixel = 4
-     * \param szFile RGB32 file
-     */
-    void setSimVideoFileRgb(int width, int height, int depth, const char* szFile);
 private:
     bool initVertexData();
     void updateTextureData();
@@ -66,7 +50,6 @@ private:
     nfPByte  mpTexImg;   /*<! texture image data */
     int mTexWidth;
     int mTexHeight;
-    int mTexDepth;
     /*<! OpenGL ID */
     GLuint mProgramId;          /*<! Shader program ID */
     GLuint mTextureDataId;      /*<! texture buffer ID */
@@ -76,11 +59,7 @@ private:
     GLuint mMvpMatrixUniform;        /*<! ID of matrix uniform in shader program */
     GLuint mVaoId;              /*<! ID of Vertex array object*/
     GLuint mVertexBufId[3];     /*<! buffer ID: 0=Vertex, 1=UV texture, buffer */
-    bool mUseSim; /*<! true to use file to simulate scene*/
-    int mCurFrame;
-    int mTotalFrames;
-    FILE* mFp; /*<! video file FILE pointer */
-    nfImage*  mpYuvImg;   /*<! texture image data */
+
 
 };
 

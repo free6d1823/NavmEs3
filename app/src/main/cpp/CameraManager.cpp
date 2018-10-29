@@ -57,8 +57,8 @@ void CameraManager::Clean()
 }
 CameraManager::CameraManager()
 {
-    /*
-    gpCameraManager = NULL;
+
+/*    gpCameraManager = NULL;
     gpCameraManager = ACameraManager_create();
 LOGE("---- enter new CameraManager");
     if (gpCameraManager) {
@@ -74,7 +74,7 @@ LOGE("%d -- cam=%s", i, pList->cameraIds[i]);
     }
 */
     m_listCam.clear();
-//    Reflesh();
+    Reflesh();
 }
 CameraManager::~CameraManager()
 {
@@ -148,7 +148,7 @@ int CameraManager::Reflesh()
     int i;
 LOGI("--- CameraManager::Reflesh()");
 
-    for (i=0;i<10; i++){
+    for (i=0;i<18; i++){
         sprintf(device, "/dev/video%d", i);
 LOGI("-- open cam %s", device);
         int fd = open(device, O_RDWR | O_NONBLOCK, 0);

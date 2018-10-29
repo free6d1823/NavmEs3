@@ -223,7 +223,7 @@ extern AAssetManager* gAmgr;
 static bool CreateDefaultIniFile(const char* iniFile)
 {
     time_t T= time(NULL);
-    struct  tm tm = *localtime(&T);
+//    struct  tm tm = *localtime(&T);
 
     FILE* fp = fopen(iniFile, "w");
     if (!fp)
@@ -285,6 +285,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring si
         return;
     }
     const char* szFile = env->GetStringUTFChars(simVideoFile, 0);
+    /*To use sim file, setSimVideoFileRgb, call before init() */
     mFloor.setSimVideoFileRgb(IMAGE_WIDTH, IMAGE_HEIGHT, 4, szFile);
     mFloor.init();
 
@@ -310,7 +311,6 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring si
         LOGE("Cannot open skin image in assets!");
     }
     mCar.init();
-    mPlat1.setSimVideoFileRgb(IMAGE_WIDTH, IMAGE_HEIGHT, 4, szFile);
     mPlat1.init();
     //
     testAsset = AAssetManager_open(gAmgr, "porch_body.bin", AASSET_MODE_UNKNOWN);
@@ -399,29 +399,9 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject  obj ) {
 
     g_main = new MainJni;
 
-    AAsset* testAsset = AAssetManager_open(gAmgr, IMAGE_PATH, AASSET_MODE_UNKNOWN);
-    if (testAsset)
-    {
-        assert(testAsset);
-
-        size_t assetLength = AAsset_getLength(testAsset);
-
-        LOGI("Floor file size: %lu\n", assetLength);
-        nfImage* pSrc = nfImage::create(IMAGE_WIDTH, IMAGE_HEIGHT, assetLength/(IMAGE_WIDTH*IMAGE_HEIGHT));
-        nfPByte dest = mFloor.allocTextureImage(IMAGE_WIDTH, IMAGE_HEIGHT, 4);
-        if (pSrc && dest) {
-            AAsset_read(testAsset, pSrc->buffer, assetLength);
-            nfYuyvToRgb32(pSrc, dest, true, false);
-        }
-        AAsset_close(testAsset);
-        nfImage::destroy(&pSrc);
-    }
-    else
-    {
-        LOGE("Cannot open floor image in assets!");
-    }
     mFloor.init();
 
+    AAsset* testAsset;
     testAsset = AAssetManager_open(gAmgr, "redskin_100x100.yuv", AASSET_MODE_UNKNOWN);
     if (testAsset)
     {
