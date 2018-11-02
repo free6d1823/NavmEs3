@@ -169,9 +169,7 @@ bool Floor ::loadTexture()
  * \param bReload set true to reload texture
  *
  */
-void Floor ::draw(bool bReload)L_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvoid*)0);
-
-// Index buffer
+void Floor ::draw(bool bReload)
 {    glUseProgram(mProgramId);
     checkGlError("RendererES2::glUseProgram");
     updateTextureData();
@@ -185,7 +183,7 @@ void Floor ::draw(bool bReload)L_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvo
 
     glEnableVertexAttribArray(mUvAttrib);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[1]);
-    glVertexAttribPointer(mUvAttrib, 2, G
+    glVertexAttribPointer(mUvAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(nfFloat2D), (const GLvoid*)0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexBufId[2]);
 
     glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, m_matMvp.Ptr());
