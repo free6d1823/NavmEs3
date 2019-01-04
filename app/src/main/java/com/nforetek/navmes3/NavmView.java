@@ -50,19 +50,33 @@ class NavmView extends GLSurfaceView {
 
     private static class Renderer implements GLSurfaceView.Renderer {
         private Context mContext;
+        private int width_surface;
+        private int height_surface ;
         public Renderer (Context context) {
             mContext = context;
         }
         public void onDrawFrame(GL10 gl) {
             NavmEs3Lib.step();
+            if(1==NavmEs3Lib.bSaveTexture())
+            {
+                NavmEs3Lib.saveTexture(0);
+
+                int w = width_surface ;
+                int h = height_surface ;
+
+
+            }
+
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             NavmEs3Lib.resize(width, height);
+            width_surface = width;
+            height_surface = height;
         }
 
 
-        final boolean mUseSimFile = false;
+        final boolean mUseSimFile = true;
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
             if (mUseSimFile) {

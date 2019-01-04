@@ -27,4 +27,7 @@ public class NavmEs3Lib {
      public static native void setMode(int mode);
      public static native  int getMode();
      public static native void setAutoRun(int autorun);
+     public static native void setOption(int nOption);
+     public static native int saveTexture(int flag);
+     public static native int bSaveTexture();
 }

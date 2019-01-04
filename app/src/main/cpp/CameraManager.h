@@ -15,6 +15,7 @@ typedef struct {
     uint32_t    width;
     uint32_t    height;
     uint32_t    format; //RGB, YUV
+    uint32_t    field; //enum v4l2_field
     float         fps;
 }CamProperty;
 typedef void (*OnFrameCallback)(void* pBuffer, CamProperty* pCp, void* data);
@@ -47,6 +48,7 @@ private:
     OnFramePostProcess  m_pfnFramePostProcess;
     void*           m_pOnFrameData;
 protected:
+public:
     int m_fd; //g.e. zero if device is opened
     pthread_t   m_threadFrame;
     int         m_nStopThread;
@@ -60,6 +62,9 @@ public:
     int MaxCamera();/*<! current max camera after previous reflesh */
     Camera* GetCamera(int id);
     Camera* GetCameraBySeq(int seq);/*<! get camera object by sequence number */
+    int mfd[18];
+    Camera* m_pCam[18];
+    CamProperty m_cp[100];
 
 private:
     void Clean();

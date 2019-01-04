@@ -36,10 +36,12 @@ public:
     void resize(int w, int h);
     void step();
     void render();
-
+    void setOption(int nOption);
     void changeViewMode(int mode);
     int getViewMode();
     void setAutoRun(int value);
+    bool saveTexture(int flag);
+    int bSaveTexture();
 
     void zoom(float factor);
     void rotate(float degree);
@@ -56,5 +58,6 @@ private:
     float mAngle; /*<! in radian */
     float mCamAngle; /*<!camera position pitch angle, used in rear/front view */
     float mCamDist; /*<!camera distance, used in rear/front view */
+    int mSaveTexture;
 };
 #endif // NAVMJNI_H

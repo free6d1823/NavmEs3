@@ -24,7 +24,6 @@ static const char VERTEX_SHADER[] =
                 "  gl_Position =vec4(vertexPosition, 1);\n"
                 "  v_texcoord = vertexUv;\n"
                 "}\n";
-
 static const char FRAGMENT_SHADER[] =
         "precision mediump float;\n"
                 "varying vec2 v_texcoord;\n"
@@ -77,16 +76,23 @@ void Plat ::cleanup()
 }
 #define SX  1 //1.0f/354.0f
 #define SY  1 //1.0f/540.0f
-static const nfFloat3D gpVertexBuf[12] = {
+
+/*static const nfFloat3D gpVertexBuf[12] = {
         {-SX,  SY, 0}, { 0, SY, 0}, {-SX, 0, 0},{ 0, 0, 0},
         {0,  SY, 0}, { SX, SY, 0}, {0, 0, 0},{ SX, 0, 0},
         {-SX,  0, 0}, { SX, 0, 0}, {-SX, -SY, 0},{ SX, -SY, 0},
 
+};*/
+static const nfFloat3D gpVertexBuf[12] = {
+        {0,  SY, 0}, { SX, SY, 0}, {0, 0, 0},{ SX, 0, 0},
+        {-SX,  SY, 0}, { 0, SY, 0}, {-SX, 0, 0},{ 0, 0, 0},
+        {-SX,  0, 0}, { SX, 0, 0}, {-SX, -SY, 0},{ SX, -SY, 0},
+
 };
 static const nfFloat2D gpUvTexture[12] = {
-        {0.596527778f,0.0375f}, {0.911111f,0.0375f}, {0.5027778f,0.282291667f}, {0.9986111f,0.282291667f},
-        {0.1000694f, 0.52604167f}, {0.39375f, 0.52604167f},{0.0020833f, 0.80416667f},{0.496111f, 0.80416667f},
-        {0.6007f, 0.52604167f}, {0.89653f, 0.52604167f},{0.5001f, 0.80416667f},{0.9986111f, 0.80416667f},
+        {0.04375f,0.4427f},{0.10416f,0.27083f}, {0.443055f,0.40625f},{0.36111f,0.28645f},      // right camera
+        {0.88541f, 0.04166f},{0.92013f, 0.1875f},{0.6076325f, 0.020833f},{0.52719f, 0.13541f}, // left camera
+        {0.95486f, 0.286458f},{0.55555f, 0.286458f},{0.91666f, 0.44791f},{0.5625f, 0.44791f},  //rear camera
 };
 static const unsigned short gpIndices[18] = {
         0,2,1,2,3,1,
@@ -188,6 +194,6 @@ void Plat ::draw(bool bReload)
  */
 void Plat ::update(Mat4& pojection )
 {
-//    m_matMvp = pojection;
+    m_matMvp = pojection;
 
 }

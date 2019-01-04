@@ -246,9 +246,9 @@ void nfDoFec(float u, float v, float &x, float &y, FecParam* pFec)
     u1 = cos(pFec->roll)* u2 - sin(pFec->roll)*v2;
     v1 = sin(pFec->roll)* u2 + cos(pFec->roll)*v2;
 
-    //intrinsic
-    u1 = pFec->a*u1 + pFec->c*v1;		//x-scale and de-skewness
-    v1 = pFec->b*v1;								//y- scale
+    //intrinsic marked by jason huang 20181128
+    /*u1 = pFec->a*u1 + pFec->c*v1;		//x-scale and de-skewness
+    v1 = pFec->b*v1;*/								//y- scale
 
     double fr = 2*tan(pFec->fov/2); //reverse of focus length of rectified image
     double rp = sqrt(u1*u1+v1*v1); //radius of point (u1,v1) on rectified image
@@ -257,7 +257,7 @@ void nfDoFec(float u, float v, float &x, float &y, FecParam* pFec)
     double rq1;
 
     if(1) //fisheye
-        rq1 = atan(rp*fr)/(2*WF);		//[0.5]
+        rq1 = atan(rp*fr)/(pFec->fov);   // [0.5]  modified by jason huang 20181128
     else //normal lens
         rq1 = rp; //if no fec
 
@@ -272,6 +272,10 @@ void nfDoFec(float u, float v, float &x, float &y, FecParam* pFec)
         rq  = (1+pFec->k1* rq2+ pFec->k2* rq2*rq2);
         x1 = u1/rq;
         y1 = v1/rq;
+        //DO intrinsic after LDC   add by jason huang 20181128 ---
+        x1 = pFec->a*x1 + pFec->c*y1;		//x-scale and de-skewness
+        y1 = pFec->b*y1;                    //y- scale
+        // ------------------------------------------------
     }
 
     x = (x1+ pFec->ptCenter.x);
@@ -283,6 +287,10 @@ void nfInvFec(float x, float y, float &u, float &v, FecParam* pFec)
     float x1,y1;
     x1 = x - pFec->ptCenter.x;
     y1 = y - pFec->ptCenter.y;
+
+    //Do intrinsic before LDC  jason huang 20181228
+    y1 = y1 / pFec->b;
+    x1 = (x1 - pFec->c*y1)/pFec->a;
 
     //LDC -- a approcimate invers of LDC
     double rq, rq1, rq2, rp;
@@ -296,13 +304,13 @@ void nfInvFec(float x, float y, float &u, float &v, FecParam* pFec)
     v1 = y1 /rq;
     rq1 = rqt/rq; //rq1 = atan(rp*fr)/(2*WF);		//[0.5]
     double fr = 2*tan(pFec->fov/2); //reverse of focus length of rectified image
-    rp = tan(rq1*2*WF)/fr;
+    rp = tan(rq1*pFec->fov)/fr; // rp = tan(rq1*2*WF)/fr; jason huang 20181228
     u1 = u1 * rp/ rq1;
     v1 = v1 * rp/rq1;
 
-    //intrinsic
-    v1 = v1 / pFec->b;
-    u1 = (u1 - pFec->c*v1)/pFec->a;
+    //intrinsic jason huang 20181228
+    /*v1 = v1 / pFec->b;
+    u1 = (u1 - pFec->c*v1)/pFec->a;*/
 
     //rev spin
     u2 = cos(pFec->roll)* u1 + sin(pFec->roll)*v1;
@@ -814,6 +822,8 @@ TexProcess::TexProcess():mpSourceImageName(NULL)
         for(int k=0; k<MAX_FP_AREA; k++)
             m_RegionMap[m][k] = 1;
     }
+
+
     m_RegionMap[0][6] = 1;
     m_RegionMap[0][11] = 1;
     m_RegionMap[2][6] = 1;
@@ -885,6 +895,114 @@ void TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
         }
     }
 }
+/*
+ * type 1    *----*
+ *            *   *
+ *              * *
+ *                *
+ */
+void TexProcess::initVertices_type1(vector<nfFloat3D> & vert, nfRectF region)
+{
+    int i,j;
+    float s,t;
+    nfFloat3D v;
+
+    for (i=0; i<= Y_INTV; i++) {
+        t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
+        for (j=i; j<=X_INTV; j++) {
+            s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
+            v.y = 0;
+            v.z = TZ_CENTER-t*TZ_SCALEUP;
+#ifdef HORZ_MIRROR
+            v.x = s*TX_SCALEUP-TX_CENTER;
+#else
+            v.x = (1-s)*TX_SCALEUP-TX_CENTER;
+#endif
+            vert.push_back(v);
+        }
+    }
+}
+/*
+ * type 2      *
+ *           * *
+ *          *  *
+ *         *---*
+ */
+void TexProcess::initVertices_type2(vector<nfFloat3D> & vert, nfRectF region)
+{
+    int i,j;
+    float s,t;
+    nfFloat3D v;
+
+    for (i=0; i<= Y_INTV; i++) {
+        t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
+        for (j=X_INTV-i; j<=X_INTV; j++) {
+            s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
+            v.y = 0;
+            v.z = TZ_CENTER-t*TZ_SCALEUP;
+#ifdef HORZ_MIRROR
+            v.x = s*TX_SCALEUP-TX_CENTER;
+#else
+            v.x = (1-s)*TX_SCALEUP-TX_CENTER;
+#endif
+            vert.push_back(v);
+        }
+    }
+}
+/*
+ * type 3  *
+ *         * *
+ *         *  *
+ *         *---*
+ */
+void TexProcess::initVertices_type3(vector<nfFloat3D> & vert, nfRectF region)
+{
+    int i,j;
+    float s,t;
+    nfFloat3D v;
+
+    for (i=0; i<= Y_INTV; i++) {
+        t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
+        for (j=0; j<=i; j++) {
+            s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
+            v.y = 0;
+            v.z = TZ_CENTER-t*TZ_SCALEUP;
+#ifdef HORZ_MIRROR
+            v.x = s*TX_SCALEUP-TX_CENTER;
+#else
+            v.x = (1-s)*TX_SCALEUP-TX_CENTER;
+#endif
+            vert.push_back(v);
+        }
+    }
+}
+/*
+ * type 4  *---*
+ *         *  *
+ *         * *
+ *         *
+ */
+void TexProcess::initVertices_type4(vector<nfFloat3D> & vert, nfRectF region)
+{
+    int i,j;
+    float s,t;
+    nfFloat3D v;
+
+    for (i=0; i<= Y_INTV; i++) {
+        t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
+        for (j=0; j<=X_INTV-i; j++) {
+            s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
+            v.y = 0;
+            v.z = TZ_CENTER-t*TZ_SCALEUP;
+#ifdef HORZ_MIRROR
+            v.x = s*TX_SCALEUP-TX_CENTER;
+#else
+            v.x = (1-s)*TX_SCALEUP-TX_CENTER;
+#endif
+            vert.push_back(v);
+        }
+    }
+}
 //int g_show = 0;
 int TexProcess::reloadIndices(vector<unsigned short>& indices)
 {
@@ -912,7 +1030,13 @@ int TexProcess::reloadIndices(vector<unsigned short>& indices)
     }
     return 0;
 }
-
+/*
+ * type 0    (k)----(k+1)--------------(k+X)
+ *           *     *   *     *   *
+ *           *    *    *    *    *
+ *           *   *     *   *     *
+ *           (k+X+1)--(k+X+2)----*-----(k+2X+1)
+ */
 void TexProcess::updateIndices(vector<unsigned short>& indices, int nCam, int nRegion)
 {
     int i, j,k;
@@ -938,8 +1062,98 @@ void TexProcess::updateIndices(vector<unsigned short>& indices, int nCam, int nR
             k++;
         }
     }
-}
 
+}
+/*
+ * type 1   layer i      (k0)-----(k0+1)   k0 = (1+i)*i/2
+ *                          *     *   0, w+1, 2w+1, 3w,
+ *                           *    *
+ *                             *  *   k1= (i+2)*(i+1)/2
+ *          layer i+1           (k1)
+ */
+void TexProcess::updateIndices_type1(vector<unsigned short>& indices, int nCam, int nRegion)
+{
+    int i, j,k0,k1;
+    int startIndex = (nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    for (i=0; i< Y_INTV; i++) {
+        k0 = startIndex + (i+1)*i/2;
+        k1 = k0 + (i+1);
+#ifdef HORZ_MIRROR //CW
+        indices.push_back(k0);
+        indices.push_back(k1+1);
+        indices.push_back(k1);
+#else //CCW
+        indices.push_back(k0);
+        indices.push_back(k1);
+        indices.push_back(k1+1);
+#endif
+        k1++;
+        for(j=0; j<i; j++) {
+#ifdef HORZ_MIRROR //CW
+            indices.push_back(k0);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k1+1);
+#else //CCW
+            indices.push_back(k0);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1+1);
+#endif
+            k0++;
+            k1++;
+        }
+    }
+}
+/*
+ * type 2   layer i            (k)   k0 = (1+i)*i/2
+ *                           *   *
+ *                          *    *
+ *                         *     *   k1= (i+2)*(i+1)/2
+ *          layer i+1  (k+X+1)--(k+X+2)----*-----(k+2X+1)
+ */
+void TexProcess::updateIndices_type2(vector<unsigned short>& indices, int nCam, int nRegion)
+{
+    int i, j,k0,k1;
+    int startIndex = (nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    for (i=0; i< Y_INTV; i++) {
+        k0 = startIndex + (i+1)*i/2;
+        k1 = k0 + (i+1);
+#ifdef HORZ_MIRROR //CW
+        indices.push_back(k0);
+        indices.push_back(k1+1);
+        indices.push_back(k1);
+#else //CCW
+        indices.push_back(k0);
+        indices.push_back(k1);
+        indices.push_back(k1+1);
+#endif
+        k1++;
+        for(j=0; j<i; j++) {
+#ifdef HORZ_MIRROR //CW
+            indices.push_back(k0);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k1+1);
+#else //CCW
+            indices.push_back(k0);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1+1);
+#endif
+            k0++;
+            k1++;
+        }
+    }
+}
 int TexProcess::createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices)
 {
     int m,k;

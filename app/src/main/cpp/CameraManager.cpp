@@ -8,6 +8,7 @@
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 #include <pthread.h>
+#include <sys/stat.h>
 #include "CameraManager.h"
 
 #define LOG_TAG "CAMERA_SOURCE"
@@ -30,11 +31,20 @@ ACameraManager* gpCameraManager = NULL;
  * ****************************************************************/
 static int xioctl(int fd, int request, void* arg)
 {
+
+    int r;
+
+    do {
+        r = ioctl(fd, request, arg);
+    }while(r == -1 &&  EINTR == errno);
+
+    return r;
+    /*
   for (int i = 0; i < 100; i++) {
     int r = ioctl(fd, request, arg);
     if (r != -1 || errno != EINTR) return r;
   }
-  return -1;
+  return -1;*/
 }
 
 /******************************************************************
@@ -149,23 +159,40 @@ int CameraManager::Reflesh()
 LOGI("--- CameraManager::Reflesh()");
 
     for (i=0;i<18; i++){
-        sprintf(device, "/dev/video%d", i);
-LOGI("-- open cam %s", device);
-        int fd = open(device, O_RDWR | O_NONBLOCK, 0);
 
-        if (fd < 0)
+        struct stat st;
+
+
+        sprintf(device, "/dev/video%d", i);
+
+        if (-1 == stat(device, &st))
+            continue;
+
+        if (!S_ISCHR(st.st_mode))
+            continue;
+
+LOGI("-- open cam %s", device);
+        mfd[i] = open(device, O_RDWR | O_NONBLOCK, 0);
+
+        if (mfd[i]  < 0)
             continue;
 LOGI("--found device");
 
         struct v4l2_capability cap;
         //find capture and streaming device
-        if ( (xioctl(fd, VIDIOC_QUERYCAP, &cap) == -1) || !(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)
+        if ( (xioctl(mfd[i] , VIDIOC_QUERYCAP, &cap) == -1) || !(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)
              || !(cap.capabilities & V4L2_CAP_STREAMING)) {
-            close(fd);
+            close(mfd[i] );
             continue;
         }
+        if(cap.capabilities & V4L2_CAP_READWRITE){
+            LOGI("Cam%d Support V4L2_CAP_READWRITE", i);
+        }
+        if(cap.capabilities & V4L2_CAP_STREAMING){
+            LOGI("Cam%d Support V4L2_CAP_STREAMING", i);
+        }
 LOGI(" -- VIDIOC_QUERYCAP V4L2_CAP_VIDEO_CAPTURE V4L2_CAP_STREAMING OK");
-        CamProperty cp[100];
+        //CamProperty cp[100];
         int n = 0; //number of property set
         struct v4l2_fmtdesc fmt;
         CLEAR(fmt);
@@ -177,7 +204,7 @@ LOGI(" -- VIDIOC_QUERYCAP V4L2_CAP_VIDEO_CAPTURE V4L2_CAP_STREAMING OK");
         //of the structure or return an EINVAL error code. All formats are enumerable by beginning at
         //index zero and incrementing by one until EINVAL is returned.
         uint32_t pixelformat = 0;
-        while (0 == xioctl(fd, VIDIOC_ENUM_FMT,&fmt)){
+        while (0 == xioctl(mfd[i] , VIDIOC_ENUM_FMT,&fmt)){
             //some driver never end, so we check the fmt, break if the same as before
             if (pixelformat == fmt.pixelformat)
                 break;
@@ -187,7 +214,7 @@ LOGI(" -- VIDIOC_QUERYCAP V4L2_CAP_VIDEO_CAPTURE V4L2_CAP_STREAMING OK");
             CLEAR(fse);
             fse.index = 0;
             fse.pixel_format = fmt.pixelformat;
-            EnumFrameSizeByPixelFormat(fd, fse, cp, n);
+            EnumFrameSizeByPixelFormat(mfd[i] , fse, m_cp, n);
 
             if (n>= 80) { //this is a rough check; n could overfloat within above functions.
                 break;
@@ -195,6 +222,23 @@ LOGI(" -- VIDIOC_QUERYCAP V4L2_CAP_VIDEO_CAPTURE V4L2_CAP_STREAMING OK");
             fmt.index ++;
             fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         }
+        close(mfd[i]);
+
+        m_pCam[i] = new Camera(i);
+
+        m_pCam[i]->m_nMaxProperties = n;
+        m_pCam[i]->m_pPropList = (CamProperty*) malloc(sizeof(CamProperty)*n);
+        for (int k=0; k<n; k++){
+            //pCam->m_pPropList[k] = cp[k];
+            m_pCam[i]->m_pPropList[k] = m_cp[k];
+        }
+
+        m_listCam.push_back( m_pCam[i]);
+        //close(mfd[i]);
+        LOGI("Add cam %d",  m_pCam[i]->m_id);
+        //try next dev nodes
+
+#if 0
         Camera* pCam = new Camera(i);
         pCam->m_nMaxProperties = n;
         pCam->m_pPropList = (CamProperty*) malloc(sizeof(CamProperty)*n);
@@ -202,8 +246,9 @@ LOGI(" -- VIDIOC_QUERYCAP V4L2_CAP_VIDEO_CAPTURE V4L2_CAP_STREAMING OK");
             pCam->m_pPropList[k] = cp[k];
         }
         m_listCam.push_back(pCam);
-        close(fd);
+        //close(fd);
         //try next dev nodes
+#endif
     }
 
     return (int) m_listCam.size();
@@ -300,30 +345,31 @@ bool Camera::Open(CamProperty* pCp)
     }
     char device[32];
     sprintf(device, "/dev/video%d", m_id);
-    int fd = open(device, O_RDWR | O_NONBLOCK, 0);
-    if (fd < 0) {
+    m_fd = open(device, O_RDWR | O_NONBLOCK, 0);
+    //int fd = open(device, O_RDWR | O_NONBLOCK, 0);
+    if (m_fd < 0) {
         fprintf(stderr, "Open device %s failed!!\n", device);
         return false;
     }
     //
 
-    m_fd = fd;
+    //m_fd = fd;
     v4l2_format fmt;
     CLEAR(fmt);
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    if ( 0 != xioctl(fd, VIDIOC_G_FMT,&fmt)) {
+    if ( 0 != xioctl(m_fd, VIDIOC_G_FMT,&fmt)) {
         ReturnError("VIDIOC_G_FMT error!\n");
     }
-
+#ifdef _SET_FORMAT_
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     fmt.fmt.pix.width       = pCp->width; //replace
     fmt.fmt.pix.height      = pCp->height; //replace
     fmt.fmt.pix.pixelformat = pCp->format; //replace
-    fmt.fmt.pix.field = V4L2_FIELD_ANY;
+    fmt.fmt.pix.field = pCp->field;//V4L2_FIELD_ANY;
     printf("intent setting is %dx%d format %08X \n", fmt.fmt.pix.width, fmt.fmt.pix.height,
            fmt.fmt.pix.pixelformat);
 
-    if ( 0 != xioctl(fd, VIDIOC_S_FMT,&fmt)) {
+    if ( 0 != xioctl(m_fd, VIDIOC_S_FMT,&fmt)) {
         ReturnError("VIDIOC_S_FMT error!\n");
     }
     /*Wandboard no support, returns "mxc_v4l2_s_param: vidioc_int_s_parm returned an error -1 "
@@ -335,13 +381,13 @@ bool Camera::Open(CamProperty* pCp)
     if ( 0 != xioctl(fd, VIDIOC_S_PARM,&fmt)) {
         perror("VIDIOC_S_PARM error!\n");
     }*/
-
+#endif
     struct v4l2_requestbuffers  req;
     CLEAR(req);
     req.count = MAX_BUFFER;
     req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     req.memory = V4L2_MEMORY_MMAP;
-    if (xioctl(fd, VIDIOC_REQBUFS, &req) == -1) {
+    if (xioctl(m_fd, VIDIOC_REQBUFS, &req) == -1) {
         if (EINVAL == errno) {
              ReturnError( "%s does not support memory mapping\n", device);
         }
@@ -359,7 +405,7 @@ bool Camera::Open(CamProperty* pCp)
         buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory      = V4L2_MEMORY_MMAP;
         buf.index       = i;
-        if (-1 == xioctl(fd, VIDIOC_QUERYBUF, &buf))
+        if (-1 == xioctl(m_fd, VIDIOC_QUERYBUF, &buf))
             ReturnError("VIDIOC_QUERYBUF error\n");
 
         m_pBuf[i].length = buf.length;
@@ -368,7 +414,7 @@ bool Camera::Open(CamProperty* pCp)
                         buf.length,
                         PROT_READ | PROT_WRITE /* required */,
                         MAP_SHARED /* recommended */,
-                        fd, buf.m.offset);
+                     m_fd, buf.m.offset);
         if (MAP_FAILED == m_pBuf[i].start)
             ReturnError("mmap error \n");
     }
@@ -381,7 +427,7 @@ bool Camera::Open(CamProperty* pCp)
             buf.memory = V4L2_MEMORY_MMAP;
             buf.index = i;
 
-            if (-1 == xioctl(fd, VIDIOC_QBUF, &buf))
+            if (-1 == xioctl(m_fd, VIDIOC_QBUF, &buf))
                     ReturnError("VIDIOC_QBUF error\n");
     }
     m_curCamProperty = *pCp;
@@ -447,7 +493,8 @@ bool Camera::Start(OnFramePostProcess func, void* data)
 {
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if (-1 == xioctl(m_fd, VIDIOC_STREAMON, &type)){
-        ReturnError("VIDIOC_STREAMON error\n");
+        LOGE( "%d (mfd=%d)VIDIOC_STREAMON(%d) error(%d):%s", GetId(), m_fd, type, errno, strerror(errno));
+        //ReturnError("VIDIOC_STREAMON error\n");
     }
     m_pfnOnFrame = NULL;
     m_pfnFramePostProcess = func;

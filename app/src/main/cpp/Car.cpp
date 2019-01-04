@@ -33,6 +33,8 @@ static const char FRAGMENT_SHADER[] =
                 "void main() {\n"
                 "  gl_FragColor = texture2D(texture, v_texcoord);\n"
                 "}\n";
+
+
 Parts::Parts(): mNumToDraw(0)
 {
     memset(&mVertexBufId, 0, sizeof(mVertexBufId));
@@ -215,6 +217,7 @@ void Wheels::draw(GLuint program, Mat4& pojection )
     Mat4 obj = Mat4::Translation(0, mVecAxis.getY(), mVecAxis.getZ())* Mat4::RotationX(mAngle)* Mat4::Translation(0, -mVecAxis.getY(), -mVecAxis.getZ())* mMatModle;
     Mat4 view = pojection * mMatTransform * obj;
     mAngle += M_PI/90;
+
     if (mAngle > M_2_PI) mAngle -= M_2_PI;
 
     glUniformMatrix4fv(mMvpMatrixUniform , 1, GL_FALSE, view.Ptr());
@@ -291,6 +294,8 @@ bool Car ::init()
     mRearWheels.setState(state);
     mBody.setState(state); //Mat4::RotationY(M_PI);
 
+    //mRearTrack.initVertexData();
+
     return true;
 }
 //called before init
@@ -327,6 +332,7 @@ void Car ::draw(bool bReload)
     mBody.draw(mProgramId, m_matMvp);
     mFrontWheels.draw(mProgramId, m_matMvp);
     mRearWheels.draw(mProgramId, m_matMvp);
+    //mRearTrack.draw(mProgramId, m_matMvp);
 
 }
 

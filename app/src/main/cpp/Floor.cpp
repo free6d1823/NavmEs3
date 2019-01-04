@@ -112,7 +112,7 @@ bool Floor ::initVertexData()
 }
 bool Floor ::init()
 {
-     mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+    mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     if (!mProgramId)
         return false;
     mVertexAttrib = glGetAttribLocation(mProgramId, "vertexPosition");

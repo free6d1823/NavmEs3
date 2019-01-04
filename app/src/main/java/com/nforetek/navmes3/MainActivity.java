@@ -14,17 +14,27 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import android.os.Handler;
+import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
     private GestureDetector mDetector;
 
     NavmView mView;
+    Handler m_handler ;
+    int m_mode=0;
     float mRotateThresholdMin = 500; //area to rotate scene
     float mRotateThresholdMax = 500; //area to rotate scene
 
@@ -44,6 +54,9 @@ public class MainActivity extends Activity {
         mRotateThresholdMin = size.y *0.4f;
         mRotateThresholdMax = size.y *0.6f;
 
+        //m_handler = new Handler();
+        //startRepeatingTask();
+
     }
     View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
@@ -56,21 +69,31 @@ public class MainActivity extends Activity {
 
         }
     };
+    @Override
+     protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
     boolean mInited = false;
     @Override protected void onPause() {
         super.onPause();
         if (mInited)
             mView.onPause();
+
     }
 
     @Override protected void onResume() {
         super.onResume();
         if (mInited)
             mView.onResume();
+
     }
 
-    //Remember to add these permission in AndroidManifest.xml <uses-permission//
+    /*For SOUND SK82 platform, no need to request CAMERA permission //
     final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    */
+    final String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE,};
     final int MULTI_PERMISSIONS_ID = 1001;
     @Override
     public void onStart() {
@@ -170,13 +193,32 @@ public class MainActivity extends Activity {
         @Override
         public void onLongPress(MotionEvent e) {
 //            Log.i("TAG", "onLongPress: ");
-            NavmEs3Lib.setAutoRun(0);
+            //NavmEs3Lib.setAutoRun(0);
+
+
+          /*  Calendar cal = Calendar.getInstance();
+            DateFormat dateFormat = new SimpleDateFormat("MMddHHmmss");
+            String texFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() +
+                    "/Cam-Floor"+dateFormat.format(cal.getTime())+"_1280x960.rgb";
+            Log.i("TAG", "saveTexture: "+ texFile);
+
+            if (0!= NavmEs3Lib.saveTexture(1)){
+                Toast.makeText(getBaseContext(),"Failed to save texture to file " + texFile,
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getBaseContext(),"Save texture to file " + texFile + "successfully.",
+                        Toast.LENGTH_LONG).show();
+            }*/
         }
 
+        int mOption = 0;
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             //Log.i("TAG", "onDoubleTap: ");
-            NavmEs3Lib.setAutoRun(1);
+            //NavmEs3Lib.setAutoRun(1);
+            mOption ++;
+            if (mOption > 1) mOption = 0;
+            NavmEs3Lib.setOption(mOption);
             return false;
         }
 
@@ -208,11 +250,15 @@ public class MainActivity extends Activity {
                                float velocityX, float velocityY) {
             //Log.i("TAG", "onFling: velocityX="+velocityX + " velocityY= "+ velocityY);
             int mode = NavmEs3Lib.getMode();
-            if (velocityX > 8000) { //to right
+            if (velocityX > 4000) { //to right
                  mode --;
+                 if(mode <0)
+                     mode = 2;
                  NavmEs3Lib.setMode(mode);
-            } else if (velocityX < -8000) {
+            } else if (velocityX < -4000) {
                 mode++;
+                if(mode > 2)
+                    mode =0;
                 NavmEs3Lib.setMode(mode);
             }
 

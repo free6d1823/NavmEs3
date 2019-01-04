@@ -13,7 +13,7 @@
 #define IMAGE_AREA_HEIGHT   720
 #endif
 #define IMAGE_PATH  "camera1440x960.yuv"
-#define IMAGE_WIDTH 1440
+#define IMAGE_WIDTH 1440//1440
 #define IMAGE_HEIGHT    960
 #define IMAGE_AREA_WIDTH    720
 #define IMAGE_AREA_HEIGHT   480
@@ -150,7 +150,17 @@ public:
 
 private:
 	void initVertices(vector<nfFloat3D> & vert, nfRectF region);
+	void initVertices_type1(vector<nfFloat3D> & vert, nfRectF region);
+	void initVertices_type2(vector<nfFloat3D> & vert, nfRectF region);
+	void initVertices_type3(vector<nfFloat3D> & vert, nfRectF region);
+	void initVertices_type4(vector<nfFloat3D> & vert, nfRectF region);
+
 	void updateIndices(vector<unsigned short>& indices, int nCam, int nRegion);
+	void updateIndices_type1(vector<unsigned short>& indices, int nCam, int nRegion);
+	void updateIndices_type2(vector<unsigned short>& indices, int nCam, int nRegion);
+	void updateIndices_type3(vector<unsigned short>& indices, int nCam, int nRegion);
+	void updateIndices_type4(vector<unsigned short>& indices, int nCam, int nRegion);
+
 	static   nfFloat2D s_offsetCam[MAX_CAMERAS];
 	///
 	/// \brief m_RegionMap indicates the region should be shown or hiden

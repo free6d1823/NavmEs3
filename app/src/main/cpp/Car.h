@@ -61,6 +61,7 @@ private:
     float   mAngle; /* current wheel rotation angle */
 };
 
+
 class Car {
 public:
     Car();
@@ -102,6 +103,7 @@ private:
     Body    mBody;
     Wheels  mFrontWheels;
     Wheels  mRearWheels;
+
 
     Mat4 m_matMvp;
 

@@ -47,6 +47,7 @@ MainJni::MainJni() : mMode(0), mAngle(0)
 //    glCullFace(GL_BACK);//default
 //    glCullFace(GL_FRONT);
 
+    mSaveTexture = 0;
     mAspectRatio  = 1;
     changeViewMode(MODE_BIRDVIEW);
 }
@@ -58,6 +59,7 @@ void MainJni::resize(int w, int h)
     mDisplayWidth = w;
     mDisplayHeight = h;
     mAspectRatio = 1;//(float)w/(float)h;
+
 }
 
 void MainJni::render()
@@ -66,15 +68,22 @@ void MainJni::render()
     glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    //glViewport(0, 0, mDisplayHeight, mDisplayHeight);
+
     glViewport(mDisplayWidth-mDisplayHeight, 0, mDisplayHeight, mDisplayHeight);
 
     mFloor.draw();
     mCar.draw();
 
+    //glViewport(mDisplayHeight, 0, mDisplayWidth-mDisplayHeight, mDisplayHeight);
     glViewport(0, 0, mDisplayWidth-mDisplayHeight, mDisplayHeight);
     mPlat1.draw();
 
 
+    /*if(mSaveTexture){
+        glReadPixels(0, 0, mDisplayWidth, mDisplayHeight, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        mSaveTexture = 0;
+    }*/
 
     checkGlError("Renderer::render");
 }
@@ -82,6 +91,25 @@ int MainJni::getViewMode()
 {
 
     return (mMode & MODE_MASK);
+}
+void MainJni::setOption(int nOption)
+{
+
+    //tyemp mFloor.setOption(nOption);
+}
+
+bool MainJni::saveTexture(int flag)
+{
+    mSaveTexture = flag;
+
+
+    return true;
+
+}
+int MainJni::bSaveTexture()
+{
+    return mSaveTexture;
+
 }
 void MainJni::setAutoRun(int value)
 {
@@ -97,7 +125,7 @@ void MainJni::changeViewMode(int mode)
         mode =0;
     mMode = (mMode & ~MODE_MASK) | mode;
 
-    LOGE(" ----- New mode is %d", mode);
+    LOGI(" ----- New mode is %d", mode);
     switch(mode) {
         /* no back view
         case MODE_BACKVIEW:
@@ -216,13 +244,14 @@ void MainJni::step()
     }
     mCar.update(proj);
     mFloor.update(proj);
+    //mPlat1.update(proj);
 }
 /* other ini helper functions *******************************************************************/
 extern AAssetManager* gAmgr;
 
 static bool CreateDefaultIniFile(const char* iniFile)
 {
-    time_t T= time(NULL);
+ //   time_t T= time(NULL);
 //    struct  tm tm = *localtime(&T);
 
     FILE* fp = fopen(iniFile, "w");
@@ -254,7 +283,7 @@ LOGI("copy default.ini to %s", iniFile);
     return true;
 }
 
-static MainJni* g_main = NULL;
+static MainJni* gMainJni = NULL;
 // ----------------------------------------------------------------------------
 
 extern "C" {
@@ -268,6 +297,9 @@ extern "C" {
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setMode(JNIEnv* env, jobject obj, jint mode);
     JNIEXPORT jint  JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_getMode(JNIEnv* env, jobject obj);
     JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setAutoRun(JNIEnv* env, jobject obj, jint autorun);
+    JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setOption(JNIEnv* env, jobject obj, jint option);
+    JNIEXPORT jint JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_saveTexture(JNIEnv* env, jobject obj, jint flag);
+    JNIEXPORT jint JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_bSaveTexture(JNIEnv* env, jobject obj);
 
 };
 
@@ -275,11 +307,11 @@ AAssetManager* gAmgr = NULL;
 
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring simVideoFile) {
-    if (g_main) {
-        delete g_main;
-        g_main = NULL;
+    if (gMainJni) {
+        delete gMainJni;
+        gMainJni = NULL;
     }
-    g_main = new MainJni;
+    gMainJni = new MainJni;
     if (gAmgr == NULL) {
         LOGE("ini() must be called first!");
         return;
@@ -287,6 +319,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring si
     const char* szFile = env->GetStringUTFChars(simVideoFile, 0);
     /*To use sim file, setSimVideoFileRgb, call before init() */
     mFloor.setSimVideoFileRgb(IMAGE_WIDTH, IMAGE_HEIGHT, 4, szFile);
+    //mFloor.setSimVideoFile(IMAGE_WIDTH, IMAGE_HEIGHT, 2, szFile);
     mFloor.init();
 
     AAsset* testAsset = AAssetManager_open(gAmgr, "redskin_100x100.yuv", AASSET_MODE_UNKNOWN);
@@ -385,19 +418,19 @@ JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject  obj ) {
 
     (void) obj;
-    LOGE("Java_com_nforetek_navmes3_NavmEs3Lib_start" );
+    LOGI("Java_com_nforetek_navmes3_NavmEs3Lib_start" );
 
 
-    if (g_main) {
-        delete g_main;
-        g_main = NULL;
+    if (gMainJni) {
+        delete gMainJni;
+        gMainJni = NULL;
     }
     printGlString("Version", GL_VERSION);
     printGlString("Vendor", GL_VENDOR);
     printGlString("Renderer", GL_RENDERER);
     printGlString("Extensions", GL_EXTENSIONS);
 
-    g_main = new MainJni;
+    gMainJni = new MainJni;
 
     mFloor.init();
 
@@ -490,7 +523,7 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start(JNIEnv* env, jobject  obj ) {
         LOGE("Cannot open skin image in assets!");
     }
     ////
-    LOGE("exit Java_com_nforetek_navmes3_NavmEs3Lib_start" );
+    LOGI("exit Java_com_nforetek_navmes3_NavmEs3Lib_start" );
 }
 
 void RunServer(int serverPort, const char* workFolder);
@@ -505,7 +538,6 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
     {
         return;
     }
-    LOGE("Java_com_nforetek_navmes3_NavmEs3Lib_init" );
     char szIniFile[256];
     // use asset manager to open asset by filename
     gAmgr = AAssetManager_fromJava(env, assetManager);
@@ -513,33 +545,32 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
 
     const char* szRootDir = env->GetStringUTFChars(appFolder, 0);
     strncpy(szIniFile, szRootDir, sizeof(szIniFile));
-    strncat(szIniFile, DEFAULT_SETTING_FILE, sizeof (szIniFile));
-    FILE* fp = fopen(szIniFile,"r");
-    //FILE* fp = NULL; //force overwrite inifile
+    strncat(szIniFile, DEFAULT_SETTING_FILE, 256);
+
+    //FILE* fp = fopen(szIniFile,"r");
+    FILE* fp = NULL; //force overwrite inifile
     if(!fp) {
         LOGE("Setting file %s not found, copy default settings.", szIniFile);
         CreateDefaultIniFile(szIniFile);
-    } else
+    } else {
         fclose(fp);
-
-    LOGI("SloadIniFile %s .", szIniFile);
+    }
     gTexProcess.loadIniFile2(szIniFile);
-    LOGI("gTexProcess update ");
     gTexProcess.update(); //takes 10 secs
-    LOGI("SloadIniFile %s .", szIniFile);
 
     isInited = 1;
+    //remote file access server
     RunServer(9000, szRootDir);
 
-    LOGE("ini file is %s", szIniFile);
+    LOGI("NavmEs3Lib_init: ini file is %s", szIniFile);
 }
 
 
 
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width, jint height) {
-    if (g_main) {
-        g_main->resize(width, height);
+    if (gMainJni) {
+        gMainJni->resize(width, height);
     }
     LOGI("resize %dx%d", width, height);
 
@@ -547,33 +578,54 @@ Java_com_nforetek_navmes3_NavmEs3Lib_resize(JNIEnv* env, jobject obj, jint width
 
 JNIEXPORT void JNICALL
 Java_com_nforetek_navmes3_NavmEs3Lib_step(JNIEnv* env, jobject obj) {
-    if (g_main) {
-        g_main->step();
-        g_main->render();
+    if (gMainJni) {
+        gMainJni->step();
+        gMainJni->render();
     }
 }
 JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_rotate(JNIEnv* env, jobject obj, jfloat degree){
-    if (g_main)
-        g_main->rotate(degree);
+    if (gMainJni)
+        gMainJni->rotate(degree);
 }
 JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_zoom(JNIEnv* env, jobject obj, jfloat farther)
 {
-    if (g_main)
-        g_main->zoom( farther);
+    if (gMainJni)
+        gMainJni->zoom( farther);
 
+}
+JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setOption(JNIEnv* env, jobject obj, jint option)
+{
+    if(gMainJni) {
+        gMainJni->setOption( option);
+    }
+}
+JNIEXPORT jint JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_saveTexture(JNIEnv* env, jobject obj, jint flag)
+{
+    //const char* szFile = env->GetStringUTFChars(filename, 0);
+    if(gMainJni) {
+        return gMainJni->saveTexture( flag);
+    }
+
+    return -1;
+}
+
+JNIEXPORT jint  JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_bSaveTexture(JNIEnv* env, jobject obj)
+{
+    if (gMainJni) return gMainJni->bSaveTexture();
+    else return -1;
 }
 JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setMode(JNIEnv* env, jobject obj, jint mode)
 {
-    if (g_main)
-        g_main->changeViewMode(mode);
+    if (gMainJni)
+        gMainJni->changeViewMode(mode);
 }
 JNIEXPORT jint  JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_getMode(JNIEnv* env, jobject obj)
 {
-    if (g_main) return g_main->getViewMode();
+    if (gMainJni) return gMainJni->getViewMode();
     else return -1;
 }
 JNIEXPORT void JNICALL Java_com_nforetek_navmes3_NavmEs3Lib_setAutoRun(JNIEnv* env, jobject obj, jint autorun)
 {
-    if (g_main)
-        g_main->setAutoRun(autorun);
+    if (gMainJni)
+        gMainJni->setAutoRun(autorun);
 }

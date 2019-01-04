@@ -107,9 +107,9 @@ int FramePostProcess(void* pInBuffer, CamProperty* pCp, void* pOut, void* data)
 int CameraSource::DoFramePostProcess(void* pInBuffer, int width, int height, int stride, void* pOut)
 {
     //YUV to RGB
- //   if(m_VideoFormat == V4L2_PIX_FMT_YUYV)//YUYV, PC
- //       nfYuyvToRgb32((unsigned char* )pInBuffer, width, stride, height, (unsigned char* )pOut, false);
- //   else //if (V4L2_PIX_FMT_VYUY == m_VideoFormat)
+    //   if(m_VideoFormat == V4L2_PIX_FMT_YUYV)//YUYV, PC
+    //       nfYuyvToRgb32((unsigned char* )pInBuffer, width, stride, height, (unsigned char* )pOut, false);
+    //   else //if (V4L2_PIX_FMT_VYUY == m_VideoFormat)
 //    YuyvToRgb32((unsigned char* )pInBuffer, width, stride, height, (unsigned char* )pOut);
 
     VyuyToRgb32((unsigned char* )pInBuffer, width, stride, height, (unsigned char* )pOut);
@@ -138,16 +138,16 @@ void CameraSource::setSimFileRgb32(int width, int height, int depth, const char*
         LOGE("Failed to open video simulation file %s!!", szFile);
         return;
     }
-    m_nWidth = width;
-    m_nHeight = height;
-    m_VideoFormat = 'ABGR';
-    mBytesPerFrameInput = m_nWidth*depth* m_nHeight;
-    mBytesPerFrameOutput = m_nWidth*4* m_nHeight;
+    mWidth = width;
+    mHeight = height;
+    mVideoFormat = 'ABGR';
+    mBytesPerFrameInput = mWidth*depth* mHeight;
+    mBytesPerFrameOutput = mWidth*4* mHeight;
     if(mpOutBuffer) free(mpOutBuffer);
     mpOutBuffer = (unsigned char*) malloc(mBytesPerFrameOutput);
     fseek(mFp, 0, SEEK_END);
     long length = ftell(mFp);
-     mTotalFrames = length /mBytesPerFrameOutput;
+    mTotalFrames = length /mBytesPerFrameOutput;
     fseek(mFp, 0, SEEK_SET);
     mUseSim = true;
 }
@@ -163,11 +163,11 @@ void CameraSource::setSimFileYuv(int width, int height, int depth, const char* s
         LOGE("Failed to open video simulation file %s!!", szFile);
         return;
     }
-    m_nWidth = width;
-    m_nHeight = height;
-    m_VideoFormat = 'YUYV';
-    mBytesPerFrameInput = m_nWidth*depth* m_nHeight;
-    mBytesPerFrameOutput = m_nWidth*4* m_nHeight;
+    mWidth = width;
+    mHeight = height;
+    mVideoFormat = 'YUYV';
+    mBytesPerFrameInput = mWidth*depth* mHeight;
+    mBytesPerFrameOutput = mWidth*4* mHeight;
     if(mpOutBuffer) free(mpOutBuffer);
     mpOutBuffer = (unsigned char*) malloc(mBytesPerFrameOutput);
     mpTemp = (unsigned char*) malloc(mBytesPerFrameInput); //use conversion
@@ -215,10 +215,10 @@ bool CameraSource::init()
         LOGE("No camera found");
         return false;
     }
-    m_nWidth = pCp[candidate].width;
-    m_nHeight = pCp[candidate].height;
-    m_VideoFormat = pCp[candidate].format;
-    mBytesPerFrameOutput = m_nWidth*4* m_nHeight;
+    mWidth = pCp[candidate].width;
+    mHeight = pCp[candidate].height;
+    mVideoFormat = pCp[candidate].format;
+    mBytesPerFrameOutput = mWidth*4* mHeight;
     SAFE_FREE(mpOutBuffer);
     mpOutBuffer = (unsigned char*) malloc(mBytesPerFrameOutput);
 
@@ -227,7 +227,7 @@ bool CameraSource::init()
         LOGE("Open camera /dev/video%d failed!\n", pCam->GetId());
         return false;
     }
-    LOGI("Use camera %dx%d %0X fps=%f",m_nWidth, m_nHeight,  m_VideoFormat, pCp[candidate].fps);
+    LOGI("Use camera %dx%d %0X fps=%f",mWidth, mHeight,  mVideoFormat, pCp[candidate].fps);
     m_pCam = pCam;
     m_pCam->Start(FramePostProcess, this);
     return true;
@@ -251,23 +251,21 @@ CameraSource::~CameraSource()
     }
 
 }
-unsigned char * CameraSource::GetFrameData()
-{
-    if (mUseSim && mFp ) {
+unsigned char * CameraSource::GetFrameData() {
+    if (mUseSim && mFp) {
         if (mCurFrame >= mTotalFrames) {
             fseek(mFp, 0, SEEK_SET);
             mCurFrame = 0;
         }
 
-        if(mpTemp) {//input is YUYV
+        if (mpTemp) {//input is YUYV
             fread(mpTemp, 1, mBytesPerFrameInput, mFp);
-            YuyvToRgb32(mpTemp, m_nWidth, m_nWidth*2, m_nHeight, (unsigned char* )mpOutBuffer);
-        }
-        else //input is RGB32
-            fread(mpOutBuffer, 1,mBytesPerFrameOutput, mFp);
+            YuyvToRgb32(mpTemp, mWidth, mWidth * 2, mHeight, (unsigned char *) mpOutBuffer);
+        } else //input is RGB32
+            fread(mpOutBuffer, 1, mBytesPerFrameOutput, mFp);
 
 
-    }else if(mpOutBuffer){
+    } else if (mpOutBuffer) {
 
         int length = m_pCam->GetFrame(mpOutBuffer, mBytesPerFrameOutput);
         if (length != mBytesPerFrameOutput) {
@@ -276,5 +274,6 @@ unsigned char * CameraSource::GetFrameData()
         }
     }
     mCurFrame++;
+
     return mpOutBuffer;
 }
