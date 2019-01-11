@@ -88,7 +88,7 @@ bool Floor ::initVertexData()
     if (0)
         gTexProcess.updateUvNoFisheye(uvs);
     else
-        gTexProcess.updateUv(uvs);
+        gTexProcess.updateUv(vert, uvs);
     gTexProcess.reloadIndices(ind);
     glGenVertexArrays(1, &mVaoId);
     glBindVertexArray(mVaoId);

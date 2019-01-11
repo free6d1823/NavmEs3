@@ -77,6 +77,8 @@ typedef struct _AreaSettings {
     int nFpAreaCounts;                /*!<numbers of FP areas in this camera, l.e. than MAX_FP_AREA*/
     nfRectF	region[MAX_FP_AREA];      /*!<the normalized coordinates of homo_region on final image*/
     HomoParam homo[MAX_FP_AREA];    /*!<homo apply to selected region */
+    int regionType[MAX_FP_AREA];    /*!<shape of the region, 0=rectangle,1,2,3,4=triangle */
+    int nVertCounts[MAX_FP_AREA];   /*!<numbers of vertex in the region*/
     int state; /*!<DATA_STATE_ */
 }AreaSettings;
 
@@ -126,6 +128,8 @@ extern nfImage* gpInputImage;
 
 /* inform AllView to stitch all camera images */
 #define MESSAGE_VIEW_DO_STITCHING 0x1024
+/* inform AllView Steer Wheel angle is changed, pData = degree*100  */
+#define MESSAGE_VIEW_STEER_CHANGED100 0x1025
 
 #endif //ANDROID the above commands are used in calibration only
 

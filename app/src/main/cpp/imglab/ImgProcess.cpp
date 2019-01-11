@@ -129,7 +129,6 @@ nfImage* nfImage::clone(nfImage* pSource)
 void nfImage::destroy(nfImage** ppImage)
 {
     if(*ppImage) {
-//printf("nfFreeImage,#%d - %dx%d\n", (*ppImage)->seq, (*ppImage)->width,(*ppImage)->height);
         if(!(*ppImage)->bRef)
             SAFE_FREE((*ppImage)->buffer);
         delete (*ppImage);
@@ -246,9 +245,6 @@ void nfDoFec(float u, float v, float &x, float &y, FecParam* pFec)
     u1 = cos(pFec->roll)* u2 - sin(pFec->roll)*v2;
     v1 = sin(pFec->roll)* u2 + cos(pFec->roll)*v2;
 
-    //intrinsic marked by jason huang 20181128
-    /*u1 = pFec->a*u1 + pFec->c*v1;		//x-scale and de-skewness
-    v1 = pFec->b*v1;*/								//y- scale
 
     double fr = 2*tan(pFec->fov/2); //reverse of focus length of rectified image
     double rp = sqrt(u1*u1+v1*v1); //radius of point (u1,v1) on rectified image
@@ -308,9 +304,6 @@ void nfInvFec(float x, float y, float &u, float &v, FecParam* pFec)
     u1 = u1 * rp/ rq1;
     v1 = v1 * rp/rq1;
 
-    //intrinsic jason huang 20181228
-    /*v1 = v1 / pFec->b;
-    u1 = (u1 - pFec->c*v1)/pFec->a;*/
 
     //rev spin
     u2 = cos(pFec->roll)* u1 + sin(pFec->roll)*v1;
@@ -377,6 +370,45 @@ void nfFindHomoMatrix(nfFloat2D s[4], nfFloat2D t[4], float hcoef[3][3])
     }
 }
 
+/*<! 3-regions feature points indexing , each rect is clock-wised numbering
+ *   0 -------- 1 -------- 2 -------- 3
+ *   | region 0 | region 1 | region 2 |
+ *   4 -------- 5 -------- 6 -------- 7 */
+
+void nfCalculateHomoMatrix3(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
+{
+    nfFloat2D s[3][4] = {{fps[0], fps[1], fps[5], fps[4]}, /*<! source ( uncorrected) region 0 */
+                         {fps[1], fps[2], fps[6], fps[5]},
+                         {fps[2], fps[3], fps[7], fps[6]}};
+    nfFloat2D t[3][4] = {{fpt[0], fpt[1], fpt[5], fpt[4]}, /*<! corrected region 0 */
+                         {fpt[1], fpt[2], fpt[6], fpt[5]},
+                         {fpt[2], fpt[3], fpt[7], fpt[6]}};
+
+    for(int i=0; i<3; i++) {
+        nfFindHomoMatrix(s[i],t[i], homo[i].h);
+    }
+
+}
+/*<! 3-regions feature points indexing , each rect is clock-wised numbering
+ *   0 -------- 1 -------- 2 -------- 3
+ *   | region 0 | region 1 | region 2 |
+ *   4 -------- 5 -------- 6 -------- 7 */
+
+void nfCalculateHomoMatrix3a(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
+{
+    nfFloat2D s[3][4] = {{fps[1], fps[2], fps[6], fps[5]}, /*<! source ( uncorrected) region 0 */
+                         {fps[1], fps[2], fps[6], fps[5]},
+                         {fps[1], fps[2], fps[6], fps[5]}};
+    nfFloat2D t[3][4] = {{fpt[1], fpt[2], fpt[6], fpt[5]}, /*<! corrected region 0 */
+                         {fpt[1], fpt[2], fpt[6], fpt[5]},
+                         {fpt[1], fpt[2], fpt[6], fpt[5]}};
+
+    for(int i=0; i<3; i++) {
+        nfFindHomoMatrix(s[i],t[i], homo[i].h);
+    }
+
+}
+
 /*<! 4-regions feature points indexing , each rect is clock-wised numbering
  *   0 -------- 1 -------- 2 -------- 3 ---------4
  *   | region 0 | region 1 | region 2 | region 3 |
@@ -395,6 +427,27 @@ void nfCalculateHomoMatrix4(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
 
     for(int i=0; i<4; i++) {
         nfFindHomoMatrix(s[i],t[i], homo[i].h);
+    }
+
+}
+/*<! 10-regions, 18feature points indexing , each rect is clock-wised numbering
+ *   0 -------- 1 -------- 2 -------- 3 ---------4 ---------5
+ *   | region 0 | region 1 | region 2 | region 3 |    4     |
+ *   6 -------- 7 -------- 8 -------- 9 -------- 10 --------11
+ *   | region 5 | region 6 | region 7 | region 8 |    9    |
+ *   12 ------- 13 -------14 --------15-------- 16-------- 17
+ **/
+void nfCalculateHomoMatrix10(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
+{
+    int k[10][4] = {
+        {0,1,7,6},{1,2,8,7},{2,3,9,8},{3,4,10,9},{4,5,11,10},
+        {6,7,13,12},{7,8,14,13}, {8,9,15,14}, {9,10,16,15},{10,11,17,16},
+    };
+
+    for(int i=0; i<10; i++) {
+        nfFloat2D s[4] = {fps[k[i][0]],fps[k[i][1]], fps[k[i][2]], fps[k[i][3]]};
+        nfFloat2D t[4] = {fpt[k[i][0]],fpt[k[i][1]], fpt[k[i][2]], fpt[k[i][3]]};
+        nfFindHomoMatrix(s,t, homo[i].h);
     }
 
 }
@@ -438,6 +491,28 @@ void nfCalculateHomoMatrix12(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
     }
 
 }
+/*<! 14-regions, 24  feature points indexing , each rect is clock-wised numbering
+ *   0 -------- 1 -------- 2 -------- 3 ---------4 ---5-- 6---7
+ *   | region 0 | region 1 | region 2 | region 3 |  4 | 5 | 6 |
+ *   8 -------- 9-------- 10-------  11 --------12----13--14--15
+ *   | region 7 | region 8 | region 9| region 10| 11 |12 |13 |
+ *   16 --------17-------- 18--------19------- 20- --21--22--23
+ **/
+void nfCalculateHomoMatrix14(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
+{
+    int k[14][4] = {
+        {0,1,9,8},{1,2,10,9},{2,3,11,10},{3,4,12,11},{4,5,13,12},{5,6,14,13},{6,7,15,14},
+        {8,9,17,16}, {9,10,18,17},{10,11,19,18},{11,12,20,19},{12,13,21,20},{13,14,22,21},{14,15,23,22}
+    };
+
+    for(int i=0; i<14; i++) {
+        nfFloat2D s[4] = {fps[k[i][0]],fps[k[i][1]], fps[k[i][2]], fps[k[i][3]]};
+        nfFloat2D t[4] = {fpt[k[i][0]],fpt[k[i][1]], fpt[k[i][2]], fpt[k[i][3]]};
+        nfFindHomoMatrix(s,t, homo[i].h);
+    }
+
+}
+
 /*<! 16-regions, 27  feature points indexing , each rect is clock-wised numbering
  *   0 -------- 1 -------- 2 -------- 3 ---------4 ---5-- 6---7---8
  *   | region 0 | region 1 | region 2 | region 3 |  4 | 5 | 6 | 7 |
@@ -453,6 +528,30 @@ void nfCalculateHomoMatrix16(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
     };
 
     for(int i=0; i<16; i++) {
+        nfFloat2D s[4] = {fps[k[i][0]],fps[k[i][1]], fps[k[i][2]], fps[k[i][3]]};
+        nfFloat2D t[4] = {fpt[k[i][0]],fpt[k[i][1]], fpt[k[i][2]], fpt[k[i][3]]};
+        nfFindHomoMatrix(s,t, homo[i].h);
+    }
+
+}
+
+/*<! 20-regions, 33  feature points indexing , each rect is clock-wised numbering
+ *   0 - 1 - 2 - 3 --4 --5-- 6---7---8---9--10
+ *   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+ *   11--12--13--14--15--16--17--18--19--20--21
+ *   | 10| 11| 12| 13| 14| 15| 16| 17| 18| 19|
+ *   22--23--24--25--26--27--28--29--30--31--32
+ **/
+void nfCalculateHomoMatrix20(nfFloat2D* fps, nfFloat2D* fpt, HomoParam* homo)
+{
+    int k[20][4] = {
+        {0,1,12,11},{1,2,13,12},{2,3,14,13},{3,4,15,14},{4,5,16,15},
+            {5,6,17,16},{6,7,18,17},{7,8,19,18},{8,9,20,19},{9,10,21,20},
+        {11,12,23,22},{12,13,24,23},{13,14,25,24},{14,15,26,25},{15,16,27,26},
+            {16,17,28,27},{17,18,29,28},{18,19,30,29},{19,20,31,30},{20,21,32,31},
+    };
+
+    for(int i=0; i<20; i++) {
         nfFloat2D s[4] = {fps[k[i][0]],fps[k[i][1]], fps[k[i][2]], fps[k[i][3]]};
         nfFloat2D t[4] = {fpt[k[i][0]],fpt[k[i][1]], fpt[k[i][2]], fpt[k[i][3]]};
         nfFindHomoMatrix(s,t, homo[i].h);
@@ -564,7 +663,8 @@ bool    LoadAreaSettings(AreaSettings* pParam, int nArea, void* iniFile, bool bD
         if(!GetProfileRectFloat(section, key, &pParam->region[i], iniFile)){
 
         }
-
+        sprintf(key, "region_type_%d", i);
+        pParam->regionType[i] = GetProfileInt(section, key, 0, iniFile);
 
     }
     if(bDeployment){
@@ -653,6 +753,8 @@ bool    SaveAreaSettings(AreaSettings* pParam, int nArea, void* iniFile)
         sprintf(key, "region_%d", i);
         if(!WriteProfileRectFloat(section, key, &pParam->region[i], iniFile)){
         }
+        sprintf(key, "region_type_%d", i);
+        WriteProfileInt(section, key, pParam->regionType[i], iniFile);
 
         SaveHomoParam(&pParam->homo[i], nArea, i, iniFile);
     }
@@ -806,7 +908,16 @@ void TexProcess::calculateFps(int nAreaId)
 }
 void TexProcess::calculateHomo(int nAreaId)
 {
-    if(mAreaSettings[nAreaId].nFpAreaCounts == 16)
+    if(mAreaSettings[nAreaId].nFpAreaCounts == 3)
+        nfCalculateHomoMatrix3(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+    else if(mAreaSettings[nAreaId].nFpAreaCounts == 14)
+        nfCalculateHomoMatrix14(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+    else if(mAreaSettings[nAreaId].nFpAreaCounts == 10)
+        nfCalculateHomoMatrix10(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+
+    else if(mAreaSettings[nAreaId].nFpAreaCounts == 20)
+        nfCalculateHomoMatrix20(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
+    else if(mAreaSettings[nAreaId].nFpAreaCounts == 16)
         nfCalculateHomoMatrix16(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
     else if (mAreaSettings[nAreaId].nFpAreaCounts == 12)
         nfCalculateHomoMatrix12(mAreaSettings[nAreaId].fps, mAreaSettings[nAreaId].fpt, mAreaSettings[nAreaId].homo);
@@ -823,7 +934,7 @@ TexProcess::TexProcess():mpSourceImageName(NULL)
             m_RegionMap[m][k] = 1;
     }
 
-
+/*
     m_RegionMap[0][6] = 1;
     m_RegionMap[0][11] = 1;
     m_RegionMap[2][6] = 1;
@@ -832,7 +943,7 @@ TexProcess::TexProcess():mpSourceImageName(NULL)
     m_RegionMap[3][0] = 0;
     m_RegionMap[1][7] = 0;
     m_RegionMap[3][7] = 0;
-
+*/
 }
 /////////////
 /// \brief TexProcess::update call update if AreaSettings has changed
@@ -873,13 +984,13 @@ TexProcess::~TexProcess()
 
 #define X_INTV  16
 #define Y_INTV  16
-
-void TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
+/*<! returns numbers of vertex created in this region*/
+int TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
 {
     int i,j;
     float s,t;
     nfFloat3D v;
-
+    int c = 0;
     for (i=0; i<= Y_INTV; i++) {
         t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
         for (j=0; j<=X_INTV; j++) {
@@ -892,8 +1003,10 @@ void TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
             v.x = (1-s)*TX_SCALEUP-TX_CENTER;
 #endif
             vert.push_back(v);
+            c++;
         }
     }
+    return c;
 }
 /*
  * type 1    *----*
@@ -901,16 +1014,18 @@ void TexProcess::initVertices(vector<nfFloat3D> & vert, nfRectF region)
  *              * *
  *                *
  */
-void TexProcess::initVertices_type1(vector<nfFloat3D> & vert, nfRectF region)
+int TexProcess::initVertices_type1(vector<nfFloat3D> & vert, nfRectF region)
 {
     int i,j;
     float s,t;
     nfFloat3D v;
-
+    int c = 0;
+    float dx = (region.r - region.l)/(float)X_INTV;
+    float dy = (region.b - region.t)/(float)Y_INTV;
     for (i=0; i<= Y_INTV; i++) {
-        t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
+        t = dy*(float)i + region.t;
         for (j=i; j<=X_INTV; j++) {
-            s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
+            s = dx *(float)j + region.l;
             v.y = 0;
             v.z = TZ_CENTER-t*TZ_SCALEUP;
 #ifdef HORZ_MIRROR
@@ -919,8 +1034,10 @@ void TexProcess::initVertices_type1(vector<nfFloat3D> & vert, nfRectF region)
             v.x = (1-s)*TX_SCALEUP-TX_CENTER;
 #endif
             vert.push_back(v);
+            c++;
         }
     }
+    return c;
 }
 /*
  * type 2      *
@@ -928,12 +1045,12 @@ void TexProcess::initVertices_type1(vector<nfFloat3D> & vert, nfRectF region)
  *          *  *
  *         *---*
  */
-void TexProcess::initVertices_type2(vector<nfFloat3D> & vert, nfRectF region)
+int TexProcess::initVertices_type2(vector<nfFloat3D> & vert, nfRectF region)
 {
     int i,j;
     float s,t;
     nfFloat3D v;
-
+    int c = 0;
     for (i=0; i<= Y_INTV; i++) {
         t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
         for (j=X_INTV-i; j<=X_INTV; j++) {
@@ -946,8 +1063,10 @@ void TexProcess::initVertices_type2(vector<nfFloat3D> & vert, nfRectF region)
             v.x = (1-s)*TX_SCALEUP-TX_CENTER;
 #endif
             vert.push_back(v);
+            c++;
         }
     }
+    return c;
 }
 /*
  * type 3  *
@@ -955,12 +1074,12 @@ void TexProcess::initVertices_type2(vector<nfFloat3D> & vert, nfRectF region)
  *         *  *
  *         *---*
  */
-void TexProcess::initVertices_type3(vector<nfFloat3D> & vert, nfRectF region)
+int TexProcess::initVertices_type3(vector<nfFloat3D> & vert, nfRectF region)
 {
     int i,j;
     float s,t;
     nfFloat3D v;
-
+    int c = 0;
     for (i=0; i<= Y_INTV; i++) {
         t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
         for (j=0; j<=i; j++) {
@@ -973,8 +1092,10 @@ void TexProcess::initVertices_type3(vector<nfFloat3D> & vert, nfRectF region)
             v.x = (1-s)*TX_SCALEUP-TX_CENTER;
 #endif
             vert.push_back(v);
+            c++;
         }
     }
+    return c;
 }
 /*
  * type 4  *---*
@@ -982,12 +1103,12 @@ void TexProcess::initVertices_type3(vector<nfFloat3D> & vert, nfRectF region)
  *         * *
  *         *
  */
-void TexProcess::initVertices_type4(vector<nfFloat3D> & vert, nfRectF region)
+int TexProcess::initVertices_type4(vector<nfFloat3D> & vert, nfRectF region)
 {
     int i,j;
     float s,t;
     nfFloat3D v;
-
+    int c = 0;
     for (i=0; i<= Y_INTV; i++) {
         t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
         for (j=0; j<=X_INTV-i; j++) {
@@ -1000,32 +1121,39 @@ void TexProcess::initVertices_type4(vector<nfFloat3D> & vert, nfRectF region)
             v.x = (1-s)*TX_SCALEUP-TX_CENTER;
 #endif
             vert.push_back(v);
+            c++;
         }
     }
+    return c;
 }
-//int g_show = 0;
+
 int TexProcess::reloadIndices(vector<unsigned short>& indices)
 {
     int m,k;
     indices.clear();
-//simulate indices changed
-/*
-    for (m=0; m< MAX_CAMERAS; m++) {
-        for(k=0; k<MAX_FP_AREA; k++) {
-            if(k==0)
-                m_RegionMap[m][k] = 1-g_show;
-            else if(k==MAX_FP_AREA-1)
-                m_RegionMap[m][k] = g_show;
-        }
-    }
-    g_show = 1-g_show;
-*/
-//end of simulation
-
+    int c = 0;
     for(m=0; m< MAX_CAMERAS; m++){
         for (k=0; k<MAX_FP_AREA; k++){
-            if(m_RegionMap[m][k] != 0)
-                updateIndices(indices, m, k);
+            switch(mAreaSettings[m].regionType[k]) {
+                case 1:
+                    updateIndices_type1(indices, m, c);
+                    break;
+                case 2:
+                    updateIndices_type2(indices, m, c);
+                    break;
+                case 3:
+                    updateIndices_type3(indices, m, c);
+                    break;
+
+                case 4:
+                    updateIndices_type4(indices, m, c);
+                    break;
+                default:
+                    updateIndices(indices, m, c);
+                    break;
+
+            }
+            c += mAreaSettings[m].nVertCounts[k];
         }
     }
     return 0;
@@ -1040,7 +1168,7 @@ int TexProcess::reloadIndices(vector<unsigned short>& indices)
 void TexProcess::updateIndices(vector<unsigned short>& indices, int nCam, int nRegion)
 {
     int i, j,k;
-    int startIndex = (nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    int startIndex = nRegion;//(nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
     for (i=0; i< Y_INTV; i++) {
         k = startIndex + i*(X_INTV+1);
         for(j=0; j<X_INTV; j++) {
@@ -1065,19 +1193,19 @@ void TexProcess::updateIndices(vector<unsigned short>& indices, int nCam, int nR
 
 }
 /*
- * type 1   layer i      (k0)-----(k0+1)   k0 = (1+i)*i/2
- *                          *     *   0, w+1, 2w+1, 3w,
+ * type 1   layer i      (k0)-----(k0+1)   k0 = (2W+3-i)*i/2 = i*W+ (3i-i*i)/2
+ *                          *     *        counts = W+1-i
  *                           *    *
- *                             *  *   k1= (i+2)*(i+1)/2
- *          layer i+1           (k1)
+ *                             *  *
+ *          layer i+1           (k1)       k1= (2W+2-i)*(i+1)/2 = (i+1)*w+(i-i*i)/2 + 1
  */
 void TexProcess::updateIndices_type1(vector<unsigned short>& indices, int nCam, int nRegion)
 {
     int i, j,k0,k1;
-    int startIndex = (nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    int startIndex = nRegion; //(nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
     for (i=0; i< Y_INTV; i++) {
-        k0 = startIndex + (i+1)*i/2;
-        k1 = k0 + (i+1);
+        k0 = startIndex + i*X_INTV+ (3*i-i*i)/2;
+        k1 = k0 + X_INTV+1-i;
 #ifdef HORZ_MIRROR //CW
         indices.push_back(k0);
         indices.push_back(k1+1);
@@ -1085,10 +1213,10 @@ void TexProcess::updateIndices_type1(vector<unsigned short>& indices, int nCam, 
 #else //CCW
         indices.push_back(k0);
         indices.push_back(k1);
-        indices.push_back(k1+1);
+        indices.push_back(k0+1);
 #endif
-        k1++;
-        for(j=0; j<i; j++) {
+        k0++;
+        for(j=1; j<X_INTV-i; j++) {
 #ifdef HORZ_MIRROR //CW
             indices.push_back(k0);
             indices.push_back(k0+1);
@@ -1119,7 +1247,7 @@ void TexProcess::updateIndices_type1(vector<unsigned short>& indices, int nCam, 
 void TexProcess::updateIndices_type2(vector<unsigned short>& indices, int nCam, int nRegion)
 {
     int i, j,k0,k1;
-    int startIndex = (nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    int startIndex = nRegion;//(nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
     for (i=0; i< Y_INTV; i++) {
         k0 = startIndex + (i+1)*i/2;
         k1 = k0 + (i+1);
@@ -1154,50 +1282,158 @@ void TexProcess::updateIndices_type2(vector<unsigned short>& indices, int nCam, 
         }
     }
 }
+/*
+ * type 3   layer i       (k)        k0 = (1+i)*i/2
+ *                         *   *
+ *                         *    *
+ *                         *     *   k1= k0 + (i+1)
+ *          layer i+1  (k+X+1)--(k+X+2)----*-----(k+2X+1)
+ */
+void TexProcess::updateIndices_type3(vector<unsigned short>& indices, int nCam, int nRegion)
+{
+    int i, j,k0,k1;
+    int startIndex = nRegion;//(nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    for (i=0; i< Y_INTV; i++) {
+        k0 = startIndex + (i+1)*i/2;
+        k1 = k0 + (i+1);
+#ifdef HORZ_MIRROR //CW
+        indices.push_back(k0);
+        indices.push_back(k1+1);
+        indices.push_back(k1);
+#else //CCW
+        indices.push_back(k0);
+        indices.push_back(k1);
+        indices.push_back(k1+1);
+#endif
+        k1++;
+        for(j=0; j<i; j++) {
+#ifdef HORZ_MIRROR //CW
+            indices.push_back(k0);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k1+1);
+#else //CCW
+            indices.push_back(k0);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1+1);
+#endif
+            k0++;
+            k1++;
+        }
+    }
+}
+
+/*
+ * type 4   layer i      (k0)-----(k0+1)   k0 = (2W+3-i)*i/2 = i*W+ (3i-i*i)/2
+ *                         *     *        counts = W+1-i
+ *                         *    *
+ *                         *  *
+ *          layer i+1     (k1)       k1= (2W+2-i)*(i+1)/2 = (i+1)*w+(i-i*i)/2 + 1
+ */
+void TexProcess::updateIndices_type4(vector<unsigned short>& indices, int nCam, int nRegion)
+{
+    int i, j,k0,k1;
+    int startIndex = nRegion; //(nCam*MAX_FP_AREA + nRegion)*(Y_INTV+1)*(X_INTV+1);
+    for (i=0; i< Y_INTV; i++) {
+        k0 = startIndex + i*X_INTV+ (3*i-i*i)/2;
+        k1 = k0 + X_INTV+1-i;
+#ifdef HORZ_MIRROR //CW
+        indices.push_back(k0);
+        indices.push_back(k1+1);
+        indices.push_back(k1);
+#else //CCW
+        indices.push_back(k0);
+        indices.push_back(k1);
+        indices.push_back(k0+1);
+#endif
+        k0++;
+        for(j=1; j<X_INTV-i; j++) {
+#ifdef HORZ_MIRROR //CW
+            indices.push_back(k0);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k1+1);
+#else //CCW
+            indices.push_back(k0);
+            indices.push_back(k1);
+            indices.push_back(k0+1);
+            indices.push_back(k0+1);
+            indices.push_back(k1);
+            indices.push_back(k1+1);
+#endif
+            k0++;
+            k1++;
+        }
+    }
+}
 int TexProcess::createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices)
 {
     int m,k;
     vert.clear();
     indices.clear();
+    int c = 0;//start vertex index of the region
     for(m=0; m< MAX_CAMERAS; m++){
         for (k=0; k<MAX_FP_AREA; k++){
-            initVertices(vert, mAreaSettings[m].region[k]);
-            if(m_RegionMap[m][k] != 0)
-                updateIndices(indices, m, k);
+            /* remember vertix counts in eanch region */
+            switch(mAreaSettings[m].regionType[k]) {
+                case 1:
+                    mAreaSettings[m].nVertCounts[k] = initVertices_type1(vert, mAreaSettings[m].region[k]);
+                    updateIndices_type1(indices, m, c);
+                    break;
+                case 2:
+                    mAreaSettings[m].nVertCounts[k] = initVertices_type2(vert, mAreaSettings[m].region[k]);
+                    updateIndices_type2(indices, m, c);
+                    break;
+                case 3:
+                    mAreaSettings[m].nVertCounts[k] = initVertices_type3(vert, mAreaSettings[m].region[k]);
+                    updateIndices_type3(indices, m, c);
+                    break;
+                case 4:
+                    mAreaSettings[m].nVertCounts[k] = initVertices_type4(vert, mAreaSettings[m].region[k]);
+                    updateIndices_type4(indices, m, c);
+                    break;
+                case 0:
+                default:
+                    mAreaSettings[m].nVertCounts[k] = initVertices(vert, mAreaSettings[m].region[k]);
+                    updateIndices(indices, m, c);
+                    break;
+
+            }
+            c += mAreaSettings[m].nVertCounts[k];//next start index
         }
     }
     return 0;
 }
-int TexProcess::updateUv(vector <nfFloat2D> &uv)
+int TexProcess::updateUv(vector<nfFloat3D> vert, vector <nfFloat2D> &uv)
 {
-    int m,k,i,j;
+    int m,k,i;
     uv.clear();
     nfFloat2D value;
-    for(m=0; m< MAX_CAMERAS; m++){
-        for (k=0; k<MAX_FP_AREA; k++){
-            ////---- update UV in the region  gAreaSettings[m].region[k]);
-            float s,t,u,v,x,y;
-            nfRectF region = mAreaSettings[m].region[k];
-            for (i=0; i<= Y_INTV; i++) {
-                t = (region.b - region.t)*(float)i/(float)Y_INTV + region.t;
-                for (j=0; j<=X_INTV; j++) {
-                    s = (region.r - region.l)*(float)j/(float)X_INTV + region.l;
-                    if (nfDoHomoTransform(s,t,u,v, mAreaSettings[m].homo[k].h)) {
-                        nfDoFec(u,v,x,y, &mAreaSettings[m].fec);
-                        value.x = (x*0.5f+ s_offsetCam[m].x);
-                        value.y = y*0.5f+ s_offsetCam[m].y;
+    int c = 0;
+    for(m=0; m< MAX_CAMERAS; m++) {
+        for (k = 0; k < MAX_FP_AREA; k++) {
+            for (i=0; i< mAreaSettings[m].nVertCounts[k]; i++) {
+                float s, t, u, v, x,y;
+                s = 1- (vert[c].x + TX_CENTER)/TX_SCALEUP;
+                t = (TZ_CENTER - vert[c].z)/TZ_SCALEUP;
 
-                        //
-                    }else{
-                        value.x=value.y=0.5;
-                    }
-                    //
-
-
-                    uv.push_back(value);
+                if (nfDoHomoTransform(s, t, u, v, mAreaSettings[m].homo[k].h)) {
+                    nfDoFec(u, v, x, y, &mAreaSettings[m].fec);
+                    value.x = (x*0.5f+ s_offsetCam[m].x);
+                    value.y = y*0.5f+ s_offsetCam[m].y;
+                }else {
+                    value.x=value.y=0.5;
                 }
+                c++;
+                uv.push_back(value);
             }
-            ////---- end of one region
         }
     }
 

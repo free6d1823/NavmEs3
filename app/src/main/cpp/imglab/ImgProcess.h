@@ -13,7 +13,7 @@
 #define IMAGE_AREA_HEIGHT   720
 #endif
 #define IMAGE_PATH  "camera1440x960.yuv"
-#define IMAGE_WIDTH 1440//1440
+#define IMAGE_WIDTH 1440
 #define IMAGE_HEIGHT    960
 #define IMAGE_AREA_WIDTH    720
 #define IMAGE_AREA_HEIGHT   480
@@ -121,7 +121,8 @@ public:
 	~TexProcess();
 	bool update();
 	int createVertices(vector<nfFloat3D> & vert, vector<unsigned short>& indices);
-	int updateUv(vector <nfFloat2D> &uv);
+	/* find UV maps from vertex vector vert*/
+	int updateUv(vector<nfFloat3D> vert, vector <nfFloat2D> &uv);
     int updateUvNoFisheye(vector <nfFloat2D> &uv);
     int reloadIndices(vector<unsigned short>& indices);
     /*<! ini process functions */
@@ -149,11 +150,12 @@ public:
     char* mpSourceImageName;
 
 private:
-	void initVertices(vector<nfFloat3D> & vert, nfRectF region);
-	void initVertices_type1(vector<nfFloat3D> & vert, nfRectF region);
-	void initVertices_type2(vector<nfFloat3D> & vert, nfRectF region);
-	void initVertices_type3(vector<nfFloat3D> & vert, nfRectF region);
-	void initVertices_type4(vector<nfFloat3D> & vert, nfRectF region);
+    /*<! returns numbers of vertex created in this region*/
+	int initVertices(vector<nfFloat3D> & vert, nfRectF region);
+	int initVertices_type1(vector<nfFloat3D> & vert, nfRectF region);
+	int initVertices_type2(vector<nfFloat3D> & vert, nfRectF region);
+	int initVertices_type3(vector<nfFloat3D> & vert, nfRectF region);
+	int initVertices_type4(vector<nfFloat3D> & vert, nfRectF region);
 
 	void updateIndices(vector<unsigned short>& indices, int nCam, int nRegion);
 	void updateIndices_type1(vector<unsigned short>& indices, int nCam, int nRegion);
