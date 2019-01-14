@@ -43,6 +43,8 @@ public:
      * \param szFile RGB32 file
      */
     void setSimVideoFileRgb(int width, int height, int depth, const char* szFile);
+    void setOption(int nOption);
+    virtual bool saveTexture(const char* filepath);
 private:
     bool initVertexData();
     void updateTextureData();
@@ -54,6 +56,8 @@ private:
     nfFloat3D* mpVertexBuf;         /*<! vertex coordinates, 3D */
     nfFloat2D* mpUvBuf;             /*<! texture UV coordinates, 2D */
     unsigned int mNumToDraw;    /*<! number of elements to draw */
+
+    bool  mInit;
 
     nfPByte  mpTexImg;   /*<! texture image data */
     int mTexWidth;

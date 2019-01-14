@@ -26,14 +26,55 @@ static const char VERTEX_SHADER[] =
                 "  v_texcoord = vertexUv;\n"
                 "}\n";
 
+static const char FRAGMENT_SHADER_UYVY[] =
+        "precision mediump float;\n"
+                "varying vec2 v_texcoord;\n"
+                "uniform sampler2D texture;\n"
+                "void main() {\n"
+                "    vec2 v_new_texcoord;\n"
+                "    vec4 rgbColor;\n"
+                "    float y,u,v;\n"
+                "    v_new_texcoord.x=v_texcoord.x/2.0;\n"
+                "    v_new_texcoord.y=v_texcoord.y;\n"
+                "    rgbColor =texture2D(texture, v_new_texcoord);\n"
+                "    u=rgbColor.r*256.0;\n"
+                "    v=rgbColor.b*256.0\n;"
+                "    if(mod(v_texcoord.x,2.0)==1.0)\n"
+                "       y=rgbColor.a*256.0;\n"
+                "    else\n"
+                "       y=rgbColor.g*256.0\n;"
+                "    rgbColor.r = clamp((1.164*(y-16.0)+1.596*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.g = clamp((1.164*(y-16.0)-0.391*(u-128.0)-0.813*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.b = clamp((1.164*(y-16.0)+2.018*(u-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.a =1.0;\n"
+                "    gl_FragColor = rgbColor;\n"
+                // Modified by Jason Huang for UYVY to RGB32 CSC   20181211
+                //"    gl_FragColor = texture2D(texture, v_texcoord);\n"
+                "}\n";
+//YVYU=rgba
 static const char FRAGMENT_SHADER[] =
         "precision mediump float;\n"
                 "varying vec2 v_texcoord;\n"
                 "uniform sampler2D texture;\n"
                 "void main() {\n"
-                "  gl_FragColor = texture2D(texture, v_texcoord);\n"
+                "    vec2 v_new_texcoord;\n"
+                "    vec4 rgbColor;\n"
+                "    float y,u,v;\n"
+                "    v_new_texcoord.x=v_texcoord.x/2.0;\n"
+                "    v_new_texcoord.y=v_texcoord.y;\n"
+                "    rgbColor =texture2D(texture, v_new_texcoord);\n"
+                "    v=rgbColor.g*256.0;\n"
+                "    u=rgbColor.a*256.0\n;"
+                "    if(mod(v_texcoord.x,2.0)==1.0)\n"
+                "       y=rgbColor.b*256.0;\n"
+                "    else\n"
+                "       y=rgbColor.r*256.0\n;"
+                "    rgbColor.r = clamp((1.164*(y-16.0)+1.596*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.g = clamp((1.164*(y-16.0)-0.391*(u-128.0)-0.813*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.b = clamp((1.164*(y-16.0)+2.018*(u-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.a =1.0;\n"
+                "    gl_FragColor = rgbColor;\n"
                 "}\n";
-
 
 Floor::Floor()
         :   mEglContext(eglGetCurrentContext()),
@@ -52,6 +93,7 @@ Floor::Floor()
 {
     mVertexBufId[0] = mVertexBufId[1] = -1;
     mVertexBufId[2] = -1;
+    mInit = false;
 
 }
 Floor ::~Floor()
@@ -107,12 +149,11 @@ bool Floor ::initVertexData()
 
     mNumToDraw = ind.size();
 
-    LOGI("-------- v=%d, U=%d i=%d", vert.size(), uvs.size(), ind.size());
     return true;
 }
 bool Floor ::init()
 {
-    mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
+     mProgramId = CreateProgram(VERTEX_SHADER, FRAGMENT_SHADER);
     if (!mProgramId)
         return false;
     mVertexAttrib = glGetAttribLocation(mProgramId, "vertexPosition");
@@ -123,8 +164,9 @@ bool Floor ::init()
 
     if(!gCameraSource.init())
         return false;
+    gCameraSource.open(0x05); //open cam 0/2 as default, correct should ne open(0x0f)
     mTexWidth = gCameraSource.Width();
-    mTexHeight = gCameraSource.Height();
+    mTexHeight = gCameraSource.Height()/2; // Add by Jason Huang for interlaced 20181211
     mTexDepth = 32; //RGBA32
     mpTexImg = NULL; //buffer is provided by CameraSource
 
@@ -133,6 +175,7 @@ bool Floor ::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
+    mInit = true;
 
     return true;
 }
@@ -192,6 +235,52 @@ void Floor ::draw(bool bReload)
 
     glDisableVertexAttribArray(mVertexAttrib);
     glDisableVertexAttribArray(mUvAttrib);
+}
+
+void Floor::setOption(int nOption)
+{
+
+    if(!mInit)
+        return;
+    switch(nOption) {
+        case 0: //cam 1/3
+            gCameraSource.open(0x0a);
+            break;
+        case 1: //open cam 0/2
+            gCameraSource.open(0x05);
+            break;
+        case 2: //open cam 1/2
+            gCameraSource.open(0x06);
+            break;
+        case 3: //open cam 0/3
+            gCameraSource.open(0x09);
+            break;
+        case 4: //open cam all
+            gCameraSource.open(0x0f);
+            break;
+        case 0x0f: //close all cam
+            gCameraSource.open(0x0);
+            break;
+        default:
+            break;
+    }
+
+}
+
+bool Floor::saveTexture(const char* filepath)
+{
+    /*FILE* fp = fopen(filepath, "w");
+    if (fp == NULL) {
+        LOGE("Failed to open file %s to save texture!", filepath);
+        return false;
+    }
+    unsigned char* pBuffer = gCameraSource.GetFrameData();
+    if (1 != fwrite(pBuffer, mTexWidth*mTexHeight*4, 1, fp)){
+        LOGE("Failed to write file %s!", filepath);
+    }
+    LOGV("Save texture to file %s.", filepath);
+    fclose(fp);*/
+    return true;
 }
 
 /* \brief update basic matrics

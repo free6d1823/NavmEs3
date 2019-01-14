@@ -15,6 +15,7 @@
 
 /* adjust this to make Car size fits the scene */
 #define SCALE_FACTOR    2.2f
+#define TRANSLATE_Z     -1.0f
 
 static const char VERTEX_SHADER[] =
         "uniform mat4 mvp_matrix;\n"
@@ -150,6 +151,8 @@ bool Parts::loadObject(void* data, unsigned int length)
     //scale up Vertex
     for(int i=0; i<pVertexBuf->size(); i++){
         pVertexBuf->data()[i] *= SCALE_FACTOR;
+        if (i%3 == 2)
+            pVertexBuf->data()[i]+= TRANSLATE_Z;
     }
     glGenBuffers(TOTAL_BUF, mVertexBufId);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufId[VERT_BUF]);
@@ -191,9 +194,9 @@ Wheels::~Wheels() {
 bool Wheels::loadObject(void* data, unsigned int length)
 {
     if(mID == 1)
-        mVecAxis = Vec3(-0.000818*SCALE_FACTOR, 0.327574*SCALE_FACTOR, -1.203252*SCALE_FACTOR);
+        mVecAxis = Vec3(-0.000818*SCALE_FACTOR, 0.327574*SCALE_FACTOR, -1.203252*SCALE_FACTOR+TRANSLATE_Z);
     else //rear
-        mVecAxis = Vec3(0.001061*SCALE_FACTOR, 0.327574*SCALE_FACTOR, 1.156935*SCALE_FACTOR);
+        mVecAxis = Vec3(0.001061*SCALE_FACTOR, 0.327574*SCALE_FACTOR, 1.156935*SCALE_FACTOR+TRANSLATE_Z);
 
     return Parts::loadObject(data, length);
 };

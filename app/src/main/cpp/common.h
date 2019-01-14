@@ -128,8 +128,6 @@ extern nfImage* gpInputImage;
 
 /* inform AllView to stitch all camera images */
 #define MESSAGE_VIEW_DO_STITCHING 0x1024
-/* inform AllView Steer Wheel angle is changed, pData = degree*100  */
-#define MESSAGE_VIEW_STEER_CHANGED100 0x1025
 
 #endif //ANDROID the above commands are used in calibration only
 

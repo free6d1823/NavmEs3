@@ -32,7 +32,7 @@ public:
     int Width(){return mWidth;}
     int Height() {return mHeight;}
     unsigned char * GetFrameData();
-    int DoFramePostProcess(void* pInBuffer, int width, int height, int stride, void* pOut);
+
     void Lock();
     void Unlock();
 protected:

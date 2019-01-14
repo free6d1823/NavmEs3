@@ -24,14 +24,56 @@ static const char VERTEX_SHADER[] =
                 "  gl_Position =vec4(vertexPosition, 1);\n"
                 "  v_texcoord = vertexUv;\n"
                 "}\n";
+
+static const char FRAGMENT_SHADER_UYVY[] =
+        "precision mediump float;\n"
+                "varying vec2 v_texcoord;\n"
+                "uniform sampler2D texture;\n"
+                "void main() {\n"
+                "    vec2 v_new_texcoord;\n"
+                "    vec4 rgbColor;\n"
+                "    float y,u,v;\n"
+                "    v_new_texcoord.x=v_texcoord.x/2.0;\n"
+                "    v_new_texcoord.y=v_texcoord.y;\n"
+                "    rgbColor =texture2D(texture, v_new_texcoord);\n"
+                "    u=rgbColor.r*256.0;\n"
+                "    v=rgbColor.b*256.0\n;"
+                "    if(mod(v_texcoord.x,2.0)==1.0)\n"
+                "       y=rgbColor.a*256.0;\n"
+                "    else\n"
+                "       y=rgbColor.g*256.0\n;"
+                "    rgbColor.r = clamp((1.164*(y-16.0)+1.596*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.g = clamp((1.164*(y-16.0)-0.391*(u-128.0)-0.813*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.b = clamp((1.164*(y-16.0)+2.018*(u-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.a =1.0;\n"
+                "    gl_FragColor = rgbColor;\n"
+                //  Modified by Jason Huang for UYVY to RGB32 CSC 20181211
+                //"  gl_FragColor = texture2D(texture, v_texcoord);\n"
+                "}\n";
+//YVYU=rgba
 static const char FRAGMENT_SHADER[] =
         "precision mediump float;\n"
                 "varying vec2 v_texcoord;\n"
                 "uniform sampler2D texture;\n"
                 "void main() {\n"
-                "  gl_FragColor = texture2D(texture, v_texcoord);\n"
+                "    vec2 v_new_texcoord;\n"
+                "    vec4 rgbColor;\n"
+                "    float y,u,v;\n"
+                "    v_new_texcoord.x=v_texcoord.x/2.0;\n"
+                "    v_new_texcoord.y=v_texcoord.y;\n"
+                "    rgbColor =texture2D(texture, v_new_texcoord);\n"
+                "    v=rgbColor.g*256.0;\n"
+                "    u=rgbColor.a*256.0\n;"
+                "    if(mod(v_texcoord.x,2.0)==1.0)\n"
+                "       y=rgbColor.b*256.0;\n"
+                "    else\n"
+                "       y=rgbColor.r*256.0\n;"
+                "    rgbColor.r = clamp((1.164*(y-16.0)+1.596*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.g = clamp((1.164*(y-16.0)-0.391*(u-128.0)-0.813*(v-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.b = clamp((1.164*(y-16.0)+2.018*(u-128.0))/256.0,0.0, 1.0);\n"
+                "    rgbColor.a =1.0;\n"
+                "    gl_FragColor = rgbColor;\n"
                 "}\n";
-
 //#define SAFE_FREE(p) if(p){free(p); p=NULL;}
 Plat::Plat()
         :   mEglContext(eglGetCurrentContext()),

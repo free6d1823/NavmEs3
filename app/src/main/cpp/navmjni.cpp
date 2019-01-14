@@ -95,7 +95,7 @@ int MainJni::getViewMode()
 void MainJni::setOption(int nOption)
 {
 
-    //tyemp mFloor.setOption(nOption);
+    mFloor.setOption(nOption);
 }
 
 bool MainJni::saveTexture(int flag)
@@ -317,9 +317,8 @@ Java_com_nforetek_navmes3_NavmEs3Lib_start2(JNIEnv* env, jobject obj, jstring si
         return;
     }
     const char* szFile = env->GetStringUTFChars(simVideoFile, 0);
-    /*To use sim file, setSimVideoFileRgb, call before init() */
-    mFloor.setSimVideoFileRgb(IMAGE_WIDTH, IMAGE_HEIGHT, 4, szFile);
-    //mFloor.setSimVideoFile(IMAGE_WIDTH, IMAGE_HEIGHT, 2, szFile);
+    /*To use sim file, setSimVideoFile, call before init() */
+    mFloor.setSimVideoFile(IMAGE_WIDTH, IMAGE_HEIGHT, 2, szFile);
     mFloor.init();
 
     AAsset* testAsset = AAssetManager_open(gAmgr, "redskin_100x100.yuv", AASSET_MODE_UNKNOWN);
@@ -546,9 +545,8 @@ Java_com_nforetek_navmes3_NavmEs3Lib_init(JNIEnv* env, jobject obj, jobject asse
     const char* szRootDir = env->GetStringUTFChars(appFolder, 0);
     strncpy(szIniFile, szRootDir, sizeof(szIniFile));
     strncat(szIniFile, DEFAULT_SETTING_FILE, 256);
-
-    //FILE* fp = fopen(szIniFile,"r");
-    FILE* fp = NULL; //force overwrite inifile
+    FILE* fp = fopen(szIniFile,"r");
+    //FILE* fp = NULL; //force overwrite inifile
     if(!fp) {
         LOGE("Setting file %s not found, copy default settings.", szIniFile);
         CreateDefaultIniFile(szIniFile);

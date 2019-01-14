@@ -1131,6 +1131,19 @@ int TexProcess::reloadIndices(vector<unsigned short>& indices)
 {
     int m,k;
     indices.clear();
+//simulate indices changed
+/*
+    for (m=0; m< MAX_CAMERAS; m++) {
+        for(k=0; k<MAX_FP_AREA; k++) {
+            if(k==0)
+                m_RegionMap[m][k] = 1-g_show;
+            else if(k==MAX_FP_AREA-1)
+                m_RegionMap[m][k] = g_show;
+        }
+    }
+    g_show = 1-g_show;
+*/
+//end of simulation
     int c = 0;
     for(m=0; m< MAX_CAMERAS; m++){
         for (k=0; k<MAX_FP_AREA; k++){
