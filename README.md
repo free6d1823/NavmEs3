@@ -1,6 +1,5 @@
 NAVM ES3
 =========
-nFore Around View Monitoring application based on OpenGL ES3.0
 
 Pre-requisites
 --------------
